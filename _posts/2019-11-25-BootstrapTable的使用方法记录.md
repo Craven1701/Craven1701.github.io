@@ -1,7 +1,7 @@
 ---
 title: Bootstrap Table的使用方法记录
 published: true
-tag: Bootstrap
+tags: Bootstrap
 ---
 
 实现了从后端服务器中查询数据，并返回给前端，通过BootStrap Table渲染到表格中。

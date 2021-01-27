@@ -1,7 +1,7 @@
 ---
 title: 使用GitHub Page搭建自己的博客
 published: true
-tag: jekyll
+tags: jekyll
 ---
 
 ### 创建GitHub Pages仓库

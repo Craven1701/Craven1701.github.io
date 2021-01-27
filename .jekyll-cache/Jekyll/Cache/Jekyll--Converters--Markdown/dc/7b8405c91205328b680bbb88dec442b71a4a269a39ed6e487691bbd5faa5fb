@@ -1,0 +1,1324 @@
+I"�,<section>
+  
+    <h3>Bootstrap(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>Bootstrap Table的使用方法记录</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Bootstrap Table的使用方法记录 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Bootstrap Table的使用方法记录" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="实现了从后端服务器中查询数据，并返回给前端，通过BootStrap Table渲染到表格中。" />
+<meta property="og:description" content="实现了从后端服务器中查询数据，并返回给前端，通过BootStrap Table渲染到表格中。" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-11-25T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bootstrap Table的使用方法记录" />
+<script type="application/ld+json">
+{"headline":"Bootstrap Table的使用方法记录","dateModified":"2019-11-25T00:00:00+08:00","datePublished":"2019-11-25T00:00:00+08:00","url":"/BootstrapTable%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E8%AE%B0%E5%BD%95","mainEntityOfPage":{"@type":"WebPage","@id":"/BootstrapTable%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E8%AE%B0%E5%BD%95"},"author":{"@type":"Person","name":"SomeHacker"},"description":"实现了从后端服务器中查询数据，并返回给前端，通过BootStrap Table渲染到表格中。","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>Bootstrap Table的使用方法记录</h2>
+  <time datetime="2019-11-25T00:00:00+08:00" class="by-line">25 Nov 2019</time>
+  <p>实现了从后端服务器中查询数据，并返回给前端，通过BootStrap Table渲染到表格中。</p>
+
+<ol>
+  <li>引入的js文件与css文件如下：</li>
+</ol>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nt">link</span> <span class="nt">rel</span><span class="o">=</span><span class="s1">"stylesheet"</span> <span class="nt">href</span><span class="o">=</span><span class="s1">"https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nt">script</span> <span class="nt">src</span><span class="o">=</span><span class="s1">"https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"</span><span class="o">&gt;&lt;/</span><span class="nt">script</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<ol>
+  <li>表格的初始化与一些基本参数的配置：</li>
+</ol>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">loadData</span><span class="p">(</span><span class="nx">tableId</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">tableId</span><span class="p">).</span><span class="nx">bootstrapTable</span><span class="p">(</span><span class="dl">'</span><span class="s1">destroy</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 清除缓存表格数据</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">tableId</span><span class="p">).</span><span class="nx">bootstrapTable</span><span class="p">({</span>
+        <span class="na">striped</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 隔行变色</span>
+        <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+        <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">dataType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">json</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">pagination</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">//分页</span>
+        <span class="na">sidePagination</span><span class="p">:</span> <span class="dl">"</span><span class="s2">client</span><span class="dl">"</span><span class="p">,</span> <span class="c1">//客户端处理分页</span>
+        <span class="na">pageNumber</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// 默认显示第几页</span>
+        <span class="na">pageSize</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="c1">// 每页显示条数</span>
+<span class="c1">//	    sortable: false,</span>
+<span class="c1">//	    cache: false, // 默认true 设置为 false 禁用 AJAX 数据缓存</span>
+        <span class="na">contentType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/x-www-form-urlencoded</span><span class="dl">"</span><span class="p">,</span> <span class="c1">// 参数提交类型，默认以application/json提交</span>
+        <span class="na">queryParams</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="na">keyWord</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#keyWord</span><span class="dl">'</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+                <span class="na">dataSet</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#dataSet</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">"</span><span class="s2">option:selected</span><span class="dl">"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">),</span>
+                <span class="na">fieldName</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#fieldName</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">"</span><span class="s2">option:selected</span><span class="dl">"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">),</span>
+            <span class="p">};</span>
+        <span class="p">},</span><span class="c1">// 请求参数，发往后台，通过自定义参数将查询时需要的数据传给后台</span>
+	    <span class="c1">// responseHandler:function(res){ // res为从服务器请求到的数据</span>
+	    <span class="c1">// 	return res.data;</span>
+	    <span class="c1">// },</span>
+        <span class="na">columns</span><span class="p">:</span> <span class="p">[</span> <span class="c1">// 渲染列</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">B</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">B</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">valign</span><span class="p">:</span> <span class="dl">'</span><span class="s1">middle</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">C</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">C</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">valign</span><span class="p">:</span> <span class="dl">'</span><span class="s1">middle</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">names</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">names</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">L</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">l</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">G_Name</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">G_Name</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">annotation</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">annotation</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">]</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>基本的设置大致如此，网上这一类的资料也很多。需要注意点有一下几个：</p>
+
+<ul>
+  <li>最开始需要用<code class="language-plaintext highlighter-rouge">
+$(tableId).bootstrapTable('destroy');</code>来清除缓存的数据表格，否则可能查询的结果展示不出来；</li>
+  <li>不同的分页方式对后台返回的数据格式有不同的要求，在返回数据时需要注意一下，这里用到是客户端处理分页<code class="language-plaintext highlighter-rouge">sidePagination:
+"client", </code>网上大多数资料用到都是服务器端处理分页，即<code class="language-plaintext highlighter-rouge">sidePagination: "server",
+</code>但是我不想调整返回的数据格式了所以就用<code class="language-plaintext highlighter-rouge">client</code>了，这个返回格式比较简单。
+（返回格式的差异参看这个链接：<a href="https://www.jb51.net/article/117388.htm">https://www.jb51.net/article/117388.htm</a>）</li>
+  <li>
+    <p><strong>最为关键的一个参数，<code class="language-plaintext highlighter-rouge">queryParams</code>的设置：</strong></p>
+
+    <p><code class="language-plaintext highlighter-rouge">javascript  queryParams: function (params) {
+            return {
+                keyWord: $('#keyWord').val(),
+                dataSet: $('#dataSet').find("option:selected").attr('value'),
+                fieldName: $('#fieldName').find("option:selected").attr('value'),
+            };
+        },</code>
+```</p>
+  </li>
+</ul>
+
+<p><strong><code class="language-plaintext highlighter-rouge">queryParams</code>就相当于<code class="language-plaintext highlighter-rouge">$.ajax()</code>里的的参数<code class="language-plaintext highlighter-rouge">data</code>,通过自定义参数的形式，将前端取出来的数据传到后端去，通常就是传一些查询条件之类的。</strong></p>
+
+<p>我一开始确实没理解到这里是可以自定义参数的，在网上看到的例子也都是用的limit什么之类的奇怪的参数，耽误了我很多时间来尝试在哪给后台发查询条件……Orz。  我使用的是<code class="language-plaintext highlighter-rouge">get</code>的方法向后台传递数据，数据发到后台的格式如下图所示 ：
+ <img src="https://img-blog.csdnimg.cn/2019112508514742.png" alt="在这里插入图片描述" />
+最后处理一下返回数据的格式，就完成了。后端的代码如下：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="p">.</span><span class="n">encoding</span><span class="o">=</span><span class="s">'utf-8'</span>
+    <span class="n">keyWord</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'keyWord'</span><span class="p">]</span>
+    <span class="n">dataSet</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'dataSet'</span><span class="p">]</span>
+    <span class="n">fieldName</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'fieldName'</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">keyWord</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">'SELECT * from '</span> <span class="o">+</span> <span class="n">dataSet</span> <span class="o">+</span> <span class="s">' WHERE '</span> <span class="o">+</span> <span class="n">fieldName</span> <span class="o">+</span> <span class="s">' = "'</span> <span class="o">+</span> <span class="n">keyWord</span><span class="o">+</span><span class="s">'"'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">'SELECT * from '</span> <span class="o">+</span> <span class="n">dataSet</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">engine</span><span class="p">).</span><span class="n">to_json</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">'records'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,{</span>
+            <span class="s">'Message'</span><span class="p">:</span> <span class="s">'No result found.'</span>
+        <span class="p">})</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>参考资料：
+Bootstrap Table官方文档：<a href="https://bootstrap-table.com/">https://bootstrap-table.com/</a>
+Table的初始化与有关参数详解：
+<a href="https://www.jb51.net/article/144386.htm">https://www.jb51.net/article/144386.htm</a>
+<a href="https://zhuanlan.zhihu.com/p/46609913">https://zhuanlan.zhihu.com/p/46609913</a>
+后端返回数据时的格式控制问题：<a href="https://www.jb51.net/article/117388.htm">https://www.jb51.net/article/117388.htm</a>
+（其实还看了好多别的- - 但是都大同小异 这几个比较有代表性一点所以就引用这几个吧）</p>
+</blockquote>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/BootstrapTable%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E8%AE%B0%E5%BD%95">Bootstrap Table的使用方法记录</a></li>
+      
+    </ul>
+  
+    <h3>linux(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>常用的linux命令</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>常用的linux命令 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="常用的linux命令" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="与其说是常用的Linux命令，不如说是我自己用过的Linux命令吧。" />
+<meta property="og:description" content="与其说是常用的Linux命令，不如说是我自己用过的Linux命令吧。" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-24T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="常用的linux命令" />
+<script type="application/ld+json">
+{"headline":"常用的linux命令","dateModified":"2020-03-24T00:00:00+08:00","datePublished":"2020-03-24T00:00:00+08:00","url":"/%E5%B8%B8%E7%94%A8Linux%E5%91%BD%E4%BB%A4","mainEntityOfPage":{"@type":"WebPage","@id":"/%E5%B8%B8%E7%94%A8Linux%E5%91%BD%E4%BB%A4"},"author":{"@type":"Person","name":"SomeHacker"},"description":"与其说是常用的Linux命令，不如说是我自己用过的Linux命令吧。","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>常用的linux命令</h2>
+  <time datetime="2020-03-24T00:00:00+08:00" class="by-line">24 Mar 2020</time>
+  <p>与其说是常用的Linux命令，不如说是我自己用过的Linux命令吧。</p>
+
+<h5 id="1cd-切换目录">1.cd 切换目录</h5>
+<h5 id="2cp-文件复制">2.cp 文件复制</h5>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="o">[</span><span class="nt">-adfilprsu</span><span class="o">]</span> 源文件<span class="o">(</span><span class="nb">source</span><span class="o">)</span> 目标文件<span class="o">(</span>destination<span class="o">)</span>
+<span class="nb">cp</span> <span class="o">[</span>option] source1 source2 source3 ...  directory
+
+<span class="c"># 将/test1目录下的file1复制到/test3目录，并将文件名改为file2,可输入以下命令：</span>
+<span class="nb">cp</span> /test1/file1  /test3/file2
+</code></pre></div></div>
+<p>参数说明：
+    <code class="language-plaintext highlighter-rouge">-a</code>:是指archive的意思，也说是指复制所有的目录
+    <code class="language-plaintext highlighter-rouge">-d</code>:若源文件为连接文件(link file)，则复制连接文件属性而非文件本身
+    <code class="language-plaintext highlighter-rouge">-f</code>:强制(force)，若有重复或其它疑问时，不会询问用户，而强制复制
+    <code class="language-plaintext highlighter-rouge">-i</code>:若目标文件(destination)已存在，在覆盖时会先询问是否真的操作
+    <code class="language-plaintext highlighter-rouge">-l</code>:建立硬连接(hard link)的连接文件，而非复制文件本身
+    <code class="language-plaintext highlighter-rouge">-p</code>:与文件的属性一起复制，而非使用默认属性
+    <code class="language-plaintext highlighter-rouge">-r</code>:递归复制，用于目录的复制操作
+    <code class="language-plaintext highlighter-rouge">-s</code>:复制成符号连接文件(symbolic link)，即“快捷方式”文件
+    <code class="language-plaintext highlighter-rouge">-u</code>:若目标文件比源文件旧，更新目标文件</p>
+
+<h5 id="3查看文件的前几行或后几行">3.查看文件的前几行或后几行</h5>
+<p><code class="language-plaintext highlighter-rouge">head</code>（查看前几行）
+<code class="language-plaintext highlighter-rouge">tail</code>（查看末尾几行）
+例如：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 查看/etc/profile的前10行内容，应该是：</span>
+<span class="nb">head</span> <span class="nt">-n</span> 10 /etc/profile
+
+<span class="c"># 查看/etc/profile的最后5行内容，应该是：</span>
+<span class="nb">tail</span>  <span class="nt">-n</span> 5 /etc/profile
+
+<span class="c"># 同时查看可以将前10行和后5行的显示信息通过输出重定向的方法保存到一个文档，这样查看文档即可一目了然。</span>
+<span class="c"># 例如：将内容输出到/home/test文件中</span>
+<span class="nb">head</span> <span class="nt">-n</span> 10 /etc/profile <span class="o">&gt;&gt;</span>/home/test
+<span class="nb">tail</span>  <span class="nt">-n</span> 5 /etc/profile&gt;&gt;/home/test
+</code></pre></div></div>
+<p>查看的话只需要打开test文件即可。</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> /home/test
+</code></pre></div></div>
+<h5 id="4rm-删除文件与文件夹">4.rm 删除文件与文件夹</h5>
+<p>rm命令:<a href="https://www.runoob.com/linux/linux-comm-rm.html">https://www.runoob.com/linux/linux-comm-rm.html</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">rm</span> <span class="o">[</span>options] name...
+</code></pre></div></div>
+<p>参数说明：
+<code class="language-plaintext highlighter-rouge">-i</code> 删除前逐一询问确认。
+<code class="language-plaintext highlighter-rouge">-f</code> 即使原档案属性设为唯读，亦直接删除，无需逐一确认。
+<code class="language-plaintext highlighter-rouge">-r </code>将目录及以下之档案亦逐一删除。</p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>【转载】SSH服务详解</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>【转载】SSH服务详解 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="【转载】SSH服务详解" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="版权声明：本文为CSDN博主「惨绿少年」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。 原文链接：https://blog.csdn.net/admin_root1/article/details/78911685" />
+<meta property="og:description" content="版权声明：本文为CSDN博主「惨绿少年」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。 原文链接：https://blog.csdn.net/admin_root1/article/details/78911685" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-24T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="【转载】SSH服务详解" />
+<script type="application/ld+json">
+{"headline":"【转载】SSH服务详解","dateModified":"2020-03-24T00:00:00+08:00","datePublished":"2020-03-24T00:00:00+08:00","url":"/%E8%BD%AC%E8%BD%BD-SSH%E6%9C%8D%E5%8A%A1%E8%AF%A6%E8%A7%A3","mainEntityOfPage":{"@type":"WebPage","@id":"/%E8%BD%AC%E8%BD%BD-SSH%E6%9C%8D%E5%8A%A1%E8%AF%A6%E8%A7%A3"},"author":{"@type":"Person","name":"SomeHacker"},"description":"版权声明：本文为CSDN博主「惨绿少年」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。 原文链接：https://blog.csdn.net/admin_root1/article/details/78911685","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>【转载】SSH服务详解</h2>
+  <time datetime="2020-03-24T00:00:00+08:00" class="by-line">24 Mar 2020</time>
+  <p><strong>版权声明</strong>：本文为CSDN博主「惨绿少年」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+<strong>原文链接：</strong><a href="https://blog.csdn.net/admin_root1/article/details/78911685">https://blog.csdn.net/admin_root1/article/details/78911685</a></p>
+
+<p>1.4.2 ssh软件安装</p>
+
+<p><strong>客户端</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-qf</span> <span class="sb">`</span>which ssh<span class="sb">`</span>
+openssh-clients-5.3p1-122.el6.x86_64
+</code></pre></div></div>
+<p><strong>服务端软件</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-qf</span> <span class="sb">`</span>which sshd<span class="sb">`</span>
+openssh-server-5.3p1-122.el6.x86_64
+</code></pre></div></div>
+
+<h3 id="143-openssh-clinets-软件的主要内容">1.4.3 openssh-clinets 软件的主要内容：</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-ql</span> openssh-clients
+/etc/ssh/ssh_config         <span class="nt">---ssh</span>客户端配置文件
+/usr/bin/.ssh.hmac
+/usr/bin/scp                  <span class="nt">---</span>远程复制命令
+/usr/bin/sftp                 <span class="nt">---</span>远程文件传输服务
+/usr/bin/slogin              <span class="nt">---</span>远程登陆命令
+/usr/bin/ssh                  <span class="nt">---ssh</span>远程登陆管理主机
+/usr/bin/ssh-add
+/usr/bin/ssh-agent
+/usr/bin/ssh-copy-id        <span class="nt">---ssh</span>服务分发公钥命令
+/usr/bin/ssh-keyscan
+</code></pre></div></div>
+<h3 id="144-openssh-server-软件的主要内容">1.4.4 openssh-server 软件的主要内容</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-ql</span> openssh-server
+/etc/rc.d/init.d/sshd      <span class="c">#ssh服务启动脚本</span>
+/etc/ssh/sshd_config       <span class="c">#ssh服务配置文件</span>
+/etc/sysconfig/sshd        <span class="c">#ssh创建密钥有关</span>
+/usr/sbin/.sshd.hmac       <span class="c">#ssh加密算法有关文件</span>
+/usr/sbin/sshd             <span class="c">#ssh服务进程启动命令</span>
+</code></pre></div></div>
+
+<p><strong>注意：使用sshd采用绝对路径进行启动</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@test ~]# sshd
+sshd re-exec requires execution with an absolute path
+</code></pre></div></div>
+
+<h2 id="15-ssh服务配置文件说明">1.5 ssh服务配置文件说明：</h2>
+<ol>
+  <li>
+    <p>配置文件中所有注释信息，表示默认参数配置</p>
+  </li>
+  <li>
+    <p>配置文件中<code class="language-plaintext highlighter-rouge">#空格 后面内容表示说明信息</code></p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      #参数 表示配置参数信息
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>配置文件参数信息修改后，一旦变为注释，即还原为默认配置</p>
+  </li>
+</ol>
+
+<h3 id="151-ssh服务的配置文件路径">1.5.1 ssh服务的配置文件路径</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim  /etc/ssh/sshd_config
+</code></pre></div></div>
+<p>修改SSH服务的运行参数，是通过修改配置文件/etc/ssh/sshd_config实现的。</p>
+
+<p>一般来说SSH服务使用默认的配置已经能够很好的工作了，如果对安全要求不高，仅仅提供SSH服务的情况，可以不需要修改任何配置。</p>
+
+<h3 id="152-配置文件中常用配置说明">1.5.2 配置文件中常用配置说明</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@test ~]# vim /etc/ssh/sshd_config
+
+<span class="c"># $OpenBSD: sshd_config,v 1.80 2008/07/02 02:24:18 djm Exp $</span>
+<span class="c"># This is the sshd server system-wide configuration file.  See sshd_config(5) for more information.</span>
+<span class="c"># This sshd was compiled with PATH=/usr/local/bin:/bin:/usr/bin</span>
+<span class="c"># The strategy used for options in the default sshd_config shipped with OpenSSH is to specify options with their default value where possible, but leave them commented. Uncommented options change a default value.</span>
+
+Port 25113                   <span class="c">#端口 default</span>
+
+ListenAddress 10.0.0.41   <span class="c">#监听地址（本地网卡地址），指定本地网卡那个网卡提供服务</span>
+
+PermitRootLogin no       <span class="c">#是否允许root用户登陆 default</span>
+
+PermitEmptyPasswords no  <span class="c">#禁止空密码登陆 default</span>
+
+UseDNS no                <span class="c">#不使用DNS</span>
+
+GSSAPIAuthentication no    <span class="c">#API认证</span>
+
+<span class="c"># 连接慢的解决</span>
+AddressFamily any         <span class="c">#指定监听ipv4地址，或是ipv6地址，或者所有都监听</span>
+</code></pre></div></div>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="有关ssh命令与远端服务器的连接 参考资料：https://www.cnblogs.com/ftl1012/p/ssh.html ssh是如何工作的：https://blog.csdn.net/iteye_3619/article/details/82368815 ssh config文件：https://www.cnblogs.com/foohack/p/10027083.html" />
+<meta property="og:description" content="有关ssh命令与远端服务器的连接 参考资料：https://www.cnblogs.com/ftl1012/p/ssh.html ssh是如何工作的：https://blog.csdn.net/iteye_3619/article/details/82368815 ssh config文件：https://www.cnblogs.com/foohack/p/10027083.html" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-20T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接" />
+<script type="application/ld+json">
+{"headline":"本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接","dateModified":"2020-03-20T00:00:00+08:00","datePublished":"2020-03-20T00:00:00+08:00","url":"/%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%88%B0%E8%BF%9C%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8(%E4%B8%80)-%E4%BD%BF%E7%94%A8ssh%E5%91%BD%E4%BB%A4%E4%B8%8E%E8%BF%9C%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5","mainEntityOfPage":{"@type":"WebPage","@id":"/%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%88%B0%E8%BF%9C%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8(%E4%B8%80)-%E4%BD%BF%E7%94%A8ssh%E5%91%BD%E4%BB%A4%E4%B8%8E%E8%BF%9C%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5"},"author":{"@type":"Person","name":"SomeHacker"},"description":"有关ssh命令与远端服务器的连接 参考资料：https://www.cnblogs.com/ftl1012/p/ssh.html ssh是如何工作的：https://blog.csdn.net/iteye_3619/article/details/82368815 ssh config文件：https://www.cnblogs.com/foohack/p/10027083.html","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接</h2>
+  <time datetime="2020-03-20T00:00:00+08:00" class="by-line">20 Mar 2020</time>
+  <h3 id="有关ssh命令与远端服务器的连接">有关ssh命令与远端服务器的连接</h3>
+<p>参考资料：<a href="https://www.cnblogs.com/ftl1012/p/ssh.html">https://www.cnblogs.com/ftl1012/p/ssh.html</a>
+ssh是如何工作的：<a href="https://blog.csdn.net/iteye_3619/article/details/82368815">https://blog.csdn.net/iteye_3619/article/details/82368815</a>
+ssh config文件：<a href="https://www.cnblogs.com/foohack/p/10027083.html">https://www.cnblogs.com/foohack/p/10027083.html</a></p>
+
+<p><strong>与远端服务器建立连接的命令：</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-o</span> <span class="nv">IdentityFile</span><span class="o">=</span><span class="s2">"~/.ssh/id_rsa_my"</span> <span class="nt">-fN</span> <span class="nt">-D</span> 1081 username@server_ip 
+</code></pre></div></div>
+<p>为了ssh在建立连接的时候到底做了些什么，可以使用-v参数，如下所示：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-v</span> <span class="nt">-o</span> <span class="nv">IdentityFile</span><span class="o">=</span><span class="s2">"~/.ssh/id_rsa_my"</span> <span class="nt">-fN</span> <span class="nt">-D</span> 1081 username@server_ip 
+</code></pre></div></div>
+<p>输出结果如下图：
+<img src="https://img-blog.csdnimg.cn/20200320160246775.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80Mzk0ODcxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />中间还有一些关于加密方式啊什么的语句，没太看懂，以后看懂了再回来补充吧。（是的，最重要的地方没有看懂= =）</p>
+
+<p>在使用ssh命令与远端服务器建立连接的过程中，client与server主要完成了以下几件事情：
+| Client                                         | Server                                             |
+| ———————————————- | ————————————————– |
+| 发起最初的TCP handshake(也可以是别的连接协议)  | 在特定的port上监听Client发起的建立连接的申请       |
+| 建立一个安全的连接                             | 建立一个安全的连接                                 |
+| 验证服务器(Server)的身份是否与之前的信息相匹配 | 提供public host key供客户端(Client)验证身份        |
+| 提供身份信息共服务器(Server)进行验证           | 验证连接方(Client)的身份                           |
+|                                                | 通过身份验证后，为客户端(Client)提供一个正确的环境 |</p>
+
+<h3 id="从远端服务器断开连接">从远端服务器断开连接</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">logout</span>
+</code></pre></div></div>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>scp命令:Parallel Ubuntu 与 MacOS互传数据</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>scp命令:Parallel Ubuntu 与 MacOS互传数据 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="scp命令:Parallel Ubuntu 与 MacOS互传数据" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Linux上的配置过程" />
+<meta property="og:description" content="Linux上的配置过程" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-13T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="scp命令:Parallel Ubuntu 与 MacOS互传数据" />
+<script type="application/ld+json">
+{"headline":"scp命令:Parallel Ubuntu 与 MacOS互传数据","dateModified":"2020-03-13T00:00:00+08:00","datePublished":"2020-03-13T00:00:00+08:00","url":"/scp%E5%91%BD%E4%BB%A4-Parallel-Ubuntu-%E4%B8%8E-MacOS%E4%BA%92%E4%BC%A0%E6%95%B0%E6%8D%AE","mainEntityOfPage":{"@type":"WebPage","@id":"/scp%E5%91%BD%E4%BB%A4-Parallel-Ubuntu-%E4%B8%8E-MacOS%E4%BA%92%E4%BC%A0%E6%95%B0%E6%8D%AE"},"author":{"@type":"Person","name":"SomeHacker"},"description":"Linux上的配置过程","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>scp命令:Parallel Ubuntu 与 MacOS互传数据</h2>
+  <time datetime="2020-03-13T00:00:00+08:00" class="by-line">13 Mar 2020</time>
+  <p>Linux上的配置过程</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt isntall openssh <span class="nt">-server</span>
+/etc/init.d/ssh start
+<span class="nb">sudo </span>apt <span class="nb">install </span>net-tools
+ifconfig
+</code></pre></div></div>
+<p>之后能够拿到linux的ip地址，记住这个ip,之后要用到。（之前看的教程说用 ip address命令也能拿到ip 但是显示的结果很奇怪= = 就换了个方式）</p>
+
+<p>配置完后打开MacOS Terminal</p>
+
+<p>从Linux向MacOS传数据</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp Linux登录用户名@Linux的ip地址:源文件路径 目标存放路径
+</code></pre></div></div>
+
+<p>从MacOS向Linux传数据</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp 本地文件路径 Linux登录用户名@Linuxip地址:Linux路径
+</code></pre></div></div>
+<p>所有的路径都写成绝对路径</p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/%E5%B8%B8%E7%94%A8Linux%E5%91%BD%E4%BB%A4">常用的linux命令</a></li>
+      
+        <li><a href="/%E8%BD%AC%E8%BD%BD-SSH%E6%9C%8D%E5%8A%A1%E8%AF%A6%E8%A7%A3">【转载】SSH服务详解</a></li>
+      
+        <li><a href="/%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%88%B0%E8%BF%9C%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8(%E4%B8%80)-%E4%BD%BF%E7%94%A8ssh%E5%91%BD%E4%BB%A4%E4%B8%8E%E8%BF%9C%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5">本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接</a></li>
+      
+        <li><a href="/scp%E5%91%BD%E4%BB%A4-Parallel-Ubuntu-%E4%B8%8E-MacOS%E4%BA%92%E4%BC%A0%E6%95%B0%E6%8D%AE">scp命令:Parallel Ubuntu 与 MacOS互传数据</a></li>
+      
+    </ul>
+  
+    <h3>ssh(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="有关ssh命令与远端服务器的连接 参考资料：https://www.cnblogs.com/ftl1012/p/ssh.html ssh是如何工作的：https://blog.csdn.net/iteye_3619/article/details/82368815 ssh config文件：https://www.cnblogs.com/foohack/p/10027083.html" />
+<meta property="og:description" content="有关ssh命令与远端服务器的连接 参考资料：https://www.cnblogs.com/ftl1012/p/ssh.html ssh是如何工作的：https://blog.csdn.net/iteye_3619/article/details/82368815 ssh config文件：https://www.cnblogs.com/foohack/p/10027083.html" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-20T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接" />
+<script type="application/ld+json">
+{"headline":"本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接","dateModified":"2020-03-20T00:00:00+08:00","datePublished":"2020-03-20T00:00:00+08:00","url":"/%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%88%B0%E8%BF%9C%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8(%E4%B8%80)-%E4%BD%BF%E7%94%A8ssh%E5%91%BD%E4%BB%A4%E4%B8%8E%E8%BF%9C%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5","mainEntityOfPage":{"@type":"WebPage","@id":"/%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%88%B0%E8%BF%9C%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8(%E4%B8%80)-%E4%BD%BF%E7%94%A8ssh%E5%91%BD%E4%BB%A4%E4%B8%8E%E8%BF%9C%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5"},"author":{"@type":"Person","name":"SomeHacker"},"description":"有关ssh命令与远端服务器的连接 参考资料：https://www.cnblogs.com/ftl1012/p/ssh.html ssh是如何工作的：https://blog.csdn.net/iteye_3619/article/details/82368815 ssh config文件：https://www.cnblogs.com/foohack/p/10027083.html","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接</h2>
+  <time datetime="2020-03-20T00:00:00+08:00" class="by-line">20 Mar 2020</time>
+  <h3 id="有关ssh命令与远端服务器的连接">有关ssh命令与远端服务器的连接</h3>
+<p>参考资料：<a href="https://www.cnblogs.com/ftl1012/p/ssh.html">https://www.cnblogs.com/ftl1012/p/ssh.html</a>
+ssh是如何工作的：<a href="https://blog.csdn.net/iteye_3619/article/details/82368815">https://blog.csdn.net/iteye_3619/article/details/82368815</a>
+ssh config文件：<a href="https://www.cnblogs.com/foohack/p/10027083.html">https://www.cnblogs.com/foohack/p/10027083.html</a></p>
+
+<p><strong>与远端服务器建立连接的命令：</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-o</span> <span class="nv">IdentityFile</span><span class="o">=</span><span class="s2">"~/.ssh/id_rsa_my"</span> <span class="nt">-fN</span> <span class="nt">-D</span> 1081 username@server_ip 
+</code></pre></div></div>
+<p>为了ssh在建立连接的时候到底做了些什么，可以使用-v参数，如下所示：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-v</span> <span class="nt">-o</span> <span class="nv">IdentityFile</span><span class="o">=</span><span class="s2">"~/.ssh/id_rsa_my"</span> <span class="nt">-fN</span> <span class="nt">-D</span> 1081 username@server_ip 
+</code></pre></div></div>
+<p>输出结果如下图：
+<img src="https://img-blog.csdnimg.cn/20200320160246775.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80Mzk0ODcxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />中间还有一些关于加密方式啊什么的语句，没太看懂，以后看懂了再回来补充吧。（是的，最重要的地方没有看懂= =）</p>
+
+<p>在使用ssh命令与远端服务器建立连接的过程中，client与server主要完成了以下几件事情：
+| Client                                         | Server                                             |
+| ———————————————- | ————————————————– |
+| 发起最初的TCP handshake(也可以是别的连接协议)  | 在特定的port上监听Client发起的建立连接的申请       |
+| 建立一个安全的连接                             | 建立一个安全的连接                                 |
+| 验证服务器(Server)的身份是否与之前的信息相匹配 | 提供public host key供客户端(Client)验证身份        |
+| 提供身份信息共服务器(Server)进行验证           | 验证连接方(Client)的身份                           |
+|                                                | 通过身份验证后，为客户端(Client)提供一个正确的环境 |</p>
+
+<h3 id="从远端服务器断开连接">从远端服务器断开连接</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">logout</span>
+</code></pre></div></div>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/%E6%9C%AC%E5%9C%B0%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E5%88%B0%E8%BF%9C%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%99%A8(%E4%B8%80)-%E4%BD%BF%E7%94%A8ssh%E5%91%BD%E4%BB%A4%E4%B8%8E%E8%BF%9C%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E8%A1%8C%E8%BF%9E%E6%8E%A5">本地数据同步到远端服务器(一)：使用ssh命令与远端数据库进行连接</a></li>
+      
+    </ul>
+  
+    <h3>mysql(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>MySQL常用命令</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>MySQL常用命令 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="MySQL常用命令" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="查看所有用户信息" />
+<meta property="og:description" content="查看所有用户信息" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-21T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="MySQL常用命令" />
+<script type="application/ld+json">
+{"headline":"MySQL常用命令","dateModified":"2020-12-21T00:00:00+08:00","datePublished":"2020-12-21T00:00:00+08:00","url":"/MySQL%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4","mainEntityOfPage":{"@type":"WebPage","@id":"/MySQL%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"},"author":{"@type":"Person","name":"SomeHacker"},"description":"查看所有用户信息","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>MySQL常用命令</h2>
+  <time datetime="2020-12-21T00:00:00+08:00" class="by-line">21 Dec 2020</time>
+  <p>查看所有用户信息</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="k">user</span><span class="p">,</span><span class="k">host</span> <span class="k">from</span> <span class="n">mysql</span><span class="p">.</span><span class="k">user</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>字段中包含空格 反点号包裹</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span>  <span class="k">from</span> <span class="mi">2020</span><span class="n">timeloger</span> <span class="k">where</span> <span class="nv">`Activity type`</span><span class="o">=</span><span class="s1">'PTA12'</span><span class="p">;</span>
+</code></pre></div></div>
+<p>按条件更新指定字段&amp;正则表达式的使用</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">update</span> <span class="err">表名</span> <span class="k">set</span> <span class="n">last_time</span><span class="o">=</span><span class="n">add_time</span> <span class="k">where</span> <span class="n">lasttime</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="k">update</span> <span class="mi">2020</span><span class="n">timeloger</span> <span class="k">set</span> <span class="nv">`Group`</span> <span class="o">=</span> <span class="s1">'Read'</span> <span class="k">where</span> <span class="nv">`Group`</span> <span class="n">REGEXP</span><span class="s1">'(HarryPotter01|SelfishGene)'</span><span class="p">;</span>
+<span class="k">update</span> <span class="mi">2020</span><span class="n">timeloger</span> <span class="k">set</span> <span class="nv">`Group`</span> <span class="o">=</span> <span class="s1">'Read'</span> <span class="k">where</span> <span class="nv">`Activity type`</span> <span class="n">REGEXP</span><span class="s1">'(HarryPotter01|SelfishGene)'</span><span class="p">;</span>
+</code></pre></div></div>
+<p>上述操作中用``把Group包起来才能通过  我也不知道为什么</p>
+
+<p>撤销上一次操作</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">rollback</span>
+
+</code></pre></div></div>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/MySQL%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">MySQL常用命令</a></li>
+      
+    </ul>
+  
+    <h3>jekyll(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>基于jekyll博客搭建的报错汇总</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>基于jekyll博客搭建的报错汇总 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="基于jekyll博客搭建的报错汇总" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Error: YAML Exception reading /Users/ncc-1701-enterprise/localGit/Craven1701.github.io/_posts/2020-03-24-【转载】SSH服务详解.md: (&lt;unknown&gt;): mapping values are not allowed in this context at line 3 column 10 YAML语法格式不正确 front matter的每一个变量(标签)名称后面都需要带上空格 可以从关键字高亮是否正确看出来哪里不对 同时要注意中文标点符号占了2个位，会出现看着有空格实际没有空格的情况。" />
+<meta property="og:description" content="Error: YAML Exception reading /Users/ncc-1701-enterprise/localGit/Craven1701.github.io/_posts/2020-03-24-【转载】SSH服务详解.md: (&lt;unknown&gt;): mapping values are not allowed in this context at line 3 column 10 YAML语法格式不正确 front matter的每一个变量(标签)名称后面都需要带上空格 可以从关键字高亮是否正确看出来哪里不对 同时要注意中文标点符号占了2个位，会出现看着有空格实际没有空格的情况。" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="基于jekyll博客搭建的报错汇总" />
+<script type="application/ld+json">
+{"headline":"基于jekyll博客搭建的报错汇总","dateModified":"2021-01-27T00:00:00+08:00","datePublished":"2021-01-27T00:00:00+08:00","url":"/%E5%9F%BA%E4%BA%8Ejekyll%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9A%84%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB","mainEntityOfPage":{"@type":"WebPage","@id":"/%E5%9F%BA%E4%BA%8Ejekyll%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9A%84%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB"},"author":{"@type":"Person","name":"SomeHacker"},"description":"Error: YAML Exception reading /Users/ncc-1701-enterprise/localGit/Craven1701.github.io/_posts/2020-03-24-【转载】SSH服务详解.md: (&lt;unknown&gt;): mapping values are not allowed in this context at line 3 column 10 YAML语法格式不正确 front matter的每一个变量(标签)名称后面都需要带上空格 可以从关键字高亮是否正确看出来哪里不对 同时要注意中文标点符号占了2个位，会出现看着有空格实际没有空格的情况。","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>基于jekyll博客搭建的报错汇总</h2>
+  <time datetime="2021-01-27T00:00:00+08:00" class="by-line">27 Jan 2021</time>
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Error: YAML Exception reading /Users/ncc-1701-enterprise/localGit/Craven1701.github.io/_posts/2020-03-24-【转载】SSH服务详解.md: <span class="o">(</span>&lt;unknown&gt;<span class="o">)</span>: mapping values are not allowed <span class="k">in </span>this context at line 3 column 10
+</code></pre></div></div>
+<p>YAML语法格式不正确 front matter的每一个变量(标签)名称后面都需要带上空格 可以从关键字高亮是否正确看出来哪里不对 同时要注意中文标点符号占了2个位，会出现看着有空格实际没有空格的情况。</p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>使用GitHub Page搭建自己的博客</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>使用GitHub Page搭建自己的博客 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="使用GitHub Page搭建自己的博客" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="创建GitHub Pages仓库" />
+<meta property="og:description" content="创建GitHub Pages仓库" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="使用GitHub Page搭建自己的博客" />
+<script type="application/ld+json">
+{"headline":"使用GitHub Page搭建自己的博客","dateModified":"2021-01-27T00:00:00+08:00","datePublished":"2021-01-27T00:00:00+08:00","url":"/%E4%BD%BF%E7%94%A8GitHub-Page%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2","mainEntityOfPage":{"@type":"WebPage","@id":"/%E4%BD%BF%E7%94%A8GitHub-Page%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2"},"author":{"@type":"Person","name":"SomeHacker"},"description":"创建GitHub Pages仓库","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>使用GitHub Page搭建自己的博客</h2>
+  <time datetime="2021-01-27T00:00:00+08:00" class="by-line">27 Jan 2021</time>
+  <h3 id="创建github-pages仓库">创建GitHub Pages仓库</h3>
+
+<h3 id="github的项目同步到本地">GitHub的项目同步到本地</h3>
+
+<h4 id="git的基本操作">Git的基本操作</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--list</span>
+
+<span class="c">##基本工作流程 所有操作cd到root directory下进行</span>
+git init <span class="c"># 创建.git文件 内含一个版本库 储存项目本身与历史</span>
+git add <span class="c">#将需要提交的文件加入</span>
+git <span class="nb">rm</span> <span class="c">#删除文件</span>
+git status <span class="c">#显示自上次提交发生以来的所有更改 下次提交时这些更改将会被加入新的版本中</span>
+git diff <span class="c">#显示详细被更改的详细内容</span>
+git commit <span class="c">#提交到新的分支(新的版本) 生成本次提交的散列值</span>
+
+<span class="c">##远端与本地的同步</span>
+git clone <span class="c">#用这个从github上拉仓库 自动生成.git以及.git/config中一些有关push pull的url配置(会存储原版本的路劲)</span>
+git pull
+git push &lt;repository&gt; &lt;refspec&gt;
+<span class="c">#没有指定参数的情况下提交到origin master </span>
+<span class="c">#master是remote仓库的主分支分支这两个变量的实际值保存在.git/config文件中的</span>
+<span class="c">#github上的仓库相当于bare repository 本地是work repository</span>
+<span class="c">#&lt;repository&gt; 是push的目的地 remote仓库的地址 可以是URL或者name of remote "eg. origin"</span>
+<span class="c">#&lt;refspec&gt; 指定要用哪个源对象更新哪个目标引用。格式为+&lt;src&gt;:&lt;dst&gt; 通常会写想要push到的分支的分支名称</span>
+
+<span class="c">#其他信息的展示</span>
+git log <span class="nt">--graphic</span>
+git log <span class="nt">--oneline</span> <span class="c">#喜欢这个的输出样式</span>
+git remote show origin
+</code></pre></div></div>
+
+<p>有关.git文件夹下的文件结构与作用参考
+https://www.cnblogs.com/codingdevops/p/CODING.html</p>
+
+<h3 id="选择jekyll主题">选择Jekyll主题</h3>
+
+<p>####Jekyll的介绍以及配置文件</p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>jekyll</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>jekyll | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="jekyll" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="jekyll的一些变量空间" />
+<meta property="og:description" content="jekyll的一些变量空间" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="jekyll" />
+<script type="application/ld+json">
+{"headline":"jekyll","dateModified":"2021-01-27T00:00:00+08:00","datePublished":"2021-01-27T00:00:00+08:00","url":"/jekyll","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll"},"author":{"@type":"Person","name":"SomeHacker"},"description":"jekyll的一些变量空间","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>jekyll</h2>
+  <time datetime="2021-01-27T00:00:00+08:00" class="by-line">27 Jan 2021</time>
+  <p>jekyll的一些变量空间</p>
+
+<p>site  使用_config.yml中的变量</p>
+
+<p>page 使用当前文件中front matter中的变量</p>
+
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/%E5%9F%BA%E4%BA%8Ejekyll%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9A%84%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB">基于jekyll博客搭建的报错汇总</a></li>
+      
+        <li><a href="/%E4%BD%BF%E7%94%A8GitHub-Page%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2">使用GitHub Page搭建自己的博客</a></li>
+      
+        <li><a href="/jekyll">jekyll</a></li>
+      
+    </ul>
+  
+    <h3>vim(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>vim基本使用与快捷键</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>vim基本使用与快捷键 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="vim基本使用与快捷键" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="命名缓冲区的使用 &quot;[a~z][number]yy 将指定行数纳入命名缓冲区" />
+<meta property="og:description" content="命名缓冲区的使用 &quot;[a~z][number]yy 将指定行数纳入命名缓冲区" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="vim基本使用与快捷键" />
+<script type="application/ld+json">
+{"headline":"vim基本使用与快捷键","dateModified":"2021-01-27T00:00:00+08:00","datePublished":"2021-01-27T00:00:00+08:00","url":"/vim%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%BF%AB%E6%8D%B7%E9%94%AE","mainEntityOfPage":{"@type":"WebPage","@id":"/vim%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%BF%AB%E6%8D%B7%E9%94%AE"},"author":{"@type":"Person","name":"SomeHacker"},"description":"命名缓冲区的使用 &quot;[a~z][number]yy 将指定行数纳入命名缓冲区","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>vim基本使用与快捷键</h2>
+  <time datetime="2021-01-27T00:00:00+08:00" class="by-line">27 Jan 2021</time>
+  <h3 id="命名缓冲区的使用">命名缓冲区的使用</h3>
+<p><code class="language-plaintext highlighter-rouge">"[a~z][number]yy</code> 将指定行数纳入命名缓冲区</p>
+
+<p><code class="language-plaintext highlighter-rouge">eg "f6yy</code> 将光标处的往下6行存入缓冲区f</p>
+
+<p><code class="language-plaintext highlighter-rouge">"[a~z]p</code> 将指定缓冲区中保存的内容粘贴到当前行的下一行</p>
+
+<p><strong>注意 [双引号 “] 要记得输入在缓冲区名字的前面</strong></p>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/vim%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%BF%AB%E6%8D%B7%E9%94%AE">vim基本使用与快捷键</a></li>
+      
+    </ul>
+  
+    <h3>vscode(&lt;!DOCTYPE html&gt;
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="generator" content="Jekyll" />
+
+  <title>vscode常用快捷键清单</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" /> <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>vscode常用快捷键清单 | Hacker-Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="vscode常用快捷键清单" />
+<meta name="author" content="SomeHacker" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ctrl + \ 打开终端 cmd + N 新建新文件" />
+<meta property="og:description" content="ctrl + \ 打开终端 cmd + N 新建新文件" />
+<meta property="og:site_name" content="Hacker-Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="vscode常用快捷键清单" />
+<script type="application/ld+json">
+{"headline":"vscode常用快捷键清单","dateModified":"2021-01-27T00:00:00+08:00","datePublished":"2021-01-27T00:00:00+08:00","url":"/vscode%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%B8%85%E5%8D%95","mainEntityOfPage":{"@type":"WebPage","@id":"/vscode%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%B8%85%E5%8D%95"},"author":{"@type":"Person","name":"SomeHacker"},"description":"ctrl + \\ 打开终端 cmd + N 新建新文件","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header>
+  <div>
+    <a href="/">
+    
+    <h1>craven胆小鬼</h1>
+    </a>
+    <div class="header-links">
+      <a href="/archive"><h2 class="header-link">Archive</h2></a>
+<a href="/tags"><h2 class="header-link">Tags</h2></a>
+<a href="/about"><h2 class="header-link">About</h2></a>
+<a href="/atom.xml"><h2 class="header-link">RSS</h2></a>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <section id="main_content">
+        <article>
+  <h2>vscode常用快捷键清单</h2>
+  <time datetime="2021-01-27T00:00:00+08:00" class="by-line">27 Jan 2021</time>
+  <ul>
+  <li><code class="language-plaintext highlighter-rouge">ctrl + \</code> 打开终端</li>
+  <li><code class="language-plaintext highlighter-rouge">cmd + N</code> 新建新文件</li>
+</ul>
+
+</article>
+      </section>
+    </div>
+  </div>
+
+   <footer>
+  <a href="https://creativecommons.org/licenses/by-nc/3.0/deed.en_US">
+    <span>
+        <b>Craven胆小鬼</b>
+    </span>
+    
+    <span>© 2021</span>
+  </a>
+</footer>
+
+  
+</body>
+
+</html>)</h3>
+    <ul>
+      
+        <li><a href="/vscode%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE%E6%B8%85%E5%8D%95">vscode常用快捷键清单</a></li>
+      
+    </ul>
+  
+</section>
+:ET

@@ -1,0 +1,29 @@
+I"�<h3 id="有关ssh命令与远端服务器的连接">有关ssh命令与远端服务器的连接</h3>
+<p>参考资料：<a href="https://www.cnblogs.com/ftl1012/p/ssh.html">https://www.cnblogs.com/ftl1012/p/ssh.html</a>
+ssh是如何工作的：<a href="https://blog.csdn.net/iteye_3619/article/details/82368815">https://blog.csdn.net/iteye_3619/article/details/82368815</a>
+ssh config文件：<a href="https://www.cnblogs.com/foohack/p/10027083.html">https://www.cnblogs.com/foohack/p/10027083.html</a></p>
+
+<p><strong>与远端服务器建立连接的命令：</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-o</span> <span class="nv">IdentityFile</span><span class="o">=</span><span class="s2">"~/.ssh/id_rsa_my"</span> <span class="nt">-fN</span> <span class="nt">-D</span> 1081 username@server_ip 
+</code></pre></div></div>
+<p>为了ssh在建立连接的时候到底做了些什么，可以使用-v参数，如下所示：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh <span class="nt">-v</span> <span class="nt">-o</span> <span class="nv">IdentityFile</span><span class="o">=</span><span class="s2">"~/.ssh/id_rsa_my"</span> <span class="nt">-fN</span> <span class="nt">-D</span> 1081 username@server_ip 
+</code></pre></div></div>
+<p>输出结果如下图：
+<img src="https://img-blog.csdnimg.cn/20200320160246775.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80Mzk0ODcxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />中间还有一些关于加密方式啊什么的语句，没太看懂，以后看懂了再回来补充吧。（是的，最重要的地方没有看懂= =）</p>
+
+<p>在使用ssh命令与远端服务器建立连接的过程中，client与server主要完成了以下几件事情：
+| Client                                         | Server                                             |
+| ———————————————- | ————————————————– |
+| 发起最初的TCP handshake(也可以是别的连接协议)  | 在特定的port上监听Client发起的建立连接的申请       |
+| 建立一个安全的连接                             | 建立一个安全的连接                                 |
+| 验证服务器(Server)的身份是否与之前的信息相匹配 | 提供public host key供客户端(Client)验证身份        |
+| 提供身份信息共服务器(Server)进行验证           | 验证连接方(Client)的身份                           |
+|                                                | 通过身份验证后，为客户端(Client)提供一个正确的环境 |</p>
+
+<h3 id="从远端服务器断开连接">从远端服务器断开连接</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">logout</span>
+</code></pre></div></div>
+:ET

@@ -1,0 +1,106 @@
+I"E<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#submit</span><span class="dl">'</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+          <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+              <span class="na">type</span><span class="p">:</span><span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">url</span><span class="p">:</span><span class="dl">"</span><span class="s2">/submit/</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">data</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">form</span><span class="dl">'</span><span class="p">),</span>
+              <span class="na">success</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">)}</span>
+        <span class="p">})</span>
+    <span class="p">})});</span>
+</code></pre></div></div>
+<p>写了这么一段东西想要给如下一个表单绑定一个点击事件</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            <span class="o">&lt;</span><span class="nt">form</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nt">select</span> <span class="nt">class</span><span class="o">=</span><span class="s1">"selectpicker"</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">name</span><span class="o">=</span><span class="s1">"dataset"</span> <span class="nt">value</span><span class="o">=</span><span class="s1">"eqtl_heading"</span><span class="o">&gt;</span><span class="nt">headingdata</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">name</span><span class="o">=</span><span class="s1">"dataset"</span> <span class="nt">value</span><span class="o">=</span><span class="s1">""</span><span class="o">&gt;</span><span class="nt">Something</span> <span class="nt">else</span> <span class="nt">here</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                <span class="o">&lt;/</span><span class="nt">select</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nt">input</span> <span class="nt">type</span><span class="o">=</span><span class="s1">"text"</span> <span class="nt">name</span><span class="o">=</span><span class="s1">"genesearch"</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"genesearch"</span> <span class="nt">placeholder</span><span class="o">=</span><span class="s1">"genename"</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nt">input</span> <span class="nt">type</span><span class="o">=</span><span class="s1">"button"</span> <span class="nt">value</span><span class="o">=</span><span class="s1">"submit"</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"submit"</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="nt">form</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p>但是点击button完全没有反应，也没有看到任何报错提示。（我这就很不解，为什么一点报错都没有。）
+后来发现是自己一开始导入的是jquery-3.3.1.slim.min.js这个文件，因为是slim.min所以删减了一些东西，其中就包括ajax,重新导入完整的jquery.js之后可以绑定上点击事件了。（为什么这种东西浏览器不给我报错呢 - - 都是我自己瞎试试出来的，就很烦啊。）</p>
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">&lt;</span><span class="nt">script</span> <span class="nt">src</span><span class="o">=</span><span class="s1">"https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"</span><span class="o">&gt;&lt;/</span><span class="nt">script</span><span class="o">&gt;</span>
+
+</code></pre></div></div>
+<p>但是这次提示了这样一个错误：
+<img src="https://img-blog.csdnimg.cn/20191122084830245.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80Mzk0ODcxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+在网上查了一下还是导入的jquery库不完整的问题，于是我又重新导入了这个</p>
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nt">script</span> <span class="nt">src</span><span class="o">=</span><span class="s1">"https://code.jquery.com/jquery-3.3.1.js"</span><span class="o">&gt;&lt;/</span><span class="nt">script</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p>这下可以向后台发送数据了。</p>
+
+<blockquote>
+  <p>selectpicker获取选中option的属性或者值：<a href="https://blog.csdn.net/m0_37355951/article/details/75339043?utm_source=blogxgwz4">https://blog.csdn.net/m0_37355951/article/details/75339043?utm_source=blogxgwz4</a>
+html基础：jquery的ajax获取form表单数据：<a href="https://www.cnblogs.com/bendouyao/p/9250904.html">https://www.cnblogs.com/bendouyao/p/9250904.html</a></p>
+</blockquote>
+
+<p>根据以上两个连接中的方法，使用ajax获取了表单和selectpicker中我所需要的值，然后很野蛮的把字符串拼成我需要的格式，传回views中，可以读取想要的数据。数据发回前端后的处理目前还没完成，估计是得用一个数据表格，然后还得做一些返回格式上的调整。</p>
+
+<blockquote>
+  <p>有关$.ajax中数据格式的问题参考了：<a href="https://www.cnblogs.com/yangguoe/p/8986108.html">https://www.cnblogs.com/yangguoe/p/8986108.html</a></p>
+</blockquote>
+
+<p>最后放一下修改好的代码：</p>
+
+<p>1.通过$.ajax读取数据的部分</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#submit</span><span class="dl">'</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">data</span><span class="o">=</span><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#searchForm</span><span class="dl">'</span><span class="p">).</span><span class="nx">serialize</span><span class="p">()</span>
+            <span class="kd">var</span> <span class="nx">dataSet</span><span class="o">=</span><span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#dataSet</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">"</span><span class="s2">option:selected</span><span class="dl">"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">)</span>
+            <span class="kd">var</span> <span class="nx">fieldName</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#fieldName</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">"</span><span class="s2">option:selected</span><span class="dl">"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">)</span>
+            <span class="nx">data</span> <span class="o">=</span> <span class="nx">data</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">&amp;dataSet=</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">dataSet</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">&amp;fieldName=</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">fieldName</span> 
+            <span class="c1">//……你敢信这字符串我居然给拼出正确格式了= = 但是这个手法真的好蠢啊我服了我自己Orz……</span>
+            <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+              <span class="na">type</span><span class="p">:</span><span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">url</span><span class="p">:</span><span class="dl">"</span><span class="s2">/submit/</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">data</span><span class="p">:</span> <span class="nx">data</span><span class="p">,</span>
+              <span class="na">success</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">)}</span>
+        <span class="p">})</span>
+    <span class="p">})});</span>
+</code></pre></div></div>
+<p>2.search.html中的部分</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            <span class="o">&lt;</span><span class="nt">form</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"searchForm"</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nt">select</span> <span class="nt">class</span><span class="o">=</span><span class="s1">"selectpicker"</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"dataSet"</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">value</span><span class="o">=</span><span class="s1">"eqtl_heading"</span><span class="o">&gt;</span><span class="nt">headingdata</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">value</span><span class="o">=</span><span class="s1">""</span><span class="o">&gt;</span><span class="nt">Something</span> <span class="nt">else</span> <span class="nt">here</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                <span class="o">&lt;/</span><span class="nt">select</span><span class="o">&gt;</span>
+                
+                <span class="o">&lt;</span><span class="nt">select</span> <span class="nt">class</span><span class="o">=</span><span class="s1">"selectpicker"</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"fieldName"</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">value</span><span class="o">=</span><span class="s1">"TIGR_TU"</span><span class="o">&gt;</span><span class="nt">GeneName</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">value</span><span class="o">=</span><span class="s1">"Bin"</span><span class="o">&gt;</span><span class="nt">BinNumber</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">value</span><span class="o">=</span><span class="s1">"cistrans"</span><span class="o">&gt;</span><span class="nt">cis</span><span class="o">/</span><span class="nt">trans</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                    <span class="o">&lt;</span><span class="nt">option</span>  <span class="nt">value</span><span class="o">=</span><span class="s1">""</span><span class="o">&gt;</span><span class="nt">Something</span> <span class="nt">else</span> <span class="nt">here</span><span class="o">&lt;/</span><span class="nt">option</span><span class="o">&gt;</span>
+                <span class="o">&lt;/</span><span class="nt">select</span><span class="o">&gt;</span>
+                
+                <span class="o">&lt;</span><span class="nt">input</span> <span class="nt">type</span><span class="o">=</span><span class="s1">"text"</span> <span class="nt">name</span><span class="o">=</span><span class="s1">"keyWord"</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"keyWord"</span> <span class="nt">placeholder</span><span class="o">=</span><span class="s1">"genename"</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="nt">input</span> <span class="nt">type</span><span class="o">=</span><span class="s1">"button"</span> <span class="nt">value</span><span class="o">=</span><span class="s1">"submit"</span> <span class="nt">id</span><span class="o">=</span><span class="s1">"submit"</span><span class="o">&gt;</span>
+            <span class="o">&lt;/</span><span class="nt">form</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p>2.views.py中取出ajax的数据并进行sql查询</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="p">.</span><span class="n">encoding</span><span class="o">=</span><span class="s">'utf-8'</span>
+    <span class="n">keyWord</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'keyWord'</span><span class="p">]</span>
+    <span class="n">dataSet</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'dataSet'</span><span class="p">]</span>
+    <span class="n">fieldName</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'fieldName'</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">keyWord</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">'SELECT * from '</span> <span class="o">+</span> <span class="n">dataSet</span> <span class="o">+</span> <span class="s">' WHERE '</span><span class="o">+</span> <span class="n">fieldName</span> <span class="o">+</span> <span class="s">' = "'</span> <span class="o">+</span> <span class="n">keyWord</span><span class="o">+</span><span class="s">'"'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">'SELECT * from '</span> <span class="o">+</span> <span class="n">dataSet</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">engine</span><span class="p">).</span><span class="n">to_dict</span><span class="p">(</span><span class="s">'records'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">'search.html'</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s">'Find'</span><span class="p">:</span> <span class="s">"Search success"</span><span class="p">,</span>
+            <span class="s">'data'</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s">'search.html'</span><span class="p">,{</span>
+            <span class="s">'Message'</span><span class="p">:</span> <span class="s">'No result found.'</span>
+        <span class="p">})</span>
+</code></pre></div></div>
+:ET

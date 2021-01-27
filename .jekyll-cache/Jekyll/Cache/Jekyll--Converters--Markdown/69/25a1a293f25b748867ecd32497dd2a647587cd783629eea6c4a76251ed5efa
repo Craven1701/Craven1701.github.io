@@ -1,0 +1,10 @@
+I"\<h5 id="本地项目上传到服务器">本地项目上传到服务器</h5>
+<p>使用<code class="language-plaintext highlighter-rouge">rsync</code>命令将本地项目文件传输到服务器上，格式如下，详细的使用方法见参考资料</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="o">[</span>OPTION] … SRC DEST
+rsync <span class="o">[</span>OPTION] … SRC <span class="o">[</span>user@]host:DEST <span class="c"># 拷贝到远程的服务器上去</span>
+rsync <span class="nt">-avP</span> /backup.sql  host:/data/
+<span class="c"># -a 包含-rtplgoD参数选项</span>
+<span class="c"># -v 同步时显示一些信息，让我们知道同步的过程</span>
+<span class="c"># -P 显示同步过程，比如速率，比-v更加详细</span>
+</code></pre></div></div>
+:ET

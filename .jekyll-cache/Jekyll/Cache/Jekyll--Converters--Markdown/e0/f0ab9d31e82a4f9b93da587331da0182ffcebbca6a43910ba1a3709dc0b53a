@@ -1,0 +1,39 @@
+I"�<h3 id="创建github-pages仓库">创建GitHub Pages仓库</h3>
+
+<h3 id="github的项目同步到本地">GitHub的项目同步到本地</h3>
+
+<h4 id="git的基本操作">Git的基本操作</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--list</span>
+
+<span class="c">##基本工作流程 所有操作cd到root directory下进行</span>
+git init <span class="c"># 创建.git文件 内含一个版本库 储存项目本身与历史</span>
+git add <span class="c">#将需要提交的文件加入</span>
+git <span class="nb">rm</span> <span class="c">#删除文件</span>
+git status <span class="c">#显示自上次提交发生以来的所有更改 下次提交时这些更改将会被加入新的版本中</span>
+git diff <span class="c">#显示详细被更改的详细内容</span>
+git commit <span class="c">#提交到新的分支(新的版本) 生成本次提交的散列值</span>
+
+<span class="c">##远端与本地的同步</span>
+git clone <span class="c">#用这个从github上拉仓库 自动生成.git以及.git/config中一些有关push pull的url配置(会存储原版本的路劲)</span>
+git pull
+git push &lt;repository&gt; &lt;refspec&gt;
+<span class="c">#没有指定参数的情况下提交到origin master </span>
+<span class="c">#master是remote仓库的主分支分支这两个变量的实际值保存在.git/config文件中的</span>
+<span class="c">#github上的仓库相当于bare repository 本地是work repository</span>
+<span class="c">#&lt;repository&gt; 是push的目的地 remote仓库的地址 可以是URL或者name of remote "eg. origin"</span>
+<span class="c">#&lt;refspec&gt; 指定要用哪个源对象更新哪个目标引用。格式为+&lt;src&gt;:&lt;dst&gt; 通常会写想要push到的分支的分支名称</span>
+
+<span class="c">#其他信息的展示</span>
+git log <span class="nt">--graphic</span>
+git log <span class="nt">--oneline</span> <span class="c">#喜欢这个的输出样式</span>
+git remote show origin
+</code></pre></div></div>
+
+<p>有关.git文件夹下的文件结构与作用参考
+https://www.cnblogs.com/codingdevops/p/CODING.html</p>
+
+<h3 id="选择jekyll主题">选择Jekyll主题</h3>
+
+<p>####Jekyll的介绍以及配置文件</p>
+:ET

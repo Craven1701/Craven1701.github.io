@@ -1,0 +1,132 @@
+I"9=<p>实现了从后端服务器中查询数据，并返回给前端，通过BootStrap Table渲染到表格中。</p>
+
+<ol>
+  <li>引入的js文件与css文件如下：</li>
+</ol>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nt">link</span> <span class="nt">rel</span><span class="o">=</span><span class="s1">"stylesheet"</span> <span class="nt">href</span><span class="o">=</span><span class="s1">"https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nt">script</span> <span class="nt">src</span><span class="o">=</span><span class="s1">"https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"</span><span class="o">&gt;&lt;/</span><span class="nt">script</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<ol>
+  <li>表格的初始化与一些基本参数的配置：</li>
+</ol>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">loadData</span><span class="p">(</span><span class="nx">tableId</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">tableId</span><span class="p">).</span><span class="nx">bootstrapTable</span><span class="p">(</span><span class="dl">'</span><span class="s1">destroy</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// 清除缓存表格数据</span>
+    <span class="nx">$</span><span class="p">(</span><span class="nx">tableId</span><span class="p">).</span><span class="nx">bootstrapTable</span><span class="p">({</span>
+        <span class="na">striped</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 隔行变色</span>
+        <span class="na">url</span><span class="p">:</span> <span class="nx">url</span><span class="p">,</span>
+        <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">get</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">dataType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">json</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">pagination</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">//分页</span>
+        <span class="na">sidePagination</span><span class="p">:</span> <span class="dl">"</span><span class="s2">client</span><span class="dl">"</span><span class="p">,</span> <span class="c1">//客户端处理分页</span>
+        <span class="na">pageNumber</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// 默认显示第几页</span>
+        <span class="na">pageSize</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="c1">// 每页显示条数</span>
+<span class="c1">//	    sortable: false,</span>
+<span class="c1">//	    cache: false, // 默认true 设置为 false 禁用 AJAX 数据缓存</span>
+        <span class="na">contentType</span><span class="p">:</span> <span class="dl">"</span><span class="s2">application/x-www-form-urlencoded</span><span class="dl">"</span><span class="p">,</span> <span class="c1">// 参数提交类型，默认以application/json提交</span>
+        <span class="na">queryParams</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="na">keyWord</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#keyWord</span><span class="dl">'</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+                <span class="na">dataSet</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#dataSet</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">"</span><span class="s2">option:selected</span><span class="dl">"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">),</span>
+                <span class="na">fieldName</span><span class="p">:</span> <span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#fieldName</span><span class="dl">'</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="dl">"</span><span class="s2">option:selected</span><span class="dl">"</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">),</span>
+            <span class="p">};</span>
+        <span class="p">},</span><span class="c1">// 请求参数，发往后台，通过自定义参数将查询时需要的数据传给后台</span>
+	    <span class="c1">// responseHandler:function(res){ // res为从服务器请求到的数据</span>
+	    <span class="c1">// 	return res.data;</span>
+	    <span class="c1">// },</span>
+        <span class="na">columns</span><span class="p">:</span> <span class="p">[</span> <span class="c1">// 渲染列</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">B</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">B</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">valign</span><span class="p">:</span> <span class="dl">'</span><span class="s1">middle</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">C</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">C</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">valign</span><span class="p">:</span> <span class="dl">'</span><span class="s1">middle</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">names</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">names</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">L</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">l</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">G_Name</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">G_Name</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">annotation</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">annotation</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">align</span><span class="p">:</span> <span class="dl">'</span><span class="s1">center</span><span class="dl">'</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">]</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>基本的设置大致如此，网上这一类的资料也很多。需要注意点有一下几个：</p>
+
+<ul>
+  <li>最开始需要用<code class="language-plaintext highlighter-rouge">
+$(tableId).bootstrapTable('destroy');</code>来清除缓存的数据表格，否则可能查询的结果展示不出来；</li>
+  <li>不同的分页方式对后台返回的数据格式有不同的要求，在返回数据时需要注意一下，这里用到是客户端处理分页<code class="language-plaintext highlighter-rouge">sidePagination:
+"client", </code>网上大多数资料用到都是服务器端处理分页，即<code class="language-plaintext highlighter-rouge">sidePagination: "server",
+</code>但是我不想调整返回的数据格式了所以就用<code class="language-plaintext highlighter-rouge">client</code>了，这个返回格式比较简单。
+（返回格式的差异参看这个链接：<a href="https://www.jb51.net/article/117388.htm">https://www.jb51.net/article/117388.htm</a>）</li>
+  <li>
+    <p><strong>最为关键的一个参数，<code class="language-plaintext highlighter-rouge">queryParams</code>的设置：</strong></p>
+
+    <p><code class="language-plaintext highlighter-rouge">javascript  queryParams: function (params) {
+            return {
+                keyWord: $('#keyWord').val(),
+                dataSet: $('#dataSet').find("option:selected").attr('value'),
+                fieldName: $('#fieldName').find("option:selected").attr('value'),
+            };
+        },</code>
+```</p>
+  </li>
+</ul>
+
+<p><strong><code class="language-plaintext highlighter-rouge">queryParams</code>就相当于<code class="language-plaintext highlighter-rouge">$.ajax()</code>里的的参数<code class="language-plaintext highlighter-rouge">data</code>,通过自定义参数的形式，将前端取出来的数据传到后端去，通常就是传一些查询条件之类的。</strong></p>
+
+<p>我一开始确实没理解到这里是可以自定义参数的，在网上看到的例子也都是用的limit什么之类的奇怪的参数，耽误了我很多时间来尝试在哪给后台发查询条件……Orz。  我使用的是<code class="language-plaintext highlighter-rouge">get</code>的方法向后台传递数据，数据发到后台的格式如下图所示 ：
+ <img src="https://img-blog.csdnimg.cn/2019112508514742.png" alt="在这里插入图片描述" />
+最后处理一下返回数据的格式，就完成了。后端的代码如下：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="p">.</span><span class="n">encoding</span><span class="o">=</span><span class="s">'utf-8'</span>
+    <span class="n">keyWord</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'keyWord'</span><span class="p">]</span>
+    <span class="n">dataSet</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'dataSet'</span><span class="p">]</span>
+    <span class="n">fieldName</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">GET</span><span class="p">[</span><span class="s">'fieldName'</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">keyWord</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">'SELECT * from '</span> <span class="o">+</span> <span class="n">dataSet</span> <span class="o">+</span> <span class="s">' WHERE '</span> <span class="o">+</span> <span class="n">fieldName</span> <span class="o">+</span> <span class="s">' = "'</span> <span class="o">+</span> <span class="n">keyWord</span><span class="o">+</span><span class="s">'"'</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s">'SELECT * from '</span> <span class="o">+</span> <span class="n">dataSet</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">engine</span><span class="p">).</span><span class="n">to_json</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">'records'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,{</span>
+            <span class="s">'Message'</span><span class="p">:</span> <span class="s">'No result found.'</span>
+        <span class="p">})</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>参考资料：
+Bootstrap Table官方文档：<a href="https://bootstrap-table.com/">https://bootstrap-table.com/</a>
+Table的初始化与有关参数详解：
+<a href="https://www.jb51.net/article/144386.htm">https://www.jb51.net/article/144386.htm</a>
+<a href="https://zhuanlan.zhihu.com/p/46609913">https://zhuanlan.zhihu.com/p/46609913</a>
+后端返回数据时的格式控制问题：<a href="https://www.jb51.net/article/117388.htm">https://www.jb51.net/article/117388.htm</a>
+（其实还看了好多别的- - 但是都大同小异 这几个比较有代表性一点所以就引用这几个吧）</p>
+</blockquote>
+:ET

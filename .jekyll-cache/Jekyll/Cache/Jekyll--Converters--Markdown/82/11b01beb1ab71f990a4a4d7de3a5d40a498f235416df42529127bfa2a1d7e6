@@ -1,0 +1,20 @@
+I"J	<p>查看所有用户信息</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="k">user</span><span class="p">,</span><span class="k">host</span> <span class="k">from</span> <span class="n">mysql</span><span class="p">.</span><span class="k">user</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>字段中包含空格 反点号包裹</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span>  <span class="k">from</span> <span class="mi">2020</span><span class="n">timeloger</span> <span class="k">where</span> <span class="nv">`Activity type`</span><span class="o">=</span><span class="s1">'PTA12'</span><span class="p">;</span>
+</code></pre></div></div>
+<p>按条件更新指定字段&amp;正则表达式的使用</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">update</span> <span class="err">表名</span> <span class="k">set</span> <span class="n">last_time</span><span class="o">=</span><span class="n">add_time</span> <span class="k">where</span> <span class="n">lasttime</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="k">update</span> <span class="mi">2020</span><span class="n">timeloger</span> <span class="k">set</span> <span class="nv">`Group`</span> <span class="o">=</span> <span class="s1">'Read'</span> <span class="k">where</span> <span class="nv">`Group`</span> <span class="n">REGEXP</span><span class="s1">'(HarryPotter01|SelfishGene)'</span><span class="p">;</span>
+<span class="k">update</span> <span class="mi">2020</span><span class="n">timeloger</span> <span class="k">set</span> <span class="nv">`Group`</span> <span class="o">=</span> <span class="s1">'Read'</span> <span class="k">where</span> <span class="nv">`Activity type`</span> <span class="n">REGEXP</span><span class="s1">'(HarryPotter01|SelfishGene)'</span><span class="p">;</span>
+</code></pre></div></div>
+<p>上述操作中用``把Group包起来才能通过  我也不知道为什么</p>
+
+<p>撤销上一次操作</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">rollback</span>
+
+</code></pre></div></div>
+:ET

@@ -1,0 +1,70 @@
+I"�<h3 id="本地数据库的备份">本地数据库的备份</h3>
+
+<p>1.确定本地数据库的安装位置
+<code class="language-plaintext highlighter-rouge">show variables like '%dir%';</code>
+2.转移当前目录到mysql的bin文件夹下
+<code class="language-plaintext highlighter-rouge">cd /usr/local/mysql-8.0.18-macos10.14-x86_64/bin/ </code>
+3.使用mysqldump命令对数据库进行备份
+<code class="language-plaintext highlighter-rouge">mysqldump -u 用户名 -p  数据库名&gt;导出的目录</code>
+(<strong>其实好像并不用转移目录啊</strong>，直接mysqldump就可以了，bin里还不能写文件，我还得写上绝对路径的导出目录)</p>
+
+<h3 id="导入至远端服务器">导入至远端服务器</h3>
+<p>1.通过ssh命令与目标服务器进行连接
+2.使用root用户操作数据库，创建自己的用户<code class="language-plaintext highlighter-rouge">user1</code></p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">use</span> <span class="n">mysql</span>
+<span class="k">create</span> <span class="k">user</span> <span class="s1">'username'</span><span class="o">@</span><span class="s1">'ip'</span> <span class="n">identified</span> <span class="k">by</span> <span class="s1">'password'</span><span class="p">;</span>
+</code></pre></div></div>
+<p>这里我ip使用的是<code class="language-plaintext highlighter-rouge">'localhost'</code>,username暂时设为<code class="language-plaintext highlighter-rouge">user1</code>
+注意像<code class="language-plaintext highlighter-rouge">username,ip,password</code>这些都需要用单引号包起来,按照自己需求填写就好</p>
+
+<p>3.创建需要使用的数据库并授权给user1</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">create</span> <span class="k">database</span> <span class="n">DB1</span><span class="p">;</span> <span class="o">#</span> <span class="err">创建数据库</span><span class="n">DB1</span>
+<span class="k">grant</span> <span class="k">all</span> <span class="k">privileges</span> <span class="k">on</span> <span class="n">DB1</span><span class="p">.</span><span class="o">*</span> <span class="k">to</span> <span class="s1">'user1'</span><span class="o">@</span><span class="s1">'localhost'</span><span class="p">;</span> <span class="o">##</span><span class="n">user1</span><span class="err">用户对</span><span class="n">DB1</span><span class="err">数据库中的文件执行任何操作</span>
+<span class="k">show</span> <span class="n">grants</span> <span class="k">for</span> <span class="s1">'user1'</span><span class="o">@</span><span class="s1">'localhost'</span><span class="p">;</span> <span class="o">#</span><span class="err">查看用户</span><span class="n">uesr1</span><span class="err">所有的权限</span>
+</code></pre></div></div>
+<p>使用<code class="language-plaintext highlighter-rouge">show grant</code>进行查看的时候，除了刚刚我们赋予uesr1的权限以外，还会看见一个<code class="language-plaintext highlighter-rouge">USAGE</code>权限，这个是该用户登录和连接数据库的权限，在创建用户时默认赋予。</p>
+
+<p>4.使用<code class="language-plaintext highlighter-rouge">rsync</code>命令将本地的backup.sql文件传输到服务器上，格式如下，详细的使用方法见参考资料</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="o">[</span>OPTION] … SRC DEST
+rsync <span class="o">[</span>OPTION] … SRC <span class="o">[</span>user@]host:DEST <span class="c"># 拷贝到远程的服务器上去</span>
+rsync <span class="nt">-avP</span> /backup.sql  host:/data/
+<span class="c"># -a 包含-rtplgoD参数选项</span>
+<span class="c"># -v 同步时显示一些信息，让我们知道同步的过程</span>
+<span class="c"># -P 显示同步过程，比如速率，比-v更加详细</span>
+</code></pre></div></div>
+
+<p>5.在远端服务器上运行backup.sql文件，完成数据库的迁移</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">user1</span> <span class="o">-</span><span class="n">p</span>
+<span class="n">use</span> <span class="n">DB1</span>
+<span class="k">source</span> <span class="n">backup</span><span class="p">.</span><span class="k">sql</span>
+</code></pre></div></div>
+<p>在此过程中，出现了报错：
+<strong>Unknown collation: ‘utf8mb4_0900_ai_ci’</strong>
+<img src="https://img-blog.csdnimg.cn/20200324095847509.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80Mzk0ODcxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" />
+这是由于高版本数据库（8.0 本地数据库）转存sql文件 并导入低版本数据库（5.7 服务器数据库）所导致的。该错误会引起<code class="language-plaintext highlighter-rouge">CREATE TABLE</code>语句执行失败，因此导致<strong>Table doesn’t exist</strong>的错误。</p>
+
+<p>有两个解决方案：</p>
+
+<ol>
+  <li>升级服务器mysql为最新版本</li>
+  <li>将需要导入的sql文件，把其中的<code class="language-plaintext highlighter-rouge">utf8mb4_0900_ai_ci</code>全部替换为<code class="language-plaintext highlighter-rouge">utf8_general_ci</code>，<code class="language-plaintext highlighter-rouge">utf8mb4</code>替换为<code class="language-plaintext highlighter-rouge">utf8</code>,并重新执行sql文件</li>
+</ol>
+
+<p>在这里使用第二种方案，利用sed命令对文本进行替换，sed命令的基本格式如下：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 替换文件中的所有匹配项</span>
+<span class="c"># sed处理过的输出是直接输出到屏幕上的,使用参数”i”直接在文件中替换。</span>
+<span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'s/原字符串/替换字符串/g'</span> filename
+</code></pre></div></div>
+
+<p>文本替换完成后，重新执行backup.sql,数据可以正常导入。</p>
+
+<h3 id="参考资料">参考资料：</h3>
+<p>mysql的本地备份:<a href="https://www.csdn.net/gather_2d/MtTaMgxsNzYyMy1ibG9n.html">https://www.csdn.net/gather_2d/MtTaMgxsNzYyMy1ibG9n.html</a>
+mysql用户创建与授权:<a href="https://www.cnblogs.com/wangyueping/p/11258028.html">https://www.cnblogs.com/wangyueping/p/11258028.html</a>
+mysql grant 用户权限总结:<a href="https://blog.csdn.net/wulantian/article/details/38230635">https://blog.csdn.net/wulantian/article/details/38230635</a>
+rsync工具介绍与常用命令:<a href="https://blog.csdn.net/iamfishhh/article/details/80756139">https://blog.csdn.net/iamfishhh/article/details/80756139</a>
+MySql数据库导入sql错误 Unknown collation: ‘utf8mb4_0900_ai_ci’：<a href="https://www.cnblogs.com/smiledragon/p/12357454.html">https://www.cnblogs.com/smiledragon/p/12357454.html</a>
+sed命令实现文本替换：<a href="https://www.cnblogs.com/xingchong/p/11657702.html">https://www.cnblogs.com/xingchong/p/11657702.html</a></p>
+:ET

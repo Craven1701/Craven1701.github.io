@@ -1,0 +1,47 @@
+I"G<h5 id="本地项目上传到服务器">本地项目上传到服务器</h5>
+<p>使用<code class="language-plaintext highlighter-rouge">rsync</code>命令将本地项目文件传输到服务器上，格式如下，详细的使用方法见参考资料</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rsync <span class="o">[</span>OPTION] … SRC DEST
+rsync <span class="o">[</span>OPTION] … SRC <span class="o">[</span>user@]host:DEST <span class="c"># 拷贝到远程的服务器上去</span>
+rsync <span class="nt">-avP</span> /backup.sql  host:/data/
+<span class="c"># -a 包含-rtplgoD参数选项</span>
+<span class="c"># -v 同步时显示一些信息，让我们知道同步的过程</span>
+<span class="c"># -P 显示同步过程，比如速率，比-v更加详细</span>
+</code></pre></div></div>
+
+<h5 id="创建anaconda虚拟环境并运行django项目">创建Anaconda虚拟环境并运行Django项目</h5>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conda create <span class="nt">--name</span> your_env_name <span class="nv">python</span><span class="o">=</span>3.6 <span class="c"># 创建虚拟环境</span>
+<span class="nb">source </span>activate your_env_name <span class="c"># Linux下激活虚拟环境</span>
+python manage.py runserver 8080
+<span class="nb">source </span>deactivate your_env_name <span class="c"># Linux下退出虚拟环境</span>
+</code></pre></div></div>
+<p>因为创建的环境中我没有安装任何项目需要的软件包，所以在运行django项目的时候，会一直报错缺少某种软件包。使用<code class="language-plaintext highlighter-rouge">conda install packagename</code>按照提示安装相关的软件包就好了。</p>
+
+<blockquote>
+  <p>参考资料
+Anaconda– conda 创建、激活、退出、删除虚拟环境:<a href="https://blog.csdn.net/hejp_123/article/details/92151293">https://blog.csdn.net/hejp_123/article/details/92151293</a></p>
+
+  <h5 id="利用pycharm对远端项目进行调试">利用pycharm对远端项目进行调试</h5>
+  <p>由于项目传到了学校的服务器上，但是学校的服务器是不允许直接连接的，所以要利用跳板机与学校服务器进行连接。</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-ql</span> openssh-clients
+/etc/ssh/ssh_config         <span class="nt">---ssh</span>客户端配置文件
+/usr/bin/.ssh.hmac
+/usr/bin/scp                  <span class="nt">---</span>远程复制命令
+/usr/bin/sftp                 <span class="nt">---</span>远程文件传输服务
+/usr/bin/slogin              <span class="nt">---</span>远程登陆命令
+/usr/bin/ssh                  <span class="nt">---ssh</span>远程登陆管理主机
+/usr/bin/ssh-add
+/usr/bin/ssh-agent
+/usr/bin/ssh-copy-id        <span class="nt">---ssh</span>服务分发公钥命令
+/usr/bin/ssh-keyscan
+</code></pre></div></div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-ql</span> openssh-server
+/etc/rc.d/init.d/sshd      <span class="c">#ssh服务启动脚本</span>
+/etc/ssh/sshd_config       <span class="c">#ssh服务配置文件</span>
+/etc/sysconfig/sshd        <span class="c">#ssh创建密钥有关</span>
+/usr/sbin/.sshd.hmac       <span class="c">#ssh加密算法有关文件</span>
+/usr/sbin/sshd             <span class="c">#ssh服务进程启动命令</span>
+</code></pre></div></div>
+:ET

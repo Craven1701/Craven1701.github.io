@@ -1,0 +1,89 @@
+I"Y<p><strong>版权声明</strong>：本文为CSDN博主「惨绿少年」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+<strong>原文链接：</strong><a href="https://blog.csdn.net/admin_root1/article/details/78911685">https://blog.csdn.net/admin_root1/article/details/78911685</a></p>
+
+<p>1.4.2 ssh软件安装</p>
+
+<p><strong>客户端</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-qf</span> <span class="sb">`</span>which ssh<span class="sb">`</span>
+openssh-clients-5.3p1-122.el6.x86_64
+</code></pre></div></div>
+<p><strong>服务端软件</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-qf</span> <span class="sb">`</span>which sshd<span class="sb">`</span>
+openssh-server-5.3p1-122.el6.x86_64
+</code></pre></div></div>
+
+<h3 id="143-openssh-clinets-软件的主要内容">1.4.3 openssh-clinets 软件的主要内容：</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-ql</span> openssh-clients
+/etc/ssh/ssh_config         <span class="nt">---ssh</span>客户端配置文件
+/usr/bin/.ssh.hmac
+/usr/bin/scp                  <span class="nt">---</span>远程复制命令
+/usr/bin/sftp                 <span class="nt">---</span>远程文件传输服务
+/usr/bin/slogin              <span class="nt">---</span>远程登陆命令
+/usr/bin/ssh                  <span class="nt">---ssh</span>远程登陆管理主机
+/usr/bin/ssh-add
+/usr/bin/ssh-agent
+/usr/bin/ssh-copy-id        <span class="nt">---ssh</span>服务分发公钥命令
+/usr/bin/ssh-keyscan
+</code></pre></div></div>
+<h3 id="144-openssh-server-软件的主要内容">1.4.4 openssh-server 软件的主要内容</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@nfs01 ~]# rpm <span class="nt">-ql</span> openssh-server
+/etc/rc.d/init.d/sshd      <span class="c">#ssh服务启动脚本</span>
+/etc/ssh/sshd_config       <span class="c">#ssh服务配置文件</span>
+/etc/sysconfig/sshd        <span class="c">#ssh创建密钥有关</span>
+/usr/sbin/.sshd.hmac       <span class="c">#ssh加密算法有关文件</span>
+/usr/sbin/sshd             <span class="c">#ssh服务进程启动命令</span>
+</code></pre></div></div>
+
+<p><strong>注意：使用sshd采用绝对路径进行启动</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@test ~]# sshd
+sshd re-exec requires execution with an absolute path
+</code></pre></div></div>
+
+<h2 id="15-ssh服务配置文件说明">1.5 ssh服务配置文件说明：</h2>
+<ol>
+  <li>
+    <p>配置文件中所有注释信息，表示默认参数配置</p>
+  </li>
+  <li>
+    <p>配置文件中<code class="language-plaintext highlighter-rouge">#空格 后面内容表示说明信息</code></p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      #参数 表示配置参数信息
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>配置文件参数信息修改后，一旦变为注释，即还原为默认配置</p>
+  </li>
+</ol>
+
+<h3 id="151-ssh服务的配置文件路径">1.5.1 ssh服务的配置文件路径</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim  /etc/ssh/sshd_config
+</code></pre></div></div>
+<p>修改SSH服务的运行参数，是通过修改配置文件/etc/ssh/sshd_config实现的。</p>
+
+<p>一般来说SSH服务使用默认的配置已经能够很好的工作了，如果对安全要求不高，仅仅提供SSH服务的情况，可以不需要修改任何配置。</p>
+
+<h3 id="152-配置文件中常用配置说明">1.5.2 配置文件中常用配置说明</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>root@test ~]# vim /etc/ssh/sshd_config
+
+<span class="c"># $OpenBSD: sshd_config,v 1.80 2008/07/02 02:24:18 djm Exp $</span>
+<span class="c"># This is the sshd server system-wide configuration file.  See sshd_config(5) for more information.</span>
+<span class="c"># This sshd was compiled with PATH=/usr/local/bin:/bin:/usr/bin</span>
+<span class="c"># The strategy used for options in the default sshd_config shipped with OpenSSH is to specify options with their default value where possible, but leave them commented. Uncommented options change a default value.</span>
+
+Port 25113                   <span class="c">#端口 default</span>
+
+ListenAddress 10.0.0.41   <span class="c">#监听地址（本地网卡地址），指定本地网卡那个网卡提供服务</span>
+
+PermitRootLogin no       <span class="c">#是否允许root用户登陆 default</span>
+
+PermitEmptyPasswords no  <span class="c">#禁止空密码登陆 default</span>
+
+UseDNS no                <span class="c">#不使用DNS</span>
+
+GSSAPIAuthentication no    <span class="c">#API认证</span>
+
+<span class="c"># 连接慢的解决</span>
+AddressFamily any         <span class="c">#指定监听ipv4地址，或是ipv6地址，或者所有都监听</span>
+</code></pre></div></div>
+:ET

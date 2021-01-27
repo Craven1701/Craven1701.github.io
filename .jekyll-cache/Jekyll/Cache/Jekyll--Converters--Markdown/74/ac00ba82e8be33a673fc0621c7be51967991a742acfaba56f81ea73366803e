@@ -1,0 +1,21 @@
+I"9<p>Linux上的配置过程</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt isntall openssh <span class="nt">-server</span>
+/etc/init.d/ssh start
+<span class="nb">sudo </span>apt <span class="nb">install </span>net-tools
+ifconfig
+</code></pre></div></div>
+<p>之后能够拿到linux的ip地址，记住这个ip,之后要用到。（之前看的教程说用 ip address命令也能拿到ip 但是显示的结果很奇怪= = 就换了个方式）</p>
+
+<p>配置完后打开MacOS Terminal</p>
+
+<p>从Linux向MacOS传数据</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp Linux登录用户名@Linux的ip地址:源文件路径 目标存放路径
+</code></pre></div></div>
+
+<p>从MacOS向Linux传数据</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scp 本地文件路径 Linux登录用户名@Linuxip地址:Linux路径
+</code></pre></div></div>
+<p>所有的路径都写成绝对路径</p>
+:ET

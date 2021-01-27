@@ -1,8 +1,5 @@
 ---
 title: 使用GitHub Page搭建自己的博客
-date: 2021-01-27 11:20:26 -0000
-categories: CATEGORY-1 CATEGORY-2
-tags:tag2
 published: true
 ---
 

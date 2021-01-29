@@ -1,0 +1,32 @@
+I"O<h1 id="a文件与目录管理">A.文件与目录管理</h1>
+<h3 id="1-ls-查看文件与目录">1. <code class="language-plaintext highlighter-rouge">ls</code> 查看文件与目录</h3>
+<h3 id="2cp--copy复制">2.<code class="language-plaintext highlighter-rouge">cp</code>  copy复制</h3>
+<h3 id="3rm--remove移除">3.<code class="language-plaintext highlighter-rouge">rm</code>  remove移除</h3>
+<h3 id="4mv--move移动文件目录or重命名">4.<code class="language-plaintext highlighter-rouge">mv</code>  move移动文件、目录or重命名</h3>
+<h3 id="5basename--dirname-取得路径的文件名与目录名称">5.<code class="language-plaintext highlighter-rouge">basename</code> &amp; <code class="language-plaintext highlighter-rouge">dirname</code> 取得路径的文件名与目录名称</h3>
+<h1 id="b文件内容查阅">B.文件内容查阅</h1>
+<h3 id="6-cat-由第一行开始显示文件的内容">6. <code class="language-plaintext highlighter-rouge">cat</code> 由第一行开始显示文件的内容</h3>
+<h3 id="7tac-从最后一行开始显示">7.<code class="language-plaintext highlighter-rouge">tac</code> 从最后一行开始显示</h3>
+<h3 id="8nl-显示行号">8.<code class="language-plaintext highlighter-rouge">nl</code> 显示行号</h3>
+<h3 id="9more-一页一页的显示">9.<code class="language-plaintext highlighter-rouge">more</code> 一页一页的显示</h3>
+<h3 id="10less-可以向前翻页">10.<code class="language-plaintext highlighter-rouge">less</code> 可以向前翻页</h3>
+<h3 id="11head-只看头部">11.<code class="language-plaintext highlighter-rouge">head</code> 只看头部</h3>
+<h3 id="12tail-只看尾部">12.<code class="language-plaintext highlighter-rouge">tail</code> 只看尾部</h3>
+<h3 id="13od-以二进制的方式读取文件内容">13.<code class="language-plaintext highlighter-rouge">od</code> 以二进制的方式读取文件内容</h3>
+<h3 id="14touch-修改文件时间或创建新文件">14.<code class="language-plaintext highlighter-rouge">touch</code> 修改文件时间或创建新文件</h3>
+<h1 id="c文件与目录的默认权限与隐藏权限">C.文件与目录的默认权限与隐藏权限</h1>
+<h3 id="15chgrp">15.<code class="language-plaintext highlighter-rouge">chgrp</code></h3>
+<h3 id="16chown">16.<code class="language-plaintext highlighter-rouge">chown</code></h3>
+<h3 id="17chmod">17.<code class="language-plaintext highlighter-rouge">chmod</code></h3>
+<h3 id="18umask">18.<code class="language-plaintext highlighter-rouge">umask</code></h3>
+<h3 id="19chattr">19.<code class="language-plaintext highlighter-rouge">chattr</code></h3>
+<h3 id="20lsattr">20.<code class="language-plaintext highlighter-rouge">lsattr</code></h3>
+<h4 id="文件的特殊权限-suid-sgid-sbit">文件的特殊权限 SUID SGID SBIT</h4>
+<h3 id="21file">21.<code class="language-plaintext highlighter-rouge">file</code></h3>
+<h1 id="d命令与文件的查询">D.命令与文件的查询</h1>
+<h3 id="22which">22.<code class="language-plaintext highlighter-rouge">which</code></h3>
+<h3 id="23whereis">23.<code class="language-plaintext highlighter-rouge">whereis</code></h3>
+<h3 id="24locate">24.<code class="language-plaintext highlighter-rouge">locate</code></h3>
+<h3 id="25find">25.<code class="language-plaintext highlighter-rouge">find</code></h3>
+<h1 id="权限与命令间的关系">【权限与命令间的关系】</h1>
+:ET

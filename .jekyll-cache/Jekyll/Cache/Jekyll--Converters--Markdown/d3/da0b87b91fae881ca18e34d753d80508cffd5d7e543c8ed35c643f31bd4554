@@ -1,7 +1,7 @@
-I"f<p>与其说是常用的Linux命令，不如说是我自己用过的Linux命令吧。</p>
+I"<p>与其说是常用的Linux命令，不如说是我自己用过的Linux命令吧。</p>
 
-<h5 id="1cd-切换目录">1.cd 切换目录</h5>
-<h5 id="2cp-文件复制">2.cp 文件复制</h5>
+<h4 id="1cd-切换目录">1.cd 切换目录</h4>
+<h4 id="2cp-文件复制">2.cp 文件复制</h4>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="o">[</span><span class="nt">-adfilprsu</span><span class="o">]</span> 源文件<span class="o">(</span><span class="nb">source</span><span class="o">)</span> 目标文件<span class="o">(</span>destination<span class="o">)</span>
 <span class="nb">cp</span> <span class="o">[</span>option] source1 source2 source3 ...  directory
 
@@ -19,7 +19,7 @@
     <code class="language-plaintext highlighter-rouge">-s</code>:复制成符号连接文件(symbolic link)，即“快捷方式”文件
     <code class="language-plaintext highlighter-rouge">-u</code>:若目标文件比源文件旧，更新目标文件</p>
 
-<h5 id="3查看文件的前几行或后几行">3.查看文件的前几行或后几行</h5>
+<h4 id="3查看文件的前几行或后几行">3.查看文件的前几行或后几行</h4>
 <p><code class="language-plaintext highlighter-rouge">head</code>（查看前几行）
 <code class="language-plaintext highlighter-rouge">tail</code>（查看末尾几行）
 例如：</p>
@@ -37,7 +37,7 @@
 <p>查看的话只需要打开test文件即可。</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> /home/test
 </code></pre></div></div>
-<h5 id="4rm-删除文件与文件夹">4.rm 删除文件与文件夹</h5>
+<h4 id="4rm-删除文件与文件夹">4.rm 删除文件与文件夹</h4>
 <p>rm命令:<a href="https://www.runoob.com/linux/linux-comm-rm.html">https://www.runoob.com/linux/linux-comm-rm.html</a></p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">rm</span> <span class="o">[</span>options] name...
@@ -46,4 +46,47 @@
 <code class="language-plaintext highlighter-rouge">-i</code> 删除前逐一询问确认。
 <code class="language-plaintext highlighter-rouge">-f</code> 即使原档案属性设为唯读，亦直接删除，无需逐一确认。
 <code class="language-plaintext highlighter-rouge">-r </code>将目录及以下之档案亦逐一删除。</p>
+
+<h4 id="5利用sed进行输出结果过滤">5.利用sed进行输出结果过滤</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 基本格式</span>
+<span class="nb">sed</span>    ‘-i   s/新的内容/要替换内容/  ’
+
+<span class="c">#结合重定向处理输出</span>
+<span class="nb">echo</span> <span class="s2">"This is a test"</span> | <span class="nb">sed</span> <span class="nt">-n</span> <span class="s1">'/test/p'</span>
+gsetting list-schemas | <span class="nb">sed</span> <span class="nt">-n</span> <span class="s1">'/org.gnome.desktop.s'</span>/p<span class="s1">'
+
+#换行符的替换 可以让$PATH的输出变的好看
+echo $PATH | sed -n '</span>s/:/<span class="se">\n</span>/gp<span class="s1">'
+</span></code></pre></div></div>
+<p>sed的使用与参数说明
+<code class="language-plaintext highlighter-rouge">-n</code>  特殊处理某一行
+<code class="language-plaintext highlighter-rouge">-i</code>  修改更改文件内容
+<code class="language-plaintext highlighter-rouge">-s</code>  替换取代
+<code class="language-plaintext highlighter-rouge">-P</code>  列印
+<code class="language-plaintext highlighter-rouge">-d </code> 删除</p>
+
+<p>详细参考链接:[https://blog.csdn.net/irewyz/article/details/48713943]https://blog.csdn.net/irewyz/article/details/48713943</p>
+
+<h4 id="6dpkg">6.dpkg</h4>
+<p>dpkg 是Debian package的简写，为”Debian“ 操作系统 专门开发的套件管理系统，用于软件的安装，更新和移除。</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpkg <span class="nt">-L</span> package <span class="c"># 查看与该package关联的文件 用于查看软件安装到的位置</span>
+dpkg <span class="nt">-l</span> package <span class="c"># 查看包的版本</span>
+dpkg <span class="nt">-r</span> package <span class="c"># 移除软件 保留配置</span>
+dpkg <span class="nt">-P</span> packagP <span class="c"># 移除软件 不保留配置</span>
+</code></pre></div></div>
+<p>其他参数自己以后要用再补充吧</p>
+
+<h4 id="7which-查看命令所在位置">7.which 查看命令所在位置</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>which <span class="nb">ls
+</span>which <span class="nb">mv
+</span>which which
+</code></pre></div></div>
+
+<h4 id="一些零碎的功能">一些零碎的功能</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gsettings <span class="nb">set </span>ori.gnome.desktop.screensaver lock-enable <span class="nb">false</span>
+</code></pre></div></div>
+
 :ET

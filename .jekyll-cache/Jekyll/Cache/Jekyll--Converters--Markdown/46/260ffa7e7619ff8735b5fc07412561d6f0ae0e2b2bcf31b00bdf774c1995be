@@ -1,0 +1,39 @@
+I"�<h1 id="a文件系统的简单操作">A.文件系统的简单操作</h1>
+<h3 id="1df--列出文件系统整体的磁盘使用量--du-评估文件系统的磁盘使用量">1.<code class="language-plaintext highlighter-rouge">df</code>  列出文件系统整体的磁盘使用量 &amp; <code class="language-plaintext highlighter-rouge">du</code> 评估文件系统的磁盘使用量</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">df</span> <span class="o">[</span>OPTIONS] <span class="o">[</span>目录或文件名]
+<span class="c">#无参数形势下列出系统内所有文件系统</span>
+<span class="nt">-h</span> <span class="c">#以人类易读的格式显示 </span>
+<span class="nt">-i</span> <span class="c">#不使用硬盘容量 以inode的数目来显示</span>
+
+<span class="nb">du</span> <span class="o">[</span>OPTIONS] <span class="o">[</span>文件名或者目录名称]
+<span class="c">#会切实的进入文件系统内部去查找数据 速度较慢</span>
+<span class="c">#每一个文件的大小都会出来 </span>
+</code></pre></div></div>
+
+<h3 id="2ln">2.<code class="language-plaintext highlighter-rouge">ln</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ln</span> <span class="o">[</span><span class="nt">-sf</span><span class="o">]</span> 
+</code></pre></div></div>
+
+<h4 id="hard-link-硬链接">Hard link 硬链接</h4>
+
+<h4 id="symbolic-link-符号链接">Symbolic link 符号链接</h4>
+
+<h1 id="b-磁盘的分区格式化检验与挂载">B. 磁盘的分区、格式化、检验与挂载</h1>
+
+<h3 id="3fdisk-磁盘分区">3.<code class="language-plaintext highlighter-rouge">fdisk</code> 磁盘分区</h3>
+<h3 id="4mkfs-磁盘格式化">4.<code class="language-plaintext highlighter-rouge">mkfs</code> 磁盘格式化</h3>
+<h3 id="5fsck--badblocks-磁盘检验">5.<code class="language-plaintext highlighter-rouge">fsck</code> &amp; <code class="language-plaintext highlighter-rouge">badblocks</code> 磁盘检验</h3>
+<h3 id="6mount-磁盘挂载">6.<code class="language-plaintext highlighter-rouge">mount</code> 磁盘挂载</h3>
+<h3 id="7umount设备文件卸载">7.<code class="language-plaintext highlighter-rouge">umount</code>设备文件卸载</h3>
+<h3 id="8-mknod-磁盘参数修改">8. <code class="language-plaintext highlighter-rouge">mknod</code> 磁盘参数修改</h3>
+<h3 id="9e2label">9.<code class="language-plaintext highlighter-rouge">e2label</code></h3>
+<h3 id="10tune2fs">10.<code class="language-plaintext highlighter-rouge">tune2fs</code></h3>
+<h3 id="11hdparm">11.<code class="language-plaintext highlighter-rouge">hdparm</code></h3>
+
+<h1 id="c内存交换空间">C.内存交换空间</h1>
+<h3 id="12swap">12.<code class="language-plaintext highlighter-rouge">swap</code></h3>
+<h3 id="13free">13.<code class="language-plaintext highlighter-rouge">free</code></h3>
+
+:ET

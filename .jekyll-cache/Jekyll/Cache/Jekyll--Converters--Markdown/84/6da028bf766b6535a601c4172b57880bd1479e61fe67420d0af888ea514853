@@ -1,0 +1,9 @@
+I"K<p>参考资料:</p>
+
+<p>[]: https://linux.cn/article-8807-1.html</p>
+
+<p>用<code class="language-plaintext highlighter-rouge">fdisk</code>命令删掉了所有的硬盘分区，然后<code class="language-plaintext highlighter-rouge">reboot</code>了Ubuntu虚拟机，后果就是开机出现：<img src="/Users/ncc-1701-enterprise/Library/Application Support/typora-user-images/Screen Shot 2021-02-02 at 18.06.19.png" alt="Screen Shot 2021-02-02 at 18.06.19" /></p>
+
+<p>系统提示无法找到分区，进入<code class="language-plaintext highlighter-rouge">rescue mode</code></p>
+
+:ET

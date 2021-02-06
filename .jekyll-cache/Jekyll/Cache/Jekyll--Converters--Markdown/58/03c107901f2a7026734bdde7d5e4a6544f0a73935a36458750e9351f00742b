@@ -1,0 +1,79 @@
+I"K<h1 id="a磁盘的分区">A.磁盘的分区</h1>
+
+<h3 id="0-第一扇区first-sector">0. 第一扇区（first sector）</h3>
+
+<p>​	<strong>a) 64bytes</strong></p>
+
+<p>​	<strong>b)主引导分区表 Master Boot Record (MBR)</strong></p>
+
+<p>​		系统在开机时主动读取这个区块的内容。</p>
+
+<p>​	<strong>c) 分区表 Partition table</strong></p>
+
+<p>​		分区表记录了整块磁盘分区的状况 有64bytes，只存存储4条分区记录</p>
+
+<h3 id="1主分区primary-partition">1.主分区(Primary Partition)</h3>
+
+<p><strong>可以格式化</strong> 可以存储数据</p>
+
+<h3 id="2逻辑分区logical-partition">2.逻辑分区(Logical Partition)</h3>
+
+<p><strong>可以格式化</strong> 可以存储数据</p>
+
+<p>Linux系统下 IDE硬盘逻辑分区59个，SATA硬盘逻辑分区11个</p>
+
+<h3 id="3拓展分区extention-partition">3.拓展分区(Extention Partition)</h3>
+
+<p>拓展分区用来存储逻辑分区的分区表 操作系统限制只能有一个</p>
+
+<h1 id="b文件系统的特性">B.文件系统的特性</h1>
+
+<h3 id="0文件系统">0.文件系统</h3>
+
+<p>​			文件系统是操作系统用于明确存储设备（常见的是磁盘，也有基于NAND Flash的固态硬盘）或分区上的文件的方法和数据结构；即在存储设备上组织文件的方法。<strong>操作系统中负责管理和存储文件信息的软件机构称为文件管理系统</strong>，简称文件系统。</p>
+
+<p>​       文件系统由三部分组成：文件系统的接口，对对象操纵和管理的软件集合，对象及属性。从系统角度来看，文件系统是对文件存储设备的空间进行组织和分配，负责文件存储并对存入的文件进行保护和检索的系统。具体地说，它负责为用户建立文件，存入、读出、修改、转储文件，控制文件的存取，当用户不再使用时撤销文件等。</p>
+
+<p>​	简而言之，文件系统就是文件的管理员。</p>
+
+<h3 id="1-格式化">1. 格式化</h3>
+
+<p>每种操作系统所设置的文件属性/权限并不相同，为了存放这些文件所需的数据，因此就需要将分区进行格式化，以成为操作系统能够利用的文件系统格式。（即以什么格式来格式化分区。）</p>
+
+<p>Windows98  FAT FAT16</p>
+
+<p>Windows2000 NTFS</p>
+
+<p>Linux Ext2（Linux Second extended file system）</p>
+
+<p><strong>通常我们称呼一个可以被挂载的数据为一个文件系统而不是一个分区。</strong></p>
+
+<h3 id="2-linux的ext2文件系统">2. Linux的Ext2文件系统</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>块</th>
+      <th>存放内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>super block</td>
+      <td>记录此文件系统的整体信息，包括inode/block的总量、使用量、剩余量、以及文件系统的格式与相关信息</td>
+    </tr>
+    <tr>
+      <td>inode</td>
+      <td>记录文件的属性 一个文件占用一个inode 同时记录此文件的数据所在的block号码</td>
+    </tr>
+    <tr>
+      <td>block</td>
+      <td>实际记录文件的内容 过大时一个文件占用多个block</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>文件系统一开始就规划好了inode和block，除非重新格式化（或者利用resize2fs等命令更改文件系统大小），否则inode与block固定后不会再有变动。</p>
+
+<p><img src="" alt="" /></p>
+:ET

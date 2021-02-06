@@ -1,0 +1,294 @@
+I"tJ<h1 id="a文件系统的简单操作">A.文件系统的简单操作</h1>
+<h3 id="1df--列出文件系统整体的磁盘使用量--du-评估文件系统的磁盘使用量">1.<code class="language-plaintext highlighter-rouge">df</code>  列出文件系统整体的磁盘使用量 &amp; <code class="language-plaintext highlighter-rouge">du</code> 评估文件系统的磁盘使用量</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">df</span> <span class="o">[</span>OPTIONS] <span class="o">[</span>目录或文件名]
+<span class="c">#无参数形势下列出系统内所有文件系统</span>
+<span class="nt">-h</span> <span class="c">#以人类易读的格式显示 </span>
+<span class="nt">-i</span> <span class="c">#不使用硬盘容量 以inode的数目来显示</span>
+
+<span class="nb">du</span> <span class="o">[</span>OPTIONS] <span class="o">[</span>文件名或者目录名称]
+<span class="c">#会切实的进入文件系统内部去查找数据 速度较慢</span>
+<span class="c">#每一个文件的大小都会出来 </span>
+</code></pre></div></div>
+
+<h3 id="2ln">2.<code class="language-plaintext highlighter-rouge">ln</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ln</span> <span class="o">[</span>OPTIONS] TARGET LINK_NAME
+<span class="nt">-s</span> <span class="c"># 不加任何参数进行link 就是硬链接 -s是符号链接 </span>
+<span class="nt">-f</span> <span class="c"># 如果目标文件存在时，就主动将目标文件直接删除后再创建</span>
+</code></pre></div></div>
+
+<h4 id="hard-link-硬链接">Hard link 硬链接</h4>
+
+<p>实现多个文件对应同一个inode号码，即由硬链接关联的文件，虽然路径不同，但是inode相同，对应的内部data block也是一样的。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">*</span><span class="p">(</span><span class="n">hard_link</span><span class="p">)</span><span class="o">=</span><span class="n">inode</span><span class="p">;</span>
+ <span class="c1">// Hard_link给人的感觉像是一个inode的指针</span>
+ <span class="c1">// 用*析出内容之后是一个inode</span>
+</code></pre></div></div>
+
+<p><strong>hard link 只是在某个目录下新建一条文件名连接到某inode号码的关联记录而已</strong></p>
+
+<p>如下图所示，hardlink会使得两个文件名所有相关的信息都会一模一样(除了文件名之外)，本质上是同一个文件，<code class="language-plaintext highlighter-rouge">连接数</code> 字段为<code class="language-plaintext highlighter-rouge">2</code>，显示了有多少个文件连接到该inode</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-01-31 at 11.13.13.png" alt="" /></p>
+
+<p><strong>Tips</strong></p>
+
+<p>a).Hard link只能在单一的文件系统上进行，不可以跨文件系统设立。</p>
+
+<p>b).不可以对目录使用Hard link</p>
+
+<h4 id="symbolic-link-符号链接">Symbolic link 符号链接</h4>
+
+<p>符号链接会创建新的文件，使用新的inode和block，而这个block的内容会指向源文件的文件名(路径)，再经由这文件名(路径)去访问真实的文件数据。感觉相当于是一个文件指针。</p>
+
+<pre><code class="language-C">*(Symbolic_link)=file;
+*(file)=inode;
+//大概是这种感觉？
+</code></pre>
+
+<p>如果在创建Symbolic link之后再删除Source 那么Symbolic link就会打不开</p>
+
+<p><strong>Tips：</strong>新的目录连接数为2，上层目录的连接数会增加1，这是因为<code class="language-plaintext highlighter-rouge">mkdir</code>会自动在新目录里生成<code class="language-plaintext highlighter-rouge">.</code>与<code class="language-plaintext highlighter-rouge">..</code>两个表示当前目录和上层目录的Hard link</p>
+
+<h1 id="b-磁盘的分区格式化检验与挂载">B. 磁盘的分区、格式化、检验与挂载</h1>
+
+<p>新增一块硬盘的流程：</p>
+
+<p>磁盘分区→分区进行格式化并创建可用文件系统→检验文件系统→Linux上挂载</p>
+
+<h3 id="3fdisk-修改磁盘分区">3.<code class="language-plaintext highlighter-rouge">fdisk</code> 修改磁盘分区</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">df</span> <span class="c">#先用df命令输出可用的磁盘名称 再使用fdisk对需要修改的磁盘进行操作</span>
+fdisk <span class="o">[</span>OPTIONS] device
+fdisk <span class="nt">-l</span> <span class="c"># 输出系统内能够找到的所有设备的分区</span>
+</code></pre></div></div>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-01-31 at 11.59.18.png" alt="进入fdisk的工作页面" /></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#fdisk工作页面下的重要命令（用m可以查看完整版）</span>
+d <span class="c">#删除分区</span>
+n <span class="c">#新增分区</span>
+p <span class="c">#在屏幕上显示分区表</span>
+
+<span class="c">#write 与 quit</span>
+q <span class="c"># 不储存变化 直接退出fdisk</span>
+w <span class="c"># 将刚才的变化写入分区表</span>
+
+partprobe <span class="c">#fdisk修改完毕后，执行该命令。强制内核读取被fdisk重写后的分区表，避免reboot (partprobe=partition change probe)</span>
+</code></pre></div></div>
+<p><strong>PS:</strong> 在macOS的系统上<code class="language-plaintext highlighter-rouge">diskutil</code>命令代替了<code class="language-plaintext highlighter-rouge">fdisk</code>
+<img src="/Users/ncc-1701-enterprise/Library/Application Support/typora-user-images/Screen Shot 2021-02-03 at 11.49.32.png" alt="Screen Shot 2021-02-03 at 11.49.32" /></p>
+
+<p>重装系统自主分区后sda磁盘的分区情况。</p>
+
+<p><code class="language-plaintext highlighter-rouge">sda1</code> 是挂载在boot下，但是我不明白的是，为什么是从2048开始，而是不是从1开始。那1到2048的空间用来做什么了。</p>
+<h3 id="使用实例">【使用实例】</h3>
+<h4 id="fdisk--l-查阅系统内所有分区"><code class="language-plaintext highlighter-rouge">fdisk -l</code> 查阅系统内所有分区</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@J:~# fdisk <span class="nt">-l</span>
+Disk /dev/loop0: 62.1 MiB, 65105920 bytes, 127160 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop1: 2.4 MiB, 2555904 bytes, 4992 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop2: 2.2 MiB, 2273280 bytes, 4440 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop3: 29.9 MiB, 31334400 bytes, 61200 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop4: 276 KiB, 282624 bytes, 552 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop5: 55.3 MiB, 58007552 bytes, 113296 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop6: 255.6 MiB, 267980800 bytes, 523400 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/loop7: 956 KiB, 978944 bytes, 1912 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 512 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 512 bytes / 512 bytes
+
+
+Disk /dev/sda: 32 GiB, 34359738368 bytes, 67108864 sectors
+Units: sectors of 1 <span class="k">*</span> 512 <span class="o">=</span> 512 bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: 512 bytes / 4096 bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: 4096 bytes / 4096 bytes
+Disklabel <span class="nb">type</span>: dos
+Disk identifier: 0x46d06975
+
+Device     Boot    Start      End  Sectors  Size Id Type
+/dev/sda1  <span class="k">*</span>        2048   391167   389120  190M 83 Linux
+/dev/sda2         391168 23828479 23437312 11.2G 83 Linux
+/dev/sda3       23828480 47265791 23437312 11.2G 83 Linux
+</code></pre></div></div>
+
+<p>输出结果显示虚拟机上一共有9个磁盘，分别是<code class="language-plaintext highlighter-rouge">loop0~loop7</code>以及<code class="language-plaintext highlighter-rouge">sda</code></p>
+
+<p>“其中8个loop设备是一种伪设备，是<strong>使用文件来模拟块设备的一种技术</strong>，文件模拟成块设备后, 就像一个磁盘或光盘一样使用。在使用之前，一个 loop 设备必须要和一个文件进行连接。这种结合方式给用户提供了一个替代块特殊文件的接口。因此，如果这个文件包含有一个完整的文件系统，那么这个文件就可以像一个磁盘设备一样被 mount 起来。之所以叫loop设备（回环），其实是从文件系统这一层来考虑的，因为这种被 mount 起来的镜像文件它本身也包含有文件系统，通过loop设备把它mount起来，它就像是文件系统之上再绕了一圈的文件系统，所以称为 loop。”</p>
+
+<p>详细介绍参考<a href="https://blog.csdn.net/lengye7/article/details/80247437">Linux的dev目录之loop设备详解</a></p>
+
+<p>sda是实际的磁盘，具有三个主分区，sda1,sda2,sda3，其中sda1挂载于/boot。</p>
+
+<h3 id="4mkfs-磁盘格式化make-file-system">4.<code class="language-plaintext highlighter-rouge">mkfs</code> 磁盘格式化（make file system）</h3>
+
+<p>如下图所示，我们利用<code class="language-plaintext highlighter-rouge">fdisk</code>添加了一个新的拓展分区/dev/sda4，并在扩展分区下增加了逻辑分区/dev/sda5
+<img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-03 at 15.24.28.png" alt="" /></p>
+
+<p>如下图所示，以格式化<code class="language-plaintext highlighter-rouge">sda5</code>分区为例，在未格式化之前，<code class="language-plaintext highlighter-rouge">df</code>命令无法找到<code class="language-plaintext highlighter-rouge">sda5</code>，因为这个分区现在还没能有一个文件系统。所以我们需要使用<code class="language-plaintext highlighter-rouge">mksf</code>命令来确定要使用的文件系统。
+<img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-03 at 14.50.54.png" alt="" /></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkfs <span class="o">[</span>OPTIONS] <span class="o">[</span><span class="nt">-t</span> <span class="nb">type</span><span class="o">]</span> <span class="o">[</span>fs-options] device <span class="o">[</span>size]
+mkfs <span class="nt">-t</span> ext3 /dev/sda5
+<span class="c">#输出结果如下</span>
+Discarding device blocks: <span class="k">done                            
+</span>Creating filesystem with 262144 4k blocks and 65536 inodes <span class="c">#规划block与inodes的数目</span>
+Filesystem UUID: 07474dd6-ab69-48af-a3a7-d8b0a4d2dc4e
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376
+
+Allocating group tables: <span class="k">done                            
+</span>Writing inode tables: <span class="k">done                            
+</span>Creating journal <span class="o">(</span>8192 blocks<span class="o">)</span>: <span class="k">done</span> <span class="c">#ext3的日志文件记录，ext2没有这东西</span>
+Writing superblocks and filesystem accounting information: <span class="k">done
+
+</span>mkfs <span class="o">[</span>Tab] <span class="o">[</span>Tab]
+<span class="c">#连续两次“Tab”可以显示mkfs支持的格式化方式</span>
+</code></pre></div></div>
+
+<p>·<strong>Tips</strong></p>
+
+<ol>
+  <li>
+    <p>分区挂载的情况下不可以格式化。</p>
+
+    <p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-03 at 15.17.06.png" alt="" /></p>
+  </li>
+  <li>
+    <p>extended disk不可以格式化，只能格式化在扩展分区下的逻辑分区，因为扩展分区的目的是使用额外的扇区来记录分区信息，扩展分区本身不能用来格式化。(下图分区<code class="language-plaintext highlighter-rouge">sda4</code>是一个扩展分区)</p>
+
+    <p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-03 at 15.18.46.png" alt="" /></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">mke2fs</code> 是一个能够更详细设置inode和blocks属性的的命令，不详细介绍了。一般咱们也用不上。实际上我都不需要自己配磁盘配分区。</p>
+  </li>
+</ol>
+
+<h3 id="5fsck--badblocks-磁盘检验">5.<code class="language-plaintext highlighter-rouge">fsck</code> &amp; <code class="language-plaintext highlighter-rouge">badblocks</code> 磁盘检验</h3>
+
+<p>磁盘检验是为了能够分析文件系统的错乱。这种情况通常出现在意外死机or关机的情况下。一般情况下很难用到这个命令。用到基本都是出大事了。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fsck <span class="c"># = check and repair a linux filesystem</span>
+<span class="nt">-t</span> <span class="c"># 表明文件系统类型</span>
+<span class="nt">-A</span> <span class="c"># </span>
+<span class="nt">-a</span> <span class="c"># 自动修复有问题的扇区</span>
+<span class="nt">-y</span> <span class="c"># </span>
+<span class="nt">-C</span> <span class="c"># 使用直方图检测目前的进度</span>
+
+<span class="c">#Ext2/Ext3的额外参数功能：</span>
+<span class="nt">-f</span> <span class="c"># 强制详细检查</span>
+<span class="nt">-D</span> <span class="c"># 针对文件系统下的目录进行配置优化</span>
+</code></pre></div></div>
+
+<p><strong>Tips</strong></p>
+
+<ol>
+  <li>mounted的情况下无法使用fsck命令，一定要先卸载好分区才行。</li>
+  <li>扫描过程中的有问题的数据会放到”lost+found”里面，所以这个文件夹下正常情况下是不会有数据的。</li>
+  <li>实际上fsck是调用了e2fsck这个软件。</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#用来检查硬盘or软盘扇区有没有怀轨</span>
+badblocks -[svw] 设备名称
+</code></pre></div></div>
+
+<h3 id="6mount-磁盘挂载">6.<code class="language-plaintext highlighter-rouge">mount</code> 磁盘挂载</h3>
+
+<p><strong>Tips</strong>:</p>
+
+<ol>
+  <li>
+    <p>单一文件目录不该被重复挂载在不同的挂载点(目录)中。</p>
+  </li>
+  <li>
+    <p>单一目录不应该重复挂载多个文件系统。</p>
+  </li>
+  <li>
+    <p>作为挂载点的目录必须要是空目录。（否则目录内原有的数据暂时会被隐藏，无法访问。只有新分区unmount后才能显示出来）</p>
+  </li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mount 设备文件名 挂载点
+mount <span class="o">[</span><span class="nt">-t</span> 文件系统] <span class="o">[</span><span class="nt">-L</span> label名] <span class="o">[</span><span class="nt">-o</span> 额外选项]
+<span class="c">#使用实例</span>
+<span class="nb">mkdir</span> /mnt/sda5
+mount /dev/sda5 /mnt/sda5
+<span class="c">#详细参数介绍</span>
+<span class="nt">-a</span> <span class="c"># 依照/etc/fstab的数据将所有未挂载的磁盘挂载上</span>
+<span class="nt">-l</span> <span class="c"># 显示Label的名称</span>
+<span class="nt">-t</span> <span class="c"># 指定准备挂载的类型</span>
+<span class="nt">-L</span> <span class="c"># 利用Lable进行挂载</span>
+<span class="nt">-n</span> <span class="c"># 此参数下命令不将挂载情况写入/etc/mtab文件</span>
+
+</code></pre></div></div>
+
+<p>这个命令实际很复杂 - - 但是比较简单的使用就是这个样子了。因为这玩意会自己去找你系统里有没有相关文件系统的驱动程序。</p>
+
+<p><strong>Tips 有关文件的存储位置</strong></p>
+
+<ol>
+  <li>
+    <p>/etc/fstab 内存储有系统已挂载好的信息</p>
+  </li>
+  <li>
+    <p>/etc/mtab 存贮挂载情况</p>
+  </li>
+  <li>
+    <p>/proc/filesystems Linux系统中已经加载的文件系统类型</p>
+  </li>
+  <li>
+    <p>各类文件系统的驱动程序 /lib/modules/$(uname-r)/kernel/fs/</p>
+
+    <p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-03 at 16.29.00.png" alt="" /></p>
+  </li>
+</ol>
+
+<h3 id="7umount设备文件卸载">7.<code class="language-plaintext highlighter-rouge">umount</code>设备文件卸载</h3>
+
+<h3 id="8-mknod-磁盘参数修改">8. <code class="language-plaintext highlighter-rouge">mknod</code> 磁盘参数修改</h3>
+<h3 id="9e2label">9.<code class="language-plaintext highlighter-rouge">e2label</code></h3>
+<h3 id="10tune2fs">10.<code class="language-plaintext highlighter-rouge">tune2fs</code></h3>
+<h3 id="11hdparm">11.<code class="language-plaintext highlighter-rouge">hdparm</code></h3>
+
+<h1 id="c内存交换空间">C.内存交换空间</h1>
+<h3 id="12swap">12.<code class="language-plaintext highlighter-rouge">swap</code></h3>
+<h3 id="13free">13.<code class="language-plaintext highlighter-rouge">free</code></h3>
+
+:ET

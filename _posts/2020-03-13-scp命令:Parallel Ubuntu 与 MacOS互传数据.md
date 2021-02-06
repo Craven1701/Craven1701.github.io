@@ -7,7 +7,7 @@ tags: linux
 Linux上的配置过程
 
 ```bash
-sudo apt isntall openssh -server
+sudo apt isntall openssh-server
 /etc/init.d/ssh start
 sudo apt install net-tools
 ifconfig

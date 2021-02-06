@@ -1,0 +1,29 @@
+I"�<h1 id="a磁盘的分区">A.磁盘的分区</h1>
+
+<h3 id="0-第一扇区first-sector">0. 第一扇区（first sector）</h3>
+
+<p>​	<strong>a) 64bytes</strong></p>
+
+<p>​	<strong>b)主引导分区表 Master Boot Record (MBR)</strong></p>
+
+<p>​		系统在开机时主动读取这个区块的内容。</p>
+
+<p>​	<strong>c) 分区表 Partition table</strong></p>
+
+<p>​		分区表记录了整块磁盘分区的状况 有64bytes，只存存储4条分区记录</p>
+
+<h3 id="1主分区primary-partition">1.主分区(Primary Partition)</h3>
+
+<p>可以格式化 可以存储数据</p>
+
+<h3 id="2逻辑分区logical-partition">2.逻辑分区(Logical Partition)</h3>
+
+<p>可以格式化 可以存储数据</p>
+
+<h3 id="3拓展分区extention-partition">3.拓展分区(Extention Partition)</h3>
+
+<p>拓展分区用来存储逻辑分区的分区表 操作系统限制只能有一个</p>
+
+<h1 id="b文件系统的特性">B.文件系统的特性</h1>
+
+:ET

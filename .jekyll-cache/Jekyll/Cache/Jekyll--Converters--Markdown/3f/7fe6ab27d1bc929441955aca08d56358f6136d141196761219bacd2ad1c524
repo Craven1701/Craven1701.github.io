@@ -1,0 +1,38 @@
+I"�<p><strong>声明</strong>：本文参考博客园[ssh_alitheia] MacOS下给pdf添加书签(目录)</p>
+<h4 id="原文链接-httpswwwcnblogscomshanchuanp13457426html"><strong>原文链接</strong> ：<a href="https://www.cnblogs.com/shanchuan/p/13457426.html">https://www.cnblogs.com/shanchuan/p/13457426.html</a></h4>
+
+<p>因为淘宝买的很多扫描版电子书都没有标签，放在marginNote里看翻页的时候真的很窒息，没想到有个这么好用的命令行工具，啊我只能说命令行工具永远的神。</p>
+
+<h3 id="1安装coherent-pdf-command-line-tools">1.安装<a href="http://community.coherentpdf.com/">Coherent PDF Command Line Tools</a></h3>
+<p>在其首页就有“Download binaries now for Windows, Mac, or Linux”字样，下载压缩包解压用里面的二进制文件就行。macOS环境下用的是<code class="language-plaintext highlighter-rouge">/cpdf-binaries-master/OSX-Intel/cpdf</code>这个文件。直接双击运行的话一如既往的苹果又会拦截一下,要手动允许执行。</p>
+
+<p><code class="language-plaintext highlighter-rouge">sudo spctl --master-disable</code> 这个命令可以一劳永逸的关掉MacOS的拦截- -  允许任何来源的应用运行。不过我还是没用。</p>
+
+<p>我把可执行文件放在了<code class="language-plaintext highlighter-rouge"> /usr/local/bin</code>下，这个目录是我的$PATH之一，这样bash就能找到cpdf命令了</p>
+
+<h3 id="2导出原有书签">2.导出原有书签</h3>
+
+<p>cpdf -list-bookmarks in.pdf &gt; bookmarks.txt
+加上-utf8就可以导出中文书签</p>
+
+<p>导出内容类似这样：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> 0 "contents" 2 open
+ 0 "part1 summary" 6 "[6/Fit]"
+ 1 "1.1 " 8 "[8/Fit]"
+</code></pre></div></div>
+
+<p>第一列即层级，0代表顶层。第二列为目录类容。第三列为所在页码（page=0则点击不会发生跳转）。第四列为格式（format=open表示该层级可以展开），不写就是默认的。我发现中文似乎导不出来，不过可以导入。</p>
+
+<h3 id="3编辑自己的目录">3.编辑自己的目录</h3>
+
+<p>我本来是直接用vim在手动录入的，但是突然发现还是直接到表格里输入比较舒服。因为可以很方便的切换单元格。最后输入完了再保存成<code class="language-plaintext highlighter-rouge">csv</code>格式，用vim, sed, awk处理一下变成上面的标准格式就好。页码的部分可以直接跟着PDF的目录打(书的页码)，然后统一 +n 对应到文件的页码</p>
+
+<h3 id="4格式化处理部分">4.格式化处理部分</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<h3 id="5导入书签">5.导入书签</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cpdf <span class="nt">-add-bookmarks</span> bookmarks.txt test.pdf <span class="nt">-o</span> test.pdf
+</code></pre></div></div>
+<p>我这里直接对原文件覆盖了，使用preview打开并不会导致冲突，执行完成后preview会自动刷新目录。</p>
+:ET

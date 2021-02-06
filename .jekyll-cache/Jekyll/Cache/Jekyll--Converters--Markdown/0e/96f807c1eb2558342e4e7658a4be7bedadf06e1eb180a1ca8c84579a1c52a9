@@ -1,0 +1,29 @@
+I"�<h1 id="alinux系统常见压缩命令">A.Linux系统常见压缩命令</h1>
+
+<h3 id="1compress">1.<code class="language-plaintext highlighter-rouge">compress</code></h3>
+
+<h3 id="2gzip---zcat">2.<code class="language-plaintext highlighter-rouge">gzip</code>  &amp; <code class="language-plaintext highlighter-rouge">zcat</code></h3>
+
+<h3 id="3-bzip2--bzcat">3. <code class="language-plaintext highlighter-rouge">bzip2</code> &amp; <code class="language-plaintext highlighter-rouge">bzcat</code></h3>
+
+<p>#B. 文件的打包与备份</p>
+
+<h3 id="4tar">4.<code class="language-plaintext highlighter-rouge">tar</code></h3>
+
+<h3 id="5dump">5.<code class="language-plaintext highlighter-rouge">dump</code></h3>
+
+<h3 id="6restore">6.<code class="language-plaintext highlighter-rouge">restore</code></h3>
+
+<h1 id="c光盘读写工具">C.光盘读写工具</h1>
+
+<h3 id="7mkisofs">7.<code class="language-plaintext highlighter-rouge">mkisofs</code></h3>
+
+<h3 id="8cdrecord">8.<code class="language-plaintext highlighter-rouge">cdrecord</code></h3>
+
+<h1 id="d其他">D.其他</h1>
+
+<h3 id="9dd">9.<code class="language-plaintext highlighter-rouge">dd</code></h3>
+
+<h3 id="10cpio">10.<code class="language-plaintext highlighter-rouge">cpio</code></h3>
+
+:ET

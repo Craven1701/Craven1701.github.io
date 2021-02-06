@@ -1,0 +1,2 @@
+I"�<p>用<code class="language-plaintext highlighter-rouge">fdisk</code>命令删掉了所有的硬盘分区，然后<code class="language-plaintext highlighter-rouge">reboot</code>了Ubuntu虚拟机，后果就是开机出现</p>
+:ET

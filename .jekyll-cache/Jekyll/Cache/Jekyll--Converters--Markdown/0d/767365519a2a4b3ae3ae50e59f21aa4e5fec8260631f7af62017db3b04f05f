@@ -1,0 +1,199 @@
+I"�/<h3 id="1type">1.<code class="language-plaintext highlighter-rouge">type</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">type</code>只找出执行文件</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">type</span> <span class="o">[</span><span class="nt">-tpa</span><span class="o">]</span> name
+<span class="c"># 输出含义</span>
+file <span class="c"># 外部命令</span>
+<span class="nb">alias</span> <span class="c"># 该命令为命令的别名</span>
+<span class="nb">builtin</span> <span class="c"># 为bash内置的命令</span>
+
+<span class="c"># 参数</span>
+<span class="nt">-t</span>
+<span class="nt">-p</span> <span class="c">#显示完整路径</span>
+<span class="nt">-a</span> <span class="c">#显示在PATH变量定义的路径中，显示所有的命令</span>
+</code></pre></div></div>
+
+<h3 id="2echo-打印变量">2.<code class="language-plaintext highlighter-rouge">echo</code> 打印变量</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$variable</span> <span class="c"># 显示变量 '$'表示后面所接的是变量名</span>
+<span class="c">#应用实例</span>
+<span class="nb">echo</span> <span class="nv">$PATH</span>
+<span class="nb">echo</span> <span class="nv">$HOME</span>
+<span class="nb">echo</span> <span class="nv">$MAIL</span>
+</code></pre></div></div>
+
+<p>【有关变量的其他几点提示】</p>
+
+<ol>
+  <li>使用<strong>“$变量名称”</strong> 或者 <strong>${变量}</strong>累加内容 如 <code class="language-plaintext highlighter-rouge">PATH="$PATH":/home/bin</code>或者<code class="language-plaintext highlighter-rouge">PATH=S{PATH}:/home/bin</code></li>
+  <li>若需要该变量在其他子进程执行，需要<strong>export</strong>来使变量变成环境变量 如<code class="language-plaintext highlighter-rouge">export PATH</code></li>
+  <li><strong>`</strong> 反单引号，被两个反单引号所包括的命令会优先执行</li>
+</ol>
+
+<h3 id="3unset-取消变量">3.<code class="language-plaintext highlighter-rouge">unset</code> 取消变量</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">unset </span>variable
+</code></pre></div></div>
+
+<h3 id="4set-显示所有变量">4.<code class="language-plaintext highlighter-rouge">set</code> 显示所有变量</h3>
+
+<h3 id="5export-将自定义变量转化为环境变量">5.<code class="language-plaintext highlighter-rouge">export</code> 将自定义变量转化为环境变量</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span>variable
+</code></pre></div></div>
+
+<h3 id="6locale-查询系统支持的语言">6.<code class="language-plaintext highlighter-rouge">locale</code> 查询系统支持的语言</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>locale <span class="nt">-a</span>
+</code></pre></div></div>
+
+<p>相关信息存放于<code class="language-plaintext highlighter-rouge">/usr/lib/locale</code></p>
+
+<h3 id="7read-读取来自键盘输入的变量">7.<code class="language-plaintext highlighter-rouge">read</code> 读取来自键盘输入的变量</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">read</span> <span class="o">[</span><span class="nt">-pt</span><span class="o">]</span> variable
+<span class="nt">-p</span> <span class="c"># 后接提示符</span>
+<span class="nt">-t</span> <span class="c"># 后接等待的秒数</span>
+<span class="c">#你的键盘输入会被存储到变量里 可以用echo $variable查看</span>
+</code></pre></div></div>
+
+<h3 id="8array">8.<code class="language-plaintext highlighter-rouge">array</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">declare</span> <span class="nt">-a</span> var
+var[index]<span class="o">=</span>content
+<span class="nb">echo</span> <span class="k">${</span><span class="nv">var</span><span class="p">[index]</span><span class="k">}</span>
+</code></pre></div></div>
+
+<h3 id="9declare-typeset-声明变量类型">9.<code class="language-plaintext highlighter-rouge">declare</code> &amp;<code class="language-plaintext highlighter-rouge">typeset</code> 声明变量类型</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">declare</span> <span class="o">[</span><span class="nt">-aixr</span><span class="o">]</span> variable
+<span class="c">#默认变量类型是字符串 </span>
+<span class="c">#参数说明</span>
+<span class="nt">-a</span> <span class="c"># 将后面名为variable的变量定义为 array类型</span>
+<span class="nt">-i</span> <span class="c"># integer ps:bash不支持浮点数运算的</span>
+<span class="nt">-x</span> <span class="c"># 声明为环境变量 功能同export</span>
+<span class="nt">-r</span> <span class="c"># readonly</span>
+</code></pre></div></div>
+
+<h3 id="10ulimit-设置文件系统与程序的限制关系">10.<code class="language-plaintext highlighter-rouge">ulimit</code> 设置文件系统与程序的限制关系</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xxxxxxxxxx ulimit <span class="o">[</span><span class="nt">-SHacdfltu</span><span class="o">]</span> <span class="o">[</span>配额]
+</code></pre></div></div>
+
+<p>感觉我目前还用不上。</p>
+
+<h3 id="11alias-设置命令别名">11.<code class="language-plaintext highlighter-rouge">alias</code> 设置命令别名</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">alias </span><span class="nv">lm</span><span class="o">=</span><span class="s1">'ls -l | more'</span>
+<span class="nb">alias rm</span><span class="o">=</span><span class="s1">'rm -i'</span>
+<span class="nb">alias</span> <span class="c"># 不加任何东西会显示目前已有的alias</span>
+</code></pre></div></div>
+
+<h3 id="12unalias-取消别名设置">12.<code class="language-plaintext highlighter-rouge">unalias</code> 取消别名设置</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">unalias </span>别名
+</code></pre></div></div>
+
+<h3 id="13history">13.<code class="language-plaintext highlighter-rouge">history</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">history</span> <span class="o">[</span>n] <span class="c">#后接数字 显示最近n条命令</span>
+<span class="nb">history</span> <span class="o">[</span><span class="nt">-c</span><span class="o">]</span>
+<span class="nb">history</span> <span class="o">[</span><span class="nt">-raw</span><span class="o">]</span> histfiles
+<span class="nt">-w</span>  <span class="c"># 当前记录立刻写入~/.bash_history中</span>
+
+<span class="c">#配合一下操作使用</span>
+<span class="o">!</span>number <span class="c">#执行第number条</span>
+<span class="o">!</span><span class="nb">command</span> <span class="c">#模糊的command也可以</span>
+<span class="o">!!</span> <span class="c">#执行上一条</span>
+</code></pre></div></div>
+
+<h3 id="14stty-终端机的环境设置">14.<code class="language-plaintext highlighter-rouge">stty</code> 终端机的环境设置</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">stty</span> - change and print terminal line settings
+<span class="nb">stty</span> <span class="o">[</span><span class="nt">-a</span><span class="o">]</span>
+
+<span class="c">#一般挺少要配置这玩意的</span>
+</code></pre></div></div>
+
+<h3 id="15set-bash自己的终端机设置值">15.<code class="language-plaintext highlighter-rouge">set</code> Bash自己的终端机设置值</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span> <span class="o">[</span>OPTIONS]
+<span class="nt">-u</span>
+<span class="nt">-v</span>
+<span class="nt">-x</span>
+<span class="nt">-h</span>
+<span class="nt">-H</span>
+<span class="nt">-m</span>
+<span class="nt">-B</span>
+<span class="nt">-C</span>
+
+<span class="nb">echo</span> <span class="nv">$-</span> <span class="c">#查看当前set的设置情况</span>
+</code></pre></div></div>
+
+<h2 id="数据重定向">数据重定向</h2>
+
+<ol>
+  <li>标准输入(stdin) 0 &lt;;« <code class="language-plaintext highlighter-rouge">0&lt;</code>与<code class="language-plaintext highlighter-rouge">0&lt;&lt;</code>     数字与符号中间无空格</li>
+  <li>标准输出(stdout) 1 &gt;;» <code class="language-plaintext highlighter-rouge">1&gt;</code>与<code class="language-plaintext highlighter-rouge">1&gt;&gt;</code>    数字与符号中间无空格</li>
+  <li>标准错误输出(stderr) 2&gt;; 2»</li>
+</ol>
+
+<h3 id="16数据重定向">16.<code class="language-plaintext highlighter-rouge">&gt;</code>数据重定向</h3>
+
+<h3 id="17-管道界定符与管道命令">17.<code class="language-plaintext highlighter-rouge">|</code> 管道界定符与管道命令</h3>
+
+<p><strong>管道命令</strong>，指可以接受 standard input 数据的命令。</p>
+
+<ul>
+  <li>管道命令仅处理standard output, 对于standard error output会给予忽略</li>
+  <li>管道命令必须要能够接受来自前一个命令的数据作为 standard input 继续处理</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-al</span> /etc | less
+</code></pre></div></div>
+
+<h2 id="管道命令之选取命令">管道命令之选取命令</h2>
+
+<h3 id="18cut">18.<code class="language-plaintext highlighter-rouge">cut</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cut</span> <span class="nt">-d</span> <span class="s1">'分隔字符'</span> <span class="nt">-f</span> fields <span class="c"># 用于分隔字符</span>
+<span class="nb">cut</span> <span class="nt">-c</span> 字符范围 <span class="c">#用于排列整齐信息</span>
+<span class="nt">-d</span> <span class="c"># 后接分隔字符 与-f一起使用；</span>
+<span class="nt">-f</span> <span class="c"># 依据-d的分隔字符将一段信息切割成为数段 </span>
+<span class="nt">-c</span> <span class="c"># 以字符的单位取出固定字符区间</span>
+
+<span class="c"># 举例说明</span>
+</code></pre></div></div>
+
+<h3 id="19grep">19.<code class="language-plaintext highlighter-rouge">grep</code></h3>
+
+<h2 id="排序命令">排序命令</h2>
+
+<h3 id="20sort">20.<code class="language-plaintext highlighter-rouge">sort</code></h3>
+
+<h3 id="21wc">21.<code class="language-plaintext highlighter-rouge">wc</code></h3>
+
+<h3 id="22-uniq">22. <code class="language-plaintext highlighter-rouge">uniq</code></h3>
+
+<h3 id="23tee-双重重定向">23.<code class="language-plaintext highlighter-rouge">tee</code> 双重重定向</h3>
+
+<h2 id="字符转换命令">字符转换命令</h2>
+
+<h3 id="24tr">24.<code class="language-plaintext highlighter-rouge">tr</code></h3>
+
+<h3 id="25col">25.<code class="language-plaintext highlighter-rouge">col</code></h3>
+
+<h3 id="26join">26.<code class="language-plaintext highlighter-rouge">join</code></h3>
+
+<h3 id="27paste">27.<code class="language-plaintext highlighter-rouge">paste</code></h3>
+
+<h3 id="28expand">28.<code class="language-plaintext highlighter-rouge">expand</code></h3>
+
+<h3 id="29split--切割命令">29.<code class="language-plaintext highlighter-rouge">split</code> 	切割命令</h3>
+
+<h3 id="30xargs--参数替换">30.<code class="language-plaintext highlighter-rouge">xargs</code>  参数替换</h3>
+
+<h3 id="31--减号的用途">31.<code class="language-plaintext highlighter-rouge">-</code> 减号的用途</h3>
+
+:ET

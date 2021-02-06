@@ -1,0 +1,193 @@
+I"�'<p><strong>版权声明</strong>：本文为51CTO博主「yuanbin0710」的原创文章,转载请附上原文出处链接及本声明。
+<strong>原文链接：</strong><a href="https://blog.51cto.com/yuanbin/114698">https://blog.51cto.com/yuanbin/114698</a></p>
+
+<h1 id="linux-文件基本属性与权限"><strong>Linux 文件基本属性与权限</strong></h1>
+
+<p>Linux系统是一种典型的多用户系统，不同的用户处于不同的地位，拥有不同的权限。为了保护系统的安全性，Linux系统对不同的用户访问同一文件（包括目录文件）的权限做了不同的规定。</p>
+
+<p>在Linux中我们可以使用ll或者ls –l命令来显示一个文件的属性以及文件所属的用户和组（如图一）。</p>
+
+<p><a href="https://s4.51cto.com/attachment/200811/24/363003_1227493856Lkcx.png"><img src="https://s4.51cto.com/attachment/200811/24/363003_1227493856ulhI.png" alt="p_w_picpath" /></a></p>
+
+<p><img src="/Users/ncc-1701-enterprise/Library/Application Support/typora-user-images/Screen Shot 2021-01-29 at 18.05.03.png" alt="Screen Shot 2021-01-29 at 18.05.03" /> 
+图一：查看文件属性</p>
+
+<h3 id="1linux文件类型"><strong>1.Linux文件类型</strong></h3>
+
+<p>在Linux中第一位属性用来确定文件类型。在图一中，我们看到bin文件的第一个属性用“d”表示。“d”在Linux中代表该文件是一个目录文件。除了目录文件外，Linux中还有其他文件类型。</p>
+
+<h3 id="linux主要文件类型"><strong>Linux主要文件类型：</strong></h3>
+
+<ul>
+  <li><strong>①</strong> <strong>普通文件（第一个属性用“-”表示）</strong></li>
+</ul>
+
+<p>普通文件就是我们通常访问的文件，由ll命令显示出来的属性中，第一个属性为“-”，例如【-rwxr—–】。我们根据文件的内容，又可以将普通文件分为以下几种。</p>
+
+<p><strong>纯文本文件（ASCII）：</strong>Linux系统中最多的一种文件类型，它的内容我们可以直接读取。文件的内容一般都是字母、数字以及一些符号等。配置文件基本都属于这种文件类型。可以使用cat命令查看文件内容。</p>
+
+<p><strong>二进制文件（Binary）：</strong>系统其实只认识并且可以执行二进制文件。Linux中的可执行文件就是这种格式，当然脚本、文本方式的批处理文件虽然可执行，但不是二进制文件。例如命令cat就是二进制文件。</p>
+
+<p><strong>数据格式的文件（Data）：</strong>有些程序在运行过程中会读取某些特定格式的文件，这些特定格式的文件可以称为数据文件。比如，Linux用户在登陆系统时，会将登陆数据记录在/var/log/wtmp文件内，这个文件就是一个数据文件。</p>
+
+<ul>
+  <li><strong>②</strong> <strong>目录文件（directory）（第一个属性用“d”表示）</strong></li>
+</ul>
+
+<p>目录文件就是目录，相当于windows中的文件夹。</p>
+
+<ul>
+  <li><strong>③</strong> <strong>符号链接文件（link）（第一个属性用“l”表示）</strong></li>
+</ul>
+
+<p>符号链接相当于windows中的快捷方式。在Linux中有两种链接方式，软链接（符号链接）和硬链接。</p>
+
+<ul>
+  <li><strong>④</strong> <strong>设备文件（设备文件分为块设备文件和字符设备文件）</strong></li>
+</ul>
+
+<p><strong>块设备文件（block）（第一个属性用“b”表示）：</strong>块设备是用来存储数据以供系统访问的接口设备，比如硬盘等。</p>
+
+<p><strong>字符设备文件（character）（第一个属性用“c”表示）：</strong>字符设备就是拥有串行端口的接口设备，比如键盘、鼠标等。</p>
+
+<ul>
+  <li><strong>⑤</strong> <strong>套接字文件（sockets）（第一个属性用“s”表示）</strong></li>
+</ul>
+
+<p>套接字文件通常用户网络数据连接。我们可以启动一个程序来监听客户端的请求，客户端就可以通过套接字来进行数据通信。通常可以在/var/run/目录中看到这类文件。</p>
+
+<ul>
+  <li><strong>⑥</strong> <strong>管道文件（FIFO，pipe）（第一个属性用“p”表示）</strong></li>
+</ul>
+
+<p>管道文件主要用来解决多个程序同时访问一个文件所造成的错误。</p>
+
+<h3 id="2linux文件属性"><strong>2.Linux文件属性</strong></h3>
+
+<p>对于Linux系统的文件来说，其基本的属性有三种：<strong>读</strong>（r/4）、<strong>写</strong>（w/2）、<strong>执行</strong>（x/1）。不同的用户对于文件也拥有不同的读、写和执行权限。</p>
+
+<ul>
+  <li>
+    <p><strong>读权限 r：</strong>表示具有读取目录结构的权限，可以查看和阅读文件。</p>
+  </li>
+  <li>
+    <p><strong>写权限 w：</strong>可以新建、删除、重命名、移动目录或文件（不过<strong>写权限受父目录权限控制</strong>）。比如/test目录的属性是【drwxr-xr-x】，属主和属组都是root。在/test目录下有一个叫aa的普通文件，其属性是【-rwxrw-rw-】，属主和属组都是root，那么我想使用另外一个用户bob来删除aa这个文件，是没有权限的，虽然aa的other有读和写权限，但是其父目录的other只有r权限，所以bob也不能删除aa文件，受到父目录权限的影响。</p>
+  </li>
+  <li>
+    <p><strong>执行权限 x：</strong>文件拥有执行权限，才可以运行。比如二进制文件和脚本文件。目录文件要有执行权限才可以进入。</p>
+  </li>
+</ul>
+
+<p>每个文件的属性由左边第一部分的10个字符来确定（如图二）。</p>
+
+<p><a href="https://s4.51cto.com/attachment/200811/24/363003_1227493857JadM.png"><img src="https://s4.51cto.com/attachment/200811/24/363003_1227493859FdXT.png" alt="p_w_picpath" /></a></p>
+
+<p>图二：文件属性格式</p>
+
+<p>从左至右用0-9这些数字来表示，第0位确定文件类型，第1-3位确定属主（该文件的所有者）拥有该文件的权限，第4-6位确定属组（所有者的同组用户）拥有该文件的权限，第7-9位确定其他用户拥有该文件的权限。其中，第1、4、7位表示读权限，如果用“r”字符表示，则有读权限，如果用“-”字符表示，则没有读权限；第2、5、8位表示写权限，如果用“w”字符表示，则有写权限，如果用“-”字符表示没有写权限；第3、6、9位表示可执行权限，如果用“x”字符表示，则有执行权限，如果用“-”字符表示，则没有执行权限。</p>
+
+<h3 id="3linux文件属主和属组"><strong>3.Linux文件属主和属组</strong></h3>
+
+<p>对于文件来说，它都有一个特定的所有者，也就是对该文件具有所有权的用户。同时，在Linux系统中，用户是按组分类的，一个用户属于一个或多个组。文件所有者以外的用户又可以分为文件所有者的同组用户和其他用户。因此，Linux系统按文件所有者、文件所有者同组用户和其他用户来规定了不同的文件访问权限。</p>
+
+<p>在图一中，bin文件是一个目录文件，属主和属组都为root，属主有可读、可写、可执行的权限；与属主同组的其他用户有可读和可执行的权限；其他用户也有可读和可执行的权限。</p>
+
+<h3 id="4-更改文件属性"><strong>4.</strong> <strong>更改文件属性</strong></h3>
+
+<ul>
+  <li><strong>① chgrp：</strong>更改文件属组</li>
+</ul>
+
+<p>chgrp [-R] 属组名文件名</p>
+
+<p>-R：递归更改文件属组，就是在更改某个目录文件的属组时，如果加上-R的参数，那么该目录下的所有文件的属组都会更改。</p>
+
+<ul>
+  <li><strong>② chown：</strong>更改文件属主，也可以同时更改文件属组</li>
+</ul>
+
+<p>chown [–R] 属主名 文件名</p>
+
+<p>chown [-R] 属主名：属组名 文件名</p>
+
+<ul>
+  <li><strong>③ chmod：</strong>更改文件9个属性</li>
+</ul>
+
+<p>Linux文件属性有两种设置方法，一种是数字，一种是符号。</p>
+
+<p>以图一bin文件的属性为例：</p>
+
+<p>【drwxr-xr-x】</p>
+
+<p>Linux文件的9个基本属性：owner/group/other的read/write/excute。9个属性中每3个为一组。比如bin文件的owner是rwx；group是r-x；other是r-x。</p>
+
+<h4 id="数字表示法也叫八进制表示法"><strong>数字表示法（也叫八进制表示法）：</strong></h4>
+
+<p>我们将read/write/excute用数字表示就是：</p>
+
+<p>read：r：4</p>
+
+<p>write：w：2</p>
+
+<p>excute：x：1</p>
+
+<p>没有权限：-：0</p>
+
+<p>我们用八进制表示：</p>
+
+<p>—：0</p>
+
+<p>–x：1</p>
+
+<p>-w-：2</p>
+
+<p>-wx：3</p>
+
+<p>r–：4</p>
+
+<p>r-x：5</p>
+
+<p>-wx：6</p>
+
+<p>rwx：7</p>
+
+<p>因此，rwx=4+2+1=7，r-x=4+0+1=5。</p>
+
+<p>那么例子中bin文件owner/group/other的权限就可以用755来表示。</p>
+
+<p>使用数字更改文件属性的命令格式就是：</p>
+
+<p>chmod [-R] xyz 文件名</p>
+
+<p>我们使用数字来将bin文件的属性【drwxr-xr-x】更改为【drwxrwx—】。</p>
+
+<p>即chmod [–R] 770 bin</p>
+
+<h4 id="符号表示法"><strong>符号表示法：</strong></h4>
+
+<p>Linux文件的9个属性分为三组：user、group和other，我们可以分别用u表示user、用g表示group、用o表示other、用a表示all所有。权限分为三种：r、w和x。我们用“+”来添加权限、用“-”来除去权限、用“=”来设置权限。</p>
+
+<p>使用符号更改文件属性的命令格式就是：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>chmod [-R] [ugoa]<em>([-+=]([rwx]</em></td>
+      <td>[ugo])) 文件名</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>我们使用符号来将bin文件的属性【drwxr-xr-x】更改为【drwxrwx—】。</p>
+
+<p>即chmod [-R] ug=rwx,o=— bin或者chmod [-R] g+w,o-rx bin。</p>
+
+<p>符号表示法更加灵活。</p>
+
+<h3 id="5文件与目录的权限意义"><strong>5.文件与目录的权限意义</strong></h3>
+
+<p><strong>Tips</strong> 注意的对可执行权限<code class="language-plaintext highlighter-rouge">x</code>的理解</p>
+
+<p>看书本P148页</p>
+:ET

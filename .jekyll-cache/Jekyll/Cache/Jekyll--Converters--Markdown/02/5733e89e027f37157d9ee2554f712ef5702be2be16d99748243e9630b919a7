@@ -1,0 +1,51 @@
+I"<p>昨天开始我用 <code class="language-plaintext highlighter-rouge">echo $PATH | sed -m 's/:/\n/gp'</code> 对$PATH的输出进行断行处理就一直有问题。本来应该每一个路径分行显示的。但是结果却是这样的。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/local/binn/usr/binn/binn/usr/sbinn/sbinn
+</code></pre></div></div>
+
+<p>本来应该用换行符断开的，但是居然把<code class="language-plaintext highlighter-rouge">:</code>替换成了<code class="language-plaintext highlighter-rouge">n</code></p>
+
+<p>百思不得其解。所以我就决定重新装一个 <code class="language-plaintext highlighter-rouge">gnu-sed</code> 来试试</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>gnu-sed
+
+<span class="o">==&gt;</span> Downloading https://mirrors.ustc.edu.cn/homebrew-bottles/bottles/gnu-sed-4.7.catalina.bottle.3.tar.gz
+<span class="o">==&gt;</span> Downloading from https://d29vzk4ow07wi7.cloudfront.net/fd4d42fd7c2896ec25477cf132ee944e0977fe3f3fc98125e5319bf524a8
+<span class="c">######################################################################## 100.0%</span>
+<span class="o">==&gt;</span> Pouring gnu-sed-4.7.catalina.bottle.3.tar.gz
+<span class="o">==&gt;</span> Caveats
+GNU <span class="s2">"sed"</span> has been installed as <span class="s2">"gsed"</span><span class="nb">.</span>
+If you need to use it as <span class="s2">"sed"</span>, you can add a <span class="s2">"gnubin"</span> directory
+to your PATH from your bashrc like:
+
+    <span class="nv">PATH</span><span class="o">=</span><span class="s2">"/usr/local/opt/gnu-sed/libexec/gnubin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+<span class="o">==&gt;</span> Summary
+🍺  /usr/local/Cellar/gnu-sed/4.7: 12 files, 566KB
+</code></pre></div></div>
+
+<p>输出显示 <code class="language-plaintext highlighter-rouge">gnu-sed</code> 的命令名称是 <code class="language-plaintext highlighter-rouge">gsed</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo $PATH | gsed -n 's/:/\n/gp'
+/usr/local/bin
+/usr/bin
+/bin
+/usr/sbin
+/sbin
+</code></pre></div></div>
+
+<p>嗯，这下输出就正常了，虽然我不知道<code class="language-plaintext highlighter-rouge">sed</code>命令哪里出了问题。</p>
+
+<p>在<code class="language-plaintext highlighter-rouge">~/.bashrc</code>中添加</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">alias sed</span><span class="o">=</span><span class="s1">'gsed'</span>
+</code></pre></div></div>
+
+<p>然后重新<code class="language-plaintext highlighter-rouge">source ~/.bashrc</code>导入一次配置文件，之后就能够和一以前一样用<code class="language-plaintext highlighter-rouge">sed</code>了</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">type</span> <span class="nt">-a</span> <span class="nb">sed
+sed </span>is aliased to <span class="s1">'gsed'</span>
+<span class="nb">sed </span>is /usr/bin/sed
+</code></pre></div></div>
+
+<p>使用type可以看见alias已经做好了。</p>
+:ET

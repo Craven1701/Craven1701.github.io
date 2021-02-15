@@ -1,0 +1,16 @@
+I"�<h2 id="script脚本基本要点">Script脚本基本要点</h2>
+
+<h3 id="script脚本的执行方式">Script脚本的执行方式</h3>
+
+<ol>
+  <li>直接命令执行: 直接路径，相对路径，放入$PATH变量所在路径</li>
+  <li>以bash进程来执行 <code class="language-plaintext highlighter-rouge">bash shell.sh</code> 或者 <code class="language-plaintext highlighter-rouge">sh shell.sh</code></li>
+</ol>
+
+<h3 id="script脚本的语法格式要求">Script脚本的语法格式要求</h3>
+
+<ol>
+  <li>第一行必须为<code class="language-plaintext highlighter-rouge">#!/bin/bash</code>声明</li>
+  <li>养成 <code class="language-plaintext highlighter-rouge">exit 0</code> 正常中断的好习惯</li>
+</ol>
+:ET

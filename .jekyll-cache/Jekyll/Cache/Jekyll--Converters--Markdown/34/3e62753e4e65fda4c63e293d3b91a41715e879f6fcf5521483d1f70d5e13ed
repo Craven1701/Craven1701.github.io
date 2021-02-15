@@ -1,0 +1,4 @@
+I"�<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Error: YAML Exception reading /Users/ncc-1701-enterprise/localGit/Craven1701.github.io/_posts/2020-03-24-【转载】SSH服务详解.md: <span class="o">(</span>&lt;unknown&gt;<span class="o">)</span>: mapping values are not allowed <span class="k">in </span>this context at line 3 column 10
+</code></pre></div></div>
+<p>YAML语法格式不正确 front matter的每一个变量(标签)名称后面都需要带上空格 可以从关键字高亮是否正确看出来哪里不对 同时要注意中文标点符号占了2个位，会出现看着有空格实际没有空格的情况。</p>
+:ET

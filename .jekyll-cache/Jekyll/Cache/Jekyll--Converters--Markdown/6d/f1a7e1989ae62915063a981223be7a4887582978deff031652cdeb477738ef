@@ -1,0 +1,65 @@
+I"�<h2 id="sed与awk">sed与awk</h2>
+<p>• 它们都使用相似的语法来调用。
+• 它们都是面向字符流的.都是<strong>从文本文件中-次一行地读取输入</strong>, 并将输出直 接送到标准输出端。
+• 它们都使用正则表达式进行模式匹配。
+• 它们允许用户在脚本中指定指令</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>address]/regular/d
+g/regular/d
+<span class="o">[</span>address]s/pattern/replacment/flag <span class="c"># 这个flag是g则表示修改所有出现的pattern</span>
+</code></pre></div></div>
+<h2 id="sed-按行处理-永远的神之一">sed 按行处理 永远的神之一</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sed</span> <span class="o">[</span><span class="nt">-nefr</span><span class="o">]</span> <span class="o">[</span>Action]
+<span class="nb">sed</span> <span class="o">[</span>OPTION]... <span class="o">{</span>script-only-if-no-other-script<span class="o">}</span> <span class="o">[</span>input-file] ...
+<span class="c">#参数说明</span>
+<span class="nt">-n</span> <span class="c">#只输出被sed处理的stdin 通常与action p配合使用</span>
+<span class="nt">-e</span> <span class="c">#直接在命令行模式上进行sed动作编辑</span>
+<span class="nt">-f</span> <span class="c"># </span>
+<span class="nb">sed</span> <span class="nt">-f</span> file <span class="c">#执行file内的sed命令</span>
+<span class="nt">-r</span> <span class="c">#提供扩展</span>
+<span class="nt">-i</span> <span class="c">#直接修改读取的文件内容 而不是由屏幕输出 （这个还是谨慎啊）</span>
+
+<span class="c">#动作说明</span>
+<span class="o">[</span>n1,[,n2]] <span class="k">function
+</span>n1,n2 <span class="c"># 不一定会存在，一般代表选择进行动作的行数</span>
+10,20[动作行为] <span class="c"># 需要在10到20间进行的动作行为</span>
+<span class="nb">nl</span> /etc/passwd/ | <span class="nb">sed</span> <span class="s1">'2,5d'</span> <span class="c">#删除2~5行</span>
+
+<span class="c"># function 可选参数</span>
+a <span class="c"># add 新增 a后面接字符串 字符串出现在新的一行 使用\可以新增多行</span>
+c <span class="c"># 替换 c后面可以接字符串 可以替换n1,n2之间的行</span>
+d <span class="c"># del 删除 后不接任何参数</span>
+i <span class="c"># insert 插入</span>
+p <span class="c"># print 打印</span>
+s <span class="c"># 替换 这个接正则表达式 </span>
+
+<span class="nb">sed</span> <span class="s1">'n1,n2s/old/new/g'</span> <span class="c">#全局替换</span>
+ps:在sed后面接动作时，记得要用单引号括住。
+</code></pre></div></div>
+
+<h2 id="printf-格式化打印">printf 格式化打印</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">printf</span> <span class="s1">'打印格式'</span> 实际内容
+<span class="c">#参数</span>
+<span class="se">\a</span>  <span class="c"># 警告声音输出</span>
+<span class="se">\b</span>  <span class="c"># 退格</span>
+<span class="se">\f</span>  <span class="c"># 清除屏幕</span>
+<span class="se">\n</span>  <span class="c"># 输出新的一行</span>
+<span class="se">\r</span>  <span class="c"># Enter按键</span>
+<span class="se">\t</span>  <span class="c"># 水平Tab</span>
+<span class="se">\v</span>  <span class="c"># 垂直Tab</span>
+<span class="se">\x</span>NN <span class="c"># NN为两位数的数字 可以转换数字为字符</span>
+%ns <span class="c"># n 数字 s 字符串</span>
+%ni <span class="c"># n 数字 i 整数</span>
+%N.nf <span class="c"># N n数字 f f浮点</span>
+</code></pre></div></div>
+
+<h2 id="awk-按字段处理-永远的神之二">awk 按字段处理 永远的神之二</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">awk</span> <span class="s1">'条件类型1{动作 1} 条件类型2{动作2} ....'</span> filename
+<span class="nb">awk</span> <span class="o">[</span><span class="nt">-W</span> option] <span class="o">[</span><span class="nt">-F</span> value][-v <span class="nv">var</span><span class="o">=</span>value] <span class="o">[</span>file ...]
+
+</code></pre></div></div>
+
+<p>awk以行为一次处理的单位，以字段为最小的处理单位</p>
+:ET

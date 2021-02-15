@@ -1,7 +1,7 @@
 ---
 title: ParallelsUbuntu分辨率调整
 published: true
-tags: linux
+tags: others
 ---
 
 在Parallels虚拟机上安装了ubuntu kylin 16.04 LTS系统，刚开始安装成功的时候，分辨率只有800*600。去系统设置里面改动，可是设置里面只有800*600一个选项。

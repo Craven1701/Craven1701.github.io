@@ -3,7 +3,6 @@ title: 【Linux命令】Linux基础命令(四)：Bash常用命令
 published: true
 tags: linux
 categories: Linux
-
 ---
 
 ### 1.`type`
@@ -255,6 +254,9 @@ last | cut -d ' ' -f1 | sort | uniq -c
 tee [-a] file
 #参数
 -a # 以累加的方式将数据加入file文件中
+# 应用举例
+last | tee last.list | cut -d " " -f1
+ls -l / | tee -a ~/homefile | more # 累加模式
 ```
 
 ## 字符转换命令
@@ -342,4 +344,34 @@ tar -vcf - /home | tar -xvf -
 ```
 
 ……很好 虽然我没看懂。hhhh
+
+## 文件比较
+
+### 32.diff
+
+以行为单位比较两个文件之间的区别。通常用于纯文本文件上的比较。一般是比较新旧版本的区别（你用git的时候有用到过这个命令呀）
+
+```bash
+diff [-bBi] from-file to-file
+```
+
+### 33.cmp
+
+以字节为单位进行比较
+
+```bash
+cmp [-s] file1 file2
+参数
+-s :将所有的不同点的字节处都列出来。cmp
+```
+
+### 34.patch 文件补丁
+
+```bash
+diff -Naur passwd.old passwd.new > passwd.patch
+patch -pN < patch_file # 更新
+patch -R -pN < patch_file # 还原
+```
+
+### 35.pr 文件打印准备
 

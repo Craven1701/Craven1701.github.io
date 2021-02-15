@@ -1,0 +1,52 @@
+I"�<h2 id="script脚本基本要点">Script脚本基本要点</h2>
+
+<h3 id="script脚本的执行方式">Script脚本的执行方式</h3>
+
+<ol>
+  <li>直接命令执行: 直接路径，相对路径，放入$PATH变量所在路径</li>
+  <li>以bash进程来执行 <code class="language-plaintext highlighter-rouge">bash shell.sh</code> 或者 <code class="language-plaintext highlighter-rouge">sh shell.sh</code></li>
+</ol>
+
+<h3 id="script脚本的语法格式要求与一些书写规范">Script脚本的语法格式要求与一些书写规范</h3>
+
+<ol>
+  <li>
+    <p>第一行必须为<code class="language-plaintext highlighter-rouge">#!/bin/bash</code>声明</p>
+  </li>
+  <li>
+    <p>使用 <code class="language-plaintext highlighter-rouge">$variable</code> 或者 <code class="language-plaintext highlighter-rouge">${variable}</code>使用已声明的变量</p>
+  </li>
+  <li>
+    <p>变量赋值 <code class="language-plaintext highlighter-rouge">var1=10</code> <strong>【注意等号左右不允许空格！！】</strong></p>
+  </li>
+  <li>
+    <p>命令输出回传给变量 <code class="language-plaintext highlighter-rouge">var=$(command1)</code> 或者var=`command1`</p>
+  </li>
+  <li>
+    <p>循环与条件判断格式</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if </span><span class="nb">command
+</span><span class="k">then
+	</span>commands
+<span class="k">fi
+   
+if </span><span class="nb">command</span><span class="p">;</span> <span class="k">then
+	</span>commands
+<span class="k">fi
+   
+for </span>var <span class="k">in </span>list
+<span class="k">do
+	</span>commands
+<span class="k">done
+   
+for </span>var <span class="k">in </span>list<span class="p">;</span> <span class="k">do</span>
+   
+   
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>养成 <code class="language-plaintext highlighter-rouge">exit 0</code> 正常中断的好习惯</p>
+  </li>
+</ol>
+
+:ET

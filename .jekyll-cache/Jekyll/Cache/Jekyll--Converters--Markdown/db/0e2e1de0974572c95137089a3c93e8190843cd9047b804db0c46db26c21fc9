@@ -1,0 +1,15 @@
+I"C<h4 id="dpkg">dpkg</h4>
+<p>dpkg 是Debian package的简写，为”Debian“ 操作系统 专门开发的套件管理系统，用于软件的安装，更新和移除。</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpkg <span class="nt">-L</span> package <span class="c"># 查看与该package关联的文件 用于查看软件安装到的位置</span>
+dpkg <span class="nt">-l</span> package <span class="c"># 查看包的版本</span>
+dpkg <span class="nt">-r</span> package <span class="c"># 移除软件 保留配置</span>
+dpkg <span class="nt">-P</span> packagP <span class="c"># 移除软件 不保留配置</span>
+</code></pre></div></div>
+<p>其他参数自己以后要用再补充吧</p>
+
+<h4 id="一些零碎的功能">一些零碎的功能</h4>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gsettings <span class="nb">set </span>org.gnome.desktop.screensaver lock-enabled <span class="nb">false</span> <span class="c"># 关闭自动锁屏</span>
+</code></pre></div></div>
+
+:ET

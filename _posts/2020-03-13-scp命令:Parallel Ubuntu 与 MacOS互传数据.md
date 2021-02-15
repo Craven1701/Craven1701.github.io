@@ -1,7 +1,7 @@
 ---
 title: scp命令:Parallel Ubuntu 与 MacOS互传数据
 published: true
-tags: linux
+tags: others
 ---
 
 Linux上的配置过程

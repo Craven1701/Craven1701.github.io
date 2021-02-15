@@ -1,0 +1,91 @@
+I"A<h2 id="script脚本基本要点">Script脚本基本要点</h2>
+
+<h3 id="script脚本的执行方式">Script脚本的执行方式</h3>
+
+<ol>
+  <li>直接命令执行: 直接路径，相对路径，放入$PATH变量所在路径</li>
+  <li>以bash进程来执行 <code class="language-plaintext highlighter-rouge">bash shell.sh</code> 或者 <code class="language-plaintext highlighter-rouge">sh shell.sh</code></li>
+  <li>使用<code class="language-plaintext highlighter-rouge">source</code>命令执行</li>
+</ol>
+
+<h3 id="不同执行方式下对bash环境的影响">不同执行方式下对bash环境的影响</h3>
+
+<h3 id="script脚本的语法格式要求与一些书写规范">Script脚本的语法格式要求与一些书写规范</h3>
+
+<ol>
+  <li>
+    <p>第一行必须为<code class="language-plaintext highlighter-rouge">#!/bin/bash</code>声明</p>
+  </li>
+  <li>
+    <p>使用 <code class="language-plaintext highlighter-rouge">$variable</code> 或者 <code class="language-plaintext highlighter-rouge">${variable}</code>使用已声明的变量</p>
+  </li>
+  <li>
+    <p>变量赋值 <code class="language-plaintext highlighter-rouge">var1=10</code> <strong>【注意等号左右不允许空格！！】</strong></p>
+  </li>
+  <li>
+    <p>命令输出回传给变量 <code class="language-plaintext highlighter-rouge">var=$(command1)</code> 或者var=`command1`</p>
+  </li>
+  <li>
+    <p>循环与条件判断格式</p>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># if的写法1  </span>
+  <span class="k">if </span><span class="nb">command
+  </span><span class="k">then
+    </span>commands
+  <span class="k">fi</span>
+     
+<span class="c"># if的写法2</span>
+  <span class="k">if </span><span class="nb">command</span><span class="p">;</span> <span class="k">then
+    </span>commands
+  <span class="k">fi</span>
+     
+<span class="c"># if的写法3 </span>
+  <span class="k">if </span><span class="nb">command</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">break
+  </span><span class="k">fi</span>
+</code></pre></div>    </div>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#for的写法1</span>
+  <span class="k">for </span>var <span class="k">in </span>list
+  <span class="k">do
+    </span>commands
+  <span class="k">done</span>
+     
+<span class="c">#for的写法2</span>
+  <span class="k">for </span>var <span class="k">in </span>list<span class="p">;</span> <span class="k">do</span>
+   
+<span class="c">#for的写法3 C语言风格</span>
+  <span class="k">for</span> <span class="o">((</span> variable assignment <span class="p">;</span> condition <span class="p">;</span> iteration process <span class="o">))</span> <span class="c">#注意空格</span>
+  <span class="k">for</span> <span class="o">((</span> a <span class="o">=</span> 1<span class="p">;</span> a &lt; 10<span class="p">;</span> a++ <span class="o">))</span> <span class="c">#注意这里的变量赋值可以有空格</span>
+</code></pre></div>    </div>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#while的格式 test-command状态码$?≠0终止循环</span>
+  <span class="k">while </span>test-command
+  <span class="k">do
+    </span>other commands
+  <span class="k">done</span>
+   
+<span class="c">#until的格式 test-command状态码$?≠0执行循环</span>
+  <span class="k">until </span>test-commands
+  <span class="k">do
+    </span>other commands
+  <span class="k">done</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>养成 <code class="language-plaintext highlighter-rouge">exit 0</code> 正常中断的好习惯</p>
+  </li>
+</ol>
+
+<h2 id="script脚本的常见命令">Script脚本的常见命令</h2>
+
+<h3 id="1读取用户输入-read">1.读取用户输入 <code class="language-plaintext highlighter-rouge">read</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">read</span> <span class="nt">-p</span> <span class="s2">"something say to user"</span> var1
+<span class="c">#之后等待用户输入 用户从键盘的输入存入变量var1</span>
+</code></pre></div></div>
+
+<h3 id="2利用test进行各种测试">2.利用<code class="language-plaintext highlighter-rouge">test</code>进行各种测试</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">test</span> <span class="o">[</span>OPTION] <span class="o">[</span>EXPRESSION]
+</code></pre></div></div>
+
+:ET

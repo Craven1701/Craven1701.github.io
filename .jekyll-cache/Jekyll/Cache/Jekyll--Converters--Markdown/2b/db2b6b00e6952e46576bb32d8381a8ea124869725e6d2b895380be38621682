@@ -1,0 +1,12 @@
+I"�<h3 id="命名缓冲区的使用">命名缓冲区的使用</h3>
+<p><code class="language-plaintext highlighter-rouge">"[a~z][number]yy</code> 将指定行数纳入命名缓冲区</p>
+
+<p><code class="language-plaintext highlighter-rouge">eg "f6yy</code> 将光标处的往下6行存入缓冲区f</p>
+
+<p><code class="language-plaintext highlighter-rouge">"[a~z]p</code> 将指定缓冲区中保存的内容粘贴到当前行的下一行</p>
+
+<p><strong>注意 [双引号 “] 要记得输入在缓冲区名字的前面</strong></p>
+
+<p><code class="language-plaintext highlighter-rouge">:!command</code> 不退出vim并执行shell命令command</p>
+
+:ET

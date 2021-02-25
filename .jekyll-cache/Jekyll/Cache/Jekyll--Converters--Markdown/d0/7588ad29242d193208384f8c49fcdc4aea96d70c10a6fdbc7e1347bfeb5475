@@ -1,0 +1,79 @@
+I"^<h2 id="linux常见的日志文件名">Linux常见的日志文件名</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>日志文件</th>
+      <th>内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/var/log/cron</td>
+      <td>crontab相关</td>
+    </tr>
+    <tr>
+      <td>/var/log/dmesg</td>
+      <td>开机时内核检测的数据</td>
+    </tr>
+    <tr>
+      <td>/var/log/lastlog</td>
+      <td>所有账号最近一次登录系统时的相关信息</td>
+    </tr>
+    <tr>
+      <td>/var/log/mailog  /var/log/mail/*</td>
+      <td>记录邮件信息</td>
+    </tr>
+    <tr>
+      <td>/var/log/messages</td>
+      <td>记录错误信息or重要信息</td>
+    </tr>
+    <tr>
+      <td>/var/log/secure</td>
+      <td>登陆相关，需要密码的行为的输入都记录在这</td>
+    </tr>
+    <tr>
+      <td>/var/log/wtmp  /var/log/faillog</td>
+      <td>wtmp 正确登陆者的账号信息 failog错误登陆者的账号信息</td>
+    </tr>
+    <tr>
+      <td>/var/log/httpd/*  /var/log/news/*  /var/log/samba/*</td>
+      <td>各种网络服务相关</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>不过我的两个系统里多的都是<code class="language-plaintext highlighter-rouge">system.log.4.gz</code> 这种文件？？？</p>
+
+<p>反正就没有这么细致的东西。估计是因为教材用的CentOS和我的Ubuntu,MacOS都有差异。</p>
+
+<h2 id="日志文件的产生与解读">日志文件的产生与解读</h2>
+
+<h4 id="日志文件的产生方式">日志文件的产生方式</h4>
+<ol>
+  <li>由软件开发商自行定义写入的日志文件与相关格式</li>
+  <li>由Linux Distribution提日志文件管理服务。CentOS用的是<code class="language-plaintext highlighter-rouge">syslogd</code>和<code class="language-plaintext highlighter-rouge">klogd</code>，我在Ubuntu上查了一下用的是<code class="language-plaintext highlighter-rouge">rsyslogd</code>,  MacOS上用的也是<code class="language-plaintext highlighter-rouge">syslogd</code>
+(用<code class="language-plaintext highlighter-rouge">man</code>打开帮助手册可以看到相关的配置信息啥的)</li>
+</ol>
+
+<h3 id="日志文件的一般内容格式">日志文件的一般内容格式</h3>
+<p>经过syslogd产生日志文件一般会包含以下四个内容</p>
+<ol>
+  <li>事件发生的日期和时间</li>
+  <li>发生此事件的主机名</li>
+  <li>此事件的服务名称或者函数名称</li>
+  <li>该信息的实际数据内容</li>
+</ol>
+
+<h3 id="etcsyslogconf-配置文件"><code class="language-plaintext highlighter-rouge">/etc/syslog.conf</code> 配置文件</h3>
+<p>这个文件规定了 <code class="language-plaintext highlighter-rouge">什么服务</code> 的 <code class="language-plaintext highlighter-rouge">什么等级信息</code>以及需要 <code class="language-plaintext highlighter-rouge">被记录在哪里</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#syslog.conf的文件格式</span>
+服务名称[.<span class="o">=!]</span>信息等级		信息记录的文件名或设备或主机
+</code></pre></div></div>
+
+<p>虽然但是，Ubuntu用的<code class="language-plaintext highlighter-rouge">rsyslog.conf</code>与上面描述的内容有一些不一样。</p>
+
+<p>这东西具体咋设置还是得等你要用到的时候，去看官方给的参考手册，现在有个概念就行。</p>
+
+:ET

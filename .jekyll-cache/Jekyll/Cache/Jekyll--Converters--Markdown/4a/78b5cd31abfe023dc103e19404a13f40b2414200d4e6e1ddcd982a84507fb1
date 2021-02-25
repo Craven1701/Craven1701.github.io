@@ -1,0 +1,198 @@
+I"�<h1 id="用户标识符-uid-与-gid">用户标识符 UID 与 GID</h1>
+
+<p><strong>【Linux系统中的ID】</strong></p>
+
+<p>User ID = UID 用户ID</p>
+
+<p>Group ID = GID 用户组ID</p>
+
+<p>用户习惯于看用户名，系统识别登陆者只看UID/GID。</p>
+
+<p>【shell环境的获得与登录】</p>
+
+<ol>
+  <li>检查账号:先在 <code class="language-plaintext highlighter-rouge">etc/passwd</code> 中查找是否有输入的 <code class="language-plaintext highlighter-rouge">账号</code> , 查找到符合条件的记录则读出 UID 与 GID (存放于/etc/group)</li>
+  <li>核对密码表:进入 <code class="language-plaintext highlighter-rouge">etc/shadow</code> 通过 <code class="language-plaintext highlighter-rouge">UID</code> 寻找对应记录，并核对用户输入的密码与记录是否一致</li>
+  <li>账号和密码核对均正确，进入 <code class="language-plaintext highlighter-rouge">shell</code> 管理阶段</li>
+</ol>
+
+<p><strong>值得注意的是：</strong> macOS不使用这样的文件来管理密码。对应的它给每个用户单独分配了一个shadow file,扩展名是<code class="language-plaintext highlighter-rouge">.plist</code>  存放路径是<code class="language-plaintext highlighter-rouge">/var/db/dslocal/nodes/Default/users/</code>，只有root有访问权限。（所以我在/etc/passwd里面是找不到自己的用户名的记录的）</p>
+
+<h2 id="1etcpasswd文件结构--管理uid-gid">1.<code class="language-plaintext highlighter-rouge">etc/passwd</code>文件结构  (管理UID GID)</h2>
+
+<p>|                           |                                     |         |           |                           |                               |                     |
+| ————————- | ———————————– | ——- | ——— | ————————- | —————————– | ——————- |
+| root                      | :*                                  | :0      | :0        | :System Administrator     | :/var/root                    | :/bin/sh            |
+| 1.账号名称                | 2.密码                              | 3.UID   | 4.GID     | 5.用户信息说明栏          | 6.主目录 <br />home directory | 7.shell             |
+| 人类使用账号，与UID相对应 | 以前存在这，现在移动到/etc/shadow里 | User ID | Group  ID | 解释账号名称的意义 没啥用 | 该账户登录shell时的默认目录   | 默认使用shell的位置 |
+其中 GID 的有关信息保存在 <code class="language-plaintext highlighter-rouge">etc/group</code> 是个形式与<code class="language-plaintext highlighter-rouge">erc/passwd</code>差不多的文件。</p>
+
+<h2 id="2-etcshadow文件结构-管理密码">2. <code class="language-plaintext highlighter-rouge">etc/shadow</code>文件结构 (管理密码)</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>root</td>
+      <td>!</td>
+      <td>18611</td>
+      <td>0</td>
+      <td>99999</td>
+      <td>7</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>1.账号名称</td>
+      <td>2.密码</td>
+      <td>3.最近变动密码日期</td>
+      <td>4.密码不可被更动的天数</td>
+      <td>5.密码需要重新更改的天数</td>
+      <td>6.更改前警告天数</td>
+      <td>7.密码过期后的账号宽限时间</td>
+      <td>8.账号失效日期</td>
+      <td>9.保留</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>这个字段是加密的密码，并不是密码明文</td>
+      <td>从1971年1月1日开始的累积天数</td>
+      <td>0表示可以随时更改</td>
+      <td>99999表示永远不需要更改</td>
+      <td> </td>
+      <td>密码过期后还能用来登录的期限，但是登录会要求强制密码修改</td>
+      <td> </td>
+      <td>保留给未来可能存在的新功能</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="3etcgroup-文件结构">3./etc/group 文件结构</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>wheel</td>
+      <td>:*</td>
+      <td>:0</td>
+      <td>:root</td>
+    </tr>
+    <tr>
+      <td>1.用户组名称</td>
+      <td>2.用户组密码</td>
+      <td>3.GID</td>
+      <td>4.用户组支持的账号名称</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>一般这个不用设置,实际的密码存在/etc/gshadow里</td>
+      <td> </td>
+      <td>每个用户可以拥有多个用户组的支持，因此引出有效用户组与初始用户组的概念</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="初始用户组-initial-group">初始用户组 initial group</h4>
+
+<p>保存在/etc/passswd中的GID所代表的组是初始用户组，当用户登录系统时，立刻就拥有这个用户组的相关权限。</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-13 at 10.24.35.png" alt="" /></p>
+
+<p>上图中我的用户craven存在于很多的用户组里（其实可以用<code class="language-plaintext highlighter-rouge">groups</code>命令直接查看的），但是我的默认用户组是1000，同时因为是自己的初始用户组，所以/etc/groups文件的第四字段没有内容。</p>
+
+<h4 id="有效用户组-effective-group">有效用户组 effective group</h4>
+
+<p>在创建文件时，新文件所属的用户组跟随当前用户操作时的有效用户组，<code class="language-plaintext highlighter-rouge">newgrp</code>可以用来切换已有支持的用户组</p>
+
+<h2 id="4-etcgshadows-文件格式">4. /etc/gshadows 文件格式</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>1.用户组名</td>
+      <td>2.密码列</td>
+      <td>3.用户组管理员的账号</td>
+      <td>4.该用户组所属的账号</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="pam模块与用户认证">PAM模块与用户认证</h1>
+
+<p>PAM = Pluggable Authentication Modules 嵌入式模块</p>
+
+<p>用于保证主机上对于用户身份验证的一致性。是一个独立的API，任何其他程序需要用户认证的时候，都通过调用PAM来进行，这样能保证验证结果的一致性。</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-13 at 22.32.16.png" alt="" /></p>
+
+<p>PAM通过查看配置文件 <code class="language-plaintext highlighter-rouge">/etc/pam.d/</code> 中，与调用PAM的程序同名的配置文件，来引用相关的PAM模块逐步进行验证分析。</p>
+
+<p>E.g ： 比如我使用 <code class="language-plaintext highlighter-rouge">passwd</code> 来调用PAM，那么PAM所查看的文件就是<code class="language-plaintext highlighter-rouge">etc/pam.d/passwd</code></p>
+
+<p>一个验证过程包括三个部分：<strong>验证类型</strong>+<strong>控制标准</strong>+<strong>PAM模块与相关参数</strong></p>
+
+<p>password	optional	pam_gnome_keyring.so</p>
+
+<p>验证类型	控制标准	PAM模块</p>
+
+<h3 id="1验证类型">1.验证类型</h3>
+<ul>
+  <li>auth(authentication) 认证用户身份，需要用户密码</li>
+  <li>account</li>
+  <li>session</li>
+  <li>password</li>
+</ul>
+
+<h3 id="2控制标准">2.控制标准</h3>
+<ul>
+  <li>required</li>
+  <li>requisite</li>
+  <li>sufficient</li>
+  <li>optional</li>
+</ul>
+
+<h3 id="3pam模块">3.PAM模块</h3>
+<p>这就多得是了。基本上是一些<code class="language-plaintext highlighter-rouge">.so</code>文件</p>
+
+:ET

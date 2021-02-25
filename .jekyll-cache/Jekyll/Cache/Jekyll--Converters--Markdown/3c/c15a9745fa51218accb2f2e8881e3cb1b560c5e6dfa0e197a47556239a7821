@@ -1,0 +1,130 @@
+I"�<h2 id="一进程的基本概念">（一）进程的基本概念</h2>
+
+<h3 id="进程">进程</h3>
+<p>在Linux系统中，触发任何一个事件时，系统都会讲它定义成为一个进程，并且给予这个进程一个ID，这个ID称为PID，同时依据触发这个进程的用户与相关属性关系，给予这个PID一组有效的权限设置。</p>
+
+<h4 id="进程的产生">【进程的产生】</h4>
+<p>“执行一个程序或者命令” 就可以触发一个事件而取得一个PID。PID的权限决定了该命令是否可以最终执行任务。
+程序被用户的执行操作触发后，会加载到内存中成为一个个体，这就是进程。</p>
+<ul>
+  <li>进程有<code class="language-plaintext highlighter-rouge">给予执行者</code>的权限/属性等参数。（root和普通用户执行同一个程序，产生的进程所获取的权限可能不一样）（所以不同用户登录shell获取的PID也是不同的。）</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>定义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>程序</td>
+      <td>通常为二进制程序放置在存储媒介中（如硬盘、光盘、软盘、磁带等），以物理文件的形式存在</td>
+    </tr>
+    <tr>
+      <td>进程</td>
+      <td>程序被触发后，①执行者的权限与属性、②程序的程序代码与③所需数据等都会被加载到内存中，操作系统并给予这个内存内的单元一个标识符(PID)，可以说，进程就是一个正在运行中的程序。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-18 at 12.36.04.png" alt="" /></p>
+
+<h4 id="子进程与父进程">【子进程与父进程】</h4>
+
+<p>每一个子进程都有一个PID，而它的父进程则是由PPID来判断（Parent PID）。由父进程衍生出来的其他进程在一般状态下，也会沿用父进程的相关权限。</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-18 at 12.37.51.png" alt="" /></p>
+
+<h4 id="linux的过程调用-fork-and-exec">【Linux的过程调用: fork-and-exec】</h4>
+
+<p>进程都会通过父进程以复制(fork)的方式产生一个一模一样的子进程(暂存进程)，然后被复制出来的子进程再以 <code class="language-plaintext highlighter-rouge">exec</code> 的方式来执行实际要进行的进程，最终就成为一个子进程的存在。 
+<img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-18 at 12.43.57.png" alt="" /></p>
+
+<h4 id="系统或网络服务常驻在内存的进程">【系统或网络服务:常驻在内存的进程】</h4>
+<p>**常驻在内存中的进程被称为 <code class="language-plaintext highlighter-rouge">服务</code> **</p>
+<ol>
+  <li>系统本身所需的服务：crond, atd, syslog等</li>
+  <li>负责网络联机的服务:  Apache, named, postfix, vsftpd 网络服务的特点在于，它会启动一个可以负责网络监听的端口(port)，以及提供外部环境的客户端（client）的连接请求。</li>
+</ol>
+
+<h4 id="命令的后台执行-">命令的后台执行 <code class="language-plaintext highlighter-rouge">&amp;</code></h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp </span>file1 file2 &amp; <span class="c"># 加上&amp;在末尾，这个复制命令就会放到后台去执行了。</span>
+</code></pre></div></div>
+
+<h2 id="二工作管理">(二)工作管理</h2>
+<p>这个部分的具体命令写在 <code class="language-plaintext highlighter-rouge">Linux基础命令(七):工作管理与进程管理</code> 下面</p>
+
+<h3 id="终端机下工作管理">终端机下工作管理</h3>
+
+<p><strong>工作管理Job Control</strong> 指的在Bash环境下，当我们登录bash shell之后，在单一终端机下同时进行多个工作的行为管理。(只能管理当前shell的子进程)</p>
+
+<p>【注意】：执行任务管理的操作中,其实每个任务都是<strong><code class="language-plaintext highlighter-rouge">目前bash的子进程</code></strong>,即彼此之间是有相关性的,我们无法用任务管理的方式由tty1的环境去管理tty2的bash</p>
+
+<h4 id="前台foreground和后台background">前台foreground和后台background</h4>
+
+<p><strong>前台</strong>:出现命令提示符让用户操作的环境</p>
+
+<p><strong>后台</strong>:其他不需要用户时刻关注的工作可以放入后台（放入后台的工作无法用<code class="language-plaintext highlighter-rouge">ctrl+C</code>来终止，也不再接受terminal和shell的输入，想要拽回前台就使用<code class="language-plaintext highlighter-rouge">bg/fg</code>）</p>
+
+<h3 id="脱机管理-进程交给系统后台">脱机管理-进程交给系统后台</h3>
+<p>与前文所提到的工作管理不同，使用<code class="language-plaintext highlighter-rouge">&amp;</code>是将命令交给终端机后台并非系统后台，一旦终端机下线or脱机，后台工作会停止运行。如果需要脱机or注销后还能让工作继续，应该使用的是脱机管理，将进程交给系统后台。(比如前面讲例行性工作的时候所用到的<code class="language-plaintext highlighter-rouge">at</code>命令。)</p>
+
+<h2 id="三进程管理">(三)进程管理</h2>
+<h3 id="常用signal">常用signal</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>代号</th>
+      <th>名称</th>
+      <th>内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>SIGHUP</td>
+      <td>启动被终止的进程,可让该PI O重新读取自己的配置文件,类似重新启动</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>SIGINT</td>
+      <td>相当于用键盘输入[ctrl]-C 来中断一个进程的运行</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>SIGKILL</td>
+      <td>代表强制中断一个进程的执行,如果该进程执行到一半,那么尚未完成的部分可能会有[半成品]产生,类似vim会有.filename.swp保留下来</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>SIGTERM</td>
+      <td>以正常的方式结束进程来终止该进程。由于是正常的终止,所以后续的操作会将它完成。不过,如果该进程已经发生问题,就是无法使用正常的方法终止时,输入这个信号也是没有用的</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>SIGSTOP</td>
+      <td>相当于用键盘输入[ctrl]-z来暂停一个进程的运行</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>更多信息请关注 <code class="language-plaintext highlighter-rouge">man7 signal</code></p>
+
+<h3 id="进程的执行顺序pri与nice值">进程的执行顺序—<code class="language-plaintext highlighter-rouge">PRI</code>与<code class="language-plaintext highlighter-rouge">Nice</code>值</h3>
+
+<p><strong>PRI</strong>=priority 内核自动分配动态调整，用户无法干涉(即使是root)，<code class="language-plaintext highlighter-rouge">ps</code>命令可以查看，PRI越小，表示该进程的优先级越高，越能尽早执行</p>
+
+<p><strong>NI</strong>=nice 我们可以人为设置的部分 也可以用 <code class="language-plaintext highlighter-rouge">ps</code> 命令查看</p>
+
+<p>PRI(new) = PRI(old) + nice</p>
+
+<p><strong>【注意】</strong> ： NI只是影响PRI,最终PRI还是内核自己判断，不是一定按照上面的公式严格计算。NI的范围是(-20, 19),系统还一般只允许你往大了调整。</p>
+
+<p>##(四)SELinux初探</p>
+
+<p>啊啊啊这个，不看了不看了，谁管这玩意啊。</p>
+
+:ET

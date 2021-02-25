@@ -1,0 +1,21 @@
+I"�<h1 id="part1工作管理-job-control">Part1.工作管理 Job Control</h1>
+<h2 id="一终端机下的后台管理">(一)终端机下的后台管理</h2>
+<h3 id="1--放入后台">1. <code class="language-plaintext highlighter-rouge">&amp;</code> 放入后台</h3>
+<p><code class="language-plaintext highlighter-rouge">&amp;</code> 加在命令末尾，放入shell后台以运行状态（running）工作</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"test job control"</span> &amp; <span class="c"># 我输入的命令</span>
+<span class="o">[</span>1] 16561 <span class="c">#[1]是 job number 后面接着的就是PID</span>
+<span class="nb">test </span>job control <span class="c"># 即使放到后台 stdout和stderr还是会输出到当前屏幕上</span>
+Craven@MacBook/ % 
+<span class="o">[</span>1]  + <span class="k">done       </span><span class="nb">echo</span> <span class="s2">"test job control"</span> <span class="c">#+ done表示任务已经完成了</span>
+Craven@MacBook/ % 
+</code></pre></div></div>
+<h3 id="2ctrlz-任务放到后台并暂停">2.<code class="language-plaintext highlighter-rouge">ctrl+z</code> 任务放到后台并暂停</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>^Z
+<span class="nb">jobs</span> <span class="nt">-s</span>
+<span class="o">[</span>1]    suspended  tree
+<span class="o">[</span>2]  - suspended  /usr/local/Cellar/vim/8.2.0050/bin/vim <span class="c"># - 表示最近最后第二个被放进后台的工作</span>
+<span class="o">[</span>3]  + suspended  locate vim <span class="c"># +表示fg默认取用工作</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">-</code>  表示最近最后第二个被放进后台的工作
+<code class="language-plaintext highlighter-rouge">+</code>  表示fg默认取用工作</p>
+:ET

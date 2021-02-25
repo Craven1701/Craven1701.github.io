@@ -1,0 +1,154 @@
+I"�-<p>书P409 讲实话这一套命令很多在macOS上不咋好使吧</p>
+<h2 id="一-账号管理">(一) 账号管理</h2>
+
+<h3 id="1-useradd--新增用户">1. <code class="language-plaintext highlighter-rouge">useradd</code>  新增用户</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useradd <span class="o">[</span><span class="nt">-u</span> UID][-g Initial group][-G 次要用户组][-mM 是否要主文件夹]<span class="se">\</span>
+<span class="o">&gt;[</span><span class="nt">-c</span> 说明栏][-d 主文件夹绝对路径][-s shell] 用户账号名称
+
+虽然说参数很多，但是实际上一般默认值创建就可以了
+useradd yourusername
+useradd <span class="nt">-D</span> <span class="c">#这个命令可以查看useradd的默认值都是怎么设置的 参考书本P411</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">useradd</code>会往几个相关文件里写东西，passwd,shadow,groups这些
+<code class="language-plaintext highlighter-rouge">SKEL=/etc/skel</code> 这个目录里的东西新建用户的时候放入它的主文件夹，可以在这里面统一设置一些用户相关的文件，比如<code class="language-plaintext highlighter-rouge">.bashrc</code>
+总而言之，具体来说，去看书P411,很详细的介绍了<code class="language-plaintext highlighter-rouge">useradd -D</code>的默认设置的意义。</p>
+
+<h3 id="2passwd--change">2.<code class="language-plaintext highlighter-rouge">passwd</code> &amp; <code class="language-plaintext highlighter-rouge">change</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>passwd <span class="o">[</span><span class="nt">--stdin</span><span class="o">]</span>
+<span class="c"># 参数说明</span>
+<span class="c"># 使用范例</span>
+passwd username <span class="c"># 记得用root权限改，不然就只能改自己的账户了</span>
+passwd <span class="c"># 不接任何参数，修改自己的密码 这里不用root权限</span>
+root不需要其他用户原来的密码就能给他们重新设置 就很爽 
+
+chage <span class="o">[</span>OPTIONS] username <span class="c"># 查看密码的详细状态，并作出更改</span>
+<span class="c">#参数说明</span>
+<span class="nt">-l</span> <span class="c"># 查看目前密码信息。</span>
+</code></pre></div></div>
+
+<h3 id="3-usermod-参数微调">3. <code class="language-plaintext highlighter-rouge">usermod</code> 参数微调</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="4userdel-用户删除">4.<code class="language-plaintext highlighter-rouge">userdel</code> 用户删除</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>##(二)用户功能</p>
+<h3 id="5finger">5.<code class="language-plaintext highlighter-rouge">finger</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>finger <span class="o">[</span><span class="nt">-s</span><span class="o">]</span> username
+<span class="c"># 参数说明</span>
+<span class="nt">-s</span> <span class="c"># 仅仅列出用户的账户 全名 终端机代号 登录时间等</span>
+<span class="nt">-m</span> <span class="c"># 列出与后面接着的账号相同者</span>
+不加任何参数就列出当前系统上登录的用户
+</code></pre></div></div>
+<h3 id="6chfn--change-finger">6.<code class="language-plaintext highlighter-rouge">chfn</code>  change finger</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chfn <span class="o">[</span><span class="nt">-foph</span><span class="o">]</span>
+</code></pre></div></div>
+<h3 id="7chsh-change-shell">7.<code class="language-plaintext highlighter-rouge">chsh</code> change shell</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chsh <span class="o">[</span><span class="nt">-ls</span><span class="o">]</span>
+</code></pre></div></div>
+<h3 id="8id-查询某个用户的uid与gid">8.<code class="language-plaintext highlighter-rouge">id</code> 查询某个用户的UID与GID</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">id</span> <span class="o">[</span>username]
+</code></pre></div></div>
+
+<p>##(三)用户组管理</p>
+
+<p>这一组的命令的功能和用户管理那边差不多，就是是针对用户组的。书P420 不在这里再输入一遍了。</p>
+<h3 id="9groupadd">9.<code class="language-plaintext highlighter-rouge">groupadd</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="10groupmod">10.<code class="language-plaintext highlighter-rouge">groupmod</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="11groupdel">11.<code class="language-plaintext highlighter-rouge">groupdel</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="12gpasswd">12.<code class="language-plaintext highlighter-rouge">gpasswd</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="13-newgrp--groups">13. <code class="language-plaintext highlighter-rouge">newgrp</code> &amp; <code class="language-plaintext highlighter-rouge">groups</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">groups</span> <span class="c">#列出当前用户所属的全部用户组</span>
+newgrp <span class="c">#更改当前有效用户组</span>
+</code></pre></div></div>
+
+<p>##(四)ACL的设置</p>
+
+<p>ACL可以针对单一用户，单一文件或者目录来设置r w x 
+（感觉也不是我最近会用到的）</p>
+
+<h3 id="13getfacl">13.<code class="language-plaintext highlighter-rouge">getfacl</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="14setfacl">14.<code class="language-plaintext highlighter-rouge">setfacl</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>##(五)用户身份切换</p>
+<h3 id="15su">15.<code class="language-plaintext highlighter-rouge">su</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su <span class="o">[</span>OPTIONS] <span class="o">[</span>USERNAME]
+<span class="c"># 参数说明</span>
+- <span class="c">#使用login-shell的方式来读取配置文件并登陆 如果没有指明username 那么就是root权限</span>
+<span class="nt">-l</span> <span class="c">#同样是login-shell 但是要求一定有username</span>
+<span class="nt">-m</span> <span class="c">#使用当前环境设置</span>
+<span class="nt">-c</span> <span class="c">#仅仅进行一次命令，c 后面输入命令</span>
+
+su <span class="c">#直接以no-login方式进入root权限 这样是使用当前环境</span>
+su - <span class="c">#login 方式进入root权限</span>
+</code></pre></div></div>
+<p>注意一点，root密码并不是用户当前密码，平时用sudo的时候输入的是自己的密码。想看root的密码请问搜索引擎。</p>
+<h3 id="16sudo">16.<code class="language-plaintext highlighter-rouge">sudo</code></h3>
+
+<p>这个命令仅有/etc/sudoers内的用户才能执行</p>
+
+<p><code class="language-plaintext highlighter-rouge">sudo</code>除了切换进root的身份，也可以切换进很多无法longin的系统用户，暂时获得他们的权限。因为系统用户的默认shell通常是/sbin/nologin</p>
+
+<p>(比如说<code class="language-plaintext highlighter-rouge">/usr/local/mysql-5.7.27-macos10.14-x86_64</code> 这个目录下的两个文件夹，都归系统用户<code class="language-plaintext highlighter-rouge">_mysql</code>所拥有，平时是不能查看这两文件夹大小的。这里面估计就是mysql数据库实体了。)</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo</span> - excute a <span class="nb">command </span>as another user
+<span class="nb">sudo</span> <span class="o">[</span><span class="nt">-b</span><span class="o">]</span> <span class="o">[</span><span class="nt">-u</span> 新用户账号]
+参数
+<span class="nt">-b</span> <span class="c"># 将后续的命令让系统自己执行，而不与目前的shell产生影响</span>
+<span class="nt">-u</span> <span class="c"># 后面可以接欲切换的用户，若无此项则表示切换身份为root</span>
+
+<span class="nb">sudo</span> <span class="nt">-u</span> sshd <span class="nb">touch</span> /tmp/mysshd <span class="c"># 使用系统用户sshd执行命令</span>
+</code></pre></div></div>
+<h3 id="17visudo">17.<code class="language-plaintext highlighter-rouge">visudo</code></h3>
+
+<p>这个命令专门用来设置/etc/sudoers文件，附带有语法检查机制。</p>
+
+<p>这个暂时也用不到，先跳过。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>##(六)主机上的用户信息传递</p>
+<h3 id="18w--who--last--lastlog">18.<code class="language-plaintext highlighter-rouge">w</code> &amp; <code class="language-plaintext highlighter-rouge">who</code> &amp; <code class="language-plaintext highlighter-rouge">last</code> &amp; <code class="language-plaintext highlighter-rouge">lastlog</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">w</code>   <code class="language-plaintext highlighter-rouge">who</code> 查看目前系统上已经登录的用户</p>
+
+<p><code class="language-plaintext highlighter-rouge">last</code> 曾经登录的信息</p>
+
+<p><code class="language-plaintext highlighter-rouge">lastlog</code> 每个账号的最近登录时间</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>没啥参数 没有示例
+</code></pre></div></div>
+<h3 id="19write--mesg--wall">19.<code class="language-plaintext highlighter-rouge">write</code> &amp; <code class="language-plaintext highlighter-rouge">mesg</code> &amp; <code class="language-plaintext highlighter-rouge">wall</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write username <span class="o">[</span>用户所在终端接口]
+wall <span class="s2">"message"</span> <span class="c">#这是全局广播命令</span>
+</code></pre></div></div>
+<h3 id="20mail">20.<code class="language-plaintext highlighter-rouge">mail</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>##(七)其他</p>
+<h3 id="21pwck">21.<code class="language-plaintext highlighter-rouge">pwck</code></h3>
+
+<p>passwd check . 检查 <code class="language-plaintext highlighter-rouge">etc/passwd</code> 里的配置文件信息是否准确</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+<h3 id="22pwconv">22.<code class="language-plaintext highlighter-rouge">pwconv</code></h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+:ET

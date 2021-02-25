@@ -1,0 +1,40 @@
+I"z<p>【参考链接：】<a href="https://code.visualstudio.com/shortcuts/keyboard-shortcuts-macos.pdf?WT.mc_id=code-online-jopapa">官网文档</a></p>
+
+<h3 id="目录">目录</h3>
+
+<p><code class="language-plaintext highlighter-rouge">~/.vscode</code> 这里保存所有安装的插件(extensions)</p>
+
+<h2 id="vscode常用快捷键">VScode常用快捷键</h2>
+
+<h3 id="1general">1.General</h3>
+
+<p><code class="language-plaintext highlighter-rouge">cmd shift N</code> 新建窗口 New window</p>
+
+<h3 id="2basic-editing-基础编辑">2.Basic editing 基础编辑</h3>
+
+<h3 id="3multi-cursor-and-selection-光标与选择">3.Multi-cursor and selection 光标与选择</h3>
+
+<h3 id="4search-and-replace-选择与替换">4.Search and Replace 选择与替换</h3>
+
+<h3 id="5rich-language-editing-富语言编辑">5.Rich language editing 富语言编辑</h3>
+<p><code class="language-plaintext highlighter-rouge">shift+option+F</code> Fortmat documents 代码格式化 (针对不同的语言需要安装不同插件，如果没有安装VScode会给出安装提示)</p>
+
+<h3 id="6navigation-导航">6.Navigation 导航</h3>
+
+<h3 id="7editor-management-编辑器管理">7.Editor management 编辑器管理</h3>
+
+<h3 id="8file-management-文件管理">8.File management 文件管理</h3>
+
+<p><code class="language-plaintext highlighter-rouge">cmd O</code> Open  File… (也可以打开文件夹)</p>
+
+<h3 id="9display-显示">9.Display 显示</h3>
+
+<h3 id="10debug-调试">10.Debug 调试</h3>
+<p><code class="language-plaintext highlighter-rouge">F5</code> Start/Continue 运行</p>
+
+<h3 id="11integrated-terminal-内置终端">11.Integrated terminal 内置终端</h3>
+<p><code class="language-plaintext highlighter-rouge">ctrl+返点号</code> Show Intergrated terminal 呼出内置终端</p>
+
+<p><code class="language-plaintext highlighter-rouge">ctrl+shift+返点号</code> Create new terminal 创建新终端</p>
+
+:ET

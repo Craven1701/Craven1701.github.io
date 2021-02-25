@@ -1,0 +1,120 @@
+I"�<h2 id="零几个概念">零:几个概念</h2>
+
+<p>服务service : 常驻在内存中的进程，可以提供一些系统或者网络功能。</p>
+
+<p>deamon: 实现某一个service的程序我们称之为daemon,实现某个service需要一个deamon在后台运行。</p>
+
+<p>举例: 实现循环例行性工作调度服务的程序为crond这个deamon</p>
+
+<h2 id="deamon">deamon</h2>
+
+<h3 id="deamon的分类">deamon的分类</h3>
+
+<ol>
+  <li>
+    <p><strong>stand_alone</strong>：独立启动，内存常驻，响应快。常见:WWW的httpd, FTP的vsftpd</p>
+  </li>
+  <li>
+    <p><strong>Super daemon</strong>：通过一个统一的daemon来负责唤起服务。当没有客户端请求时，各项服务都是未启动的情况，等到有来自客户端的请求时，super daemon才唤醒相对应的服务。安全性好一些但是慢一点(因为要重新加载到内存中)。常见:superdaemon所管理的服务有 <code class="language-plaintext highlighter-rouge">telnet</code> 。Super daemon本身是常驻内存的，但是被他管理的服务并不是。</p>
+  </li>
+</ol>
+
+<h3 id="super-daemon的工作方式">super daemon的工作方式</h3>
+
+<ol>
+  <li>
+    <p>multi-threaded (多线程)</p>
+
+    <p>一个super daemon同时负责好几个进程</p>
+  </li>
+  <li>
+    <p>Single-threaded (单线程)</p>
+
+    <p>一个一个来的模式，用户多的时候后来的得等很久</p>
+  </li>
+</ol>
+
+<p>### deamon的工作形态类型</p>
+
+<ol>
+  <li>
+    <p>signal-control:通过信号来控制</p>
+  </li>
+  <li>
+    <p>interval-control: 指定一个时间间隔然后去执行某项操作。比如atd ,crond这种</p>
+  </li>
+</ol>
+
+<p>【PS】 习惯上喜欢在服务名称后加上<code class="language-plaintext highlighter-rouge">d</code> 来表示这个是一个服务，比如说at与cron服务的程序名称是atd和crond， d=deamon，在使用<code class="language-plaintext highlighter-rouge">ps</code>和<code class="language-plaintext highlighter-rouge">top</code>进程来查看当前系统里的进程事，可以看到很多{xxx}d结尾的进程，通常都是deamon</p>
+
+<h2 id="服务与端口的对应">服务与端口的对应</h2>
+
+<p>在有关网络服务的服务中，系统只有一个IP，但是我们的系统可以提供很多不同的服务请求，客户端将不同的请求发送到不同的port上，这样系统就能区分客户端是在请求哪个服务。</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> /etc/services
+
+<span class="c">#文件内容节选</span>
+<span class="c">#&lt;daemon name&gt;	&lt;port/数据包协议&gt;	&lt;该服务的说明&gt;</span>
+http             80/udp     www www-http <span class="c"># World Wide Web HTTP</span>
+http             80/tcp     www www-http <span class="c"># World Wide Web HTTP</span>
+</code></pre></div></div>
+<p>上面这个文件里存放着service与port对应的关系 不要乱改  有很多port和service的对应是约定好了的，改了容易出问题。</p>
+
+<h2 id="deamon的启动脚本和启动方式">Deamon的启动脚本和启动方式</h2>
+
+<p>deamon讲到底也是进程，也需要从程序开始被触发。需要执行文件、配置文件、执行环节等。但是deamon的启动比较麻烦，不是单纯的跑一个进程就可以了。所以shell会给出一个shell脚本，作为用户直接运行那个脚本就ok。这个Shell Script会完成环境检测，配置文件的分析，PID文件的配置等一系列为了启动deamon而需要的配置。</p>
+
+<p>相关路径与存放文件列出如下。(MacOS和Linux系统存放路径不同)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>文件路径</th>
+      <th>文件内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/etc/init.d/*</td>
+      <td>系统上几乎所有服务启动脚本在此文件夹下</td>
+    </tr>
+    <tr>
+      <td>/etc/sysconfig/*</td>
+      <td>各个服务的初始化环境配置环境。不过我ubuntu好像是/sysctl.conf/ 和 /sysctl.d/这样的文件</td>
+    </tr>
+    <tr>
+      <td>/etc/xinetd.conf<br />/etc/xinetd.d/*</td>
+      <td>Super daemon配置文件 这个我好像没有啊</td>
+    </tr>
+    <tr>
+      <td>/etc/*</td>
+      <td>各服务各自的配置文件</td>
+    </tr>
+    <tr>
+      <td>/var/lib/*</td>
+      <td>各个服务产生的数据库</td>
+    </tr>
+    <tr>
+      <td>/var/run/*</td>
+      <td><code class="language-plaintext highlighter-rouge">/var/run/</code> 存放deamon启动后所取得的进程的PID</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>有关Super daemon的服务设置，<code class="language-plaintext highlighter-rouge">xinet</code>这个服务我的Ubuntu上默认是没有的，所以对应的文件夹也没有，想安装的话请使用 <code class="language-plaintext highlighter-rouge">apt install xinetd</code> (注意程序包名字后面是有d的)</p>
+
+<h3 id="service命令"><code class="language-plaintext highlighter-rouge">service</code>命令</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service <span class="o">[</span>service name] <span class="o">(</span>start|stop|restart<span class="o">)</span> 
+service <span class="nt">--status-all</span> <span class="c"># 列出系统所有的stand alone服务状态</span>
+</code></pre></div></div>
+<p>不过这个命令我的MacOS上也没有。Linux永远的神。</p>
+
+<h3 id="netstat"><code class="language-plaintext highlighter-rouge">netstat</code></h3>
+
+<h3 id="chkconfig-管理系统默认开机启动与否"><code class="language-plaintext highlighter-rouge">chkconfig</code> 管理系统默认开机启动与否</h3>
+<p>这个命令ubuntu上没有啊= = 怎么整呢。</p>
+
+<h3 id="ntsysv-类似图形界面管理模式"><code class="language-plaintext highlighter-rouge">ntsysv</code> 类似图形界面管理模式</h3>
+
+<p>因为目前也想不出什么时候我要查看各个服务的状况，所以这里看的很草率的就过去了。以后有需要的时候再补充回来吧。</p>
+
+:ET

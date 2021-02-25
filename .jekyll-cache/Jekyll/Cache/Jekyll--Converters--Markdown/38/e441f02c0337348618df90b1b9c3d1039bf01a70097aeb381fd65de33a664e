@@ -1,0 +1,7 @@
+I"�<h2 id="linux工作调度的种类-at-cron">Linux工作调度的种类 at cron</h2>
+<h3 id="at">at</h3>
+<p><code class="language-plaintext highlighter-rouge">at</code> 处理仅仅执行一次就结束调度的命令，需要<code class="language-plaintext highlighter-rouge">atd</code>模块的支持
+这个ubuntu上没有自带，macOS是自带的</p>
+<h3 id="crontab">crontab</h3>
+<p><code class="language-plaintext highlighter-rouge">crontab</code> 按照一定的周期 循环的执行命令，<code class="language-plaintext highlighter-rouge">cron</code>服务是<code class="language-plaintext highlighter-rouge">crontab</code>生效的前提条件</p>
+:ET

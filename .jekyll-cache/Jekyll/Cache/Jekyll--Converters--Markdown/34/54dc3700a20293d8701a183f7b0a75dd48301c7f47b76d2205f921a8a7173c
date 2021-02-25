@@ -1,0 +1,424 @@
+I"�><p>先放官方文档地址 <a href="https://docs.anaconda.com/">Anaconda Documentations</a></p>
+
+<p>官方的usage</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$conda</span>
+usage: conda <span class="o">[</span><span class="nt">-h</span><span class="o">]</span> <span class="o">[</span><span class="nt">-V</span><span class="o">]</span> <span class="nb">command</span> ...
+
+conda is a tool <span class="k">for </span>managing and deploying applications, environments and packages.
+
+Options:
+
+positional arguments:
+  <span class="nb">command
+    </span>clean        Remove unused packages and caches.
+    compare      Compare packages between conda environments.
+    config       Modify configuration values <span class="k">in</span> .condarc. This is modeled
+                 after the git config command. Writes to the user .condarc
+                 file <span class="o">(</span>/Users/ncc-1701-enterprise/.condarc<span class="o">)</span> by default.
+    create       Create a new conda environment from a list of specified
+                 packages.
+    <span class="nb">help         </span>Displays a list of available conda commands and their <span class="nb">help
+                 </span>strings.
+    info         Display information about current conda install.
+    init         Initialize conda <span class="k">for </span>shell interaction. <span class="o">[</span>Experimental]
+    <span class="nb">install      </span>Installs a list of packages into a specified conda
+                 environment.
+    list         List linked packages <span class="k">in </span>a conda environment.
+    package      Low-level conda package utility. <span class="o">(</span>EXPERIMENTAL<span class="o">)</span>
+    remove       Remove a list of packages from a specified conda environment.
+    uninstall    Alias <span class="k">for </span>conda remove.
+    run          Run an executable <span class="k">in </span>a conda environment. <span class="o">[</span>Experimental]
+    search       Search <span class="k">for </span>packages and display associated information. The
+                 input is a MatchSpec, a query language <span class="k">for </span>conda packages.
+                 See examples below.
+    update       Updates conda packages to the latest compatible version.
+    upgrade      Alias <span class="k">for </span>conda update.
+
+optional arguments:
+  <span class="nt">-h</span>, <span class="nt">--help</span>     Show this <span class="nb">help </span>message and exit.
+  <span class="nt">-V</span>, <span class="nt">--version</span>  Show the conda version number and exit.
+
+conda commands available from other packages:
+  build
+  convert
+  debug
+  develop
+  <span class="nb">env
+  </span>index
+  inspect
+  metapackage
+  render
+  server
+  skeleton
+  verify
+
+</code></pre></div></div>
+
+<p>Anaconda的相关文件夹 （我接触到的）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Library/anaconda3 <span class="c">#主目录</span>
+/Library/anaconda3/bin <span class="c"># $PATH中的的一个命令寻找路径</span>
+/Library/anaconda3/condabin <span class="c"># $PATH中的另一个命令寻找路径 </span>
+/Library/anacondas/envs <span class="c"># 虚拟环境的目录</span>
+</code></pre></div></div>
+
+<h2 id="anaconda虚拟环境">Anaconda虚拟环境</h2>
+
+<h3 id="1-虚拟环境相关操作">1. 虚拟环境相关操作</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>conda <span class="nb">env </span>list <span class="c">#查看目前存在的环境</span>
+conda create <span class="nt">--name</span> evnname <span class="nv">python</span><span class="o">=</span>3.6#创建新的环境
+conda <span class="nb">env export</span> <span class="c">#导出环境</span>
+conda <span class="nb">env </span>remove <span class="c">#移除环境</span>
+conda <span class="nb">env </span>update 
+conda <span class="nb">env </span>config
+
+conda activate env-name <span class="c"># 激活虚拟环境</span>
+codna deactivate env-name <span class="c"># 取消环境激活</span>
+
+<span class="c"># 使用source也可以进行环境激活</span>
+<span class="nb">source </span>activate env-name <span class="c"># 激活环境</span>
+<span class="nb">.</span> activate env-name <span class="c"># 激活环境cd</span>
+<span class="c">#activate本身是anaconda带着的命令，source是让环境配置导入当前bash</span>
+<span class="c">#和 source ~/.bashrc  . ~/.bashrc是一个意思</span>
+</code></pre></div></div>
+
+<p>虚拟环境下给我的感觉是就是python相关的命令的执行路径都变了。无论是python本身还是安装包用的pip命令，第一执行顺位都是</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> /Library/anaconda3/envs/env-name/bin/
+</code></pre></div></div>
+
+<p>这个路径下的可执行文件。</p>
+
+<h3 id="2conda虚拟环境的文件树">2.Conda虚拟环境的文件树</h3>
+
+<p>一级目录</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span>
+├── bin
+├── conda-meta
+├── include
+├── lib
+├── share
+└── ssl
+</code></pre></div></div>
+
+<p>二级目录</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span>
+├── bin
+│   ├── 2to3 -&gt; 2to3-3.6
+│   ├── 2to3-3.6
+│   ├── c_rehash
+│   ├── captoinfo -&gt; tic
+│   ├── chardetect
+│   ├── clear
+│   ├── idle3 -&gt; idle3.6
+│   ├── idle3.6
+│   ├── infocmp
+│   ├── infotocap -&gt; tic
+│   ├── lzcat -&gt; xz
+│   ├── lzcmp -&gt; xzdiff
+│   ├── lzdiff -&gt; xzdiff
+│   ├── lzegrep -&gt; xzgrep
+│   ├── lzfgrep -&gt; xzgrep
+│   ├── lzgrep -&gt; xzgrep
+│   ├── lzless -&gt; xzless
+│   ├── lzma -&gt; xz
+│   ├── lzmadec
+│   ├── lzmainfo
+│   ├── lzmore -&gt; xzmore
+│   ├── ncursesw6-config
+│   ├── openssl
+│   ├── pip
+│   ├── pip3
+│   ├── pydoc -&gt; pydoc3.6
+│   ├── pydoc3 -&gt; pydoc3.6
+│   ├── pydoc3.6
+│   ├── python -&gt; python3.6
+│   ├── python3 -&gt; python3.6
+│   ├── python3-config -&gt; python3.6m-config
+│   ├── python3.6
+│   ├── python3.6-config -&gt; python3.6m-config
+│   ├── python3.6m -&gt; python3.6
+│   ├── python3.6m-config
+│   ├── pyvenv -&gt; pyvenv-3.6
+│   ├── pyvenv-3.6
+│   ├── reset -&gt; tset
+│   ├── sqlite3
+│   ├── sqlite3_analyzer
+│   ├── tabs
+│   ├── tclsh -&gt; tclsh8.6
+│   ├── tclsh8.6
+│   ├── tic
+│   ├── toe
+│   ├── tput
+│   ├── tset
+│   ├── unlzma -&gt; xz
+│   ├── unxz -&gt; xz
+│   ├── wheel
+│   ├── wish -&gt; wish8.6
+│   ├── wish8.6
+│   ├── xz
+│   ├── xzcat -&gt; xz
+│   ├── xzcmp -&gt; xzdiff
+│   ├── xzdec
+│   ├── xzdiff
+│   ├── xzegrep -&gt; xzgrep
+│   ├── xzfgrep -&gt; xzgrep
+│   ├── xzgrep
+│   ├── xzless
+│   └── xzmore
+├── conda-meta
+│   ├── ca-certificates-2021.1.19-hecd8cb5_0.json
+│   ├── certifi-2020.12.5-py36hecd8cb5_0.json
+│   ├── <span class="nb">history</span>
+│   ├── libcxx-10.0.0-1.json
+│   ├── libedit-3.1.20191231-h1de35cc_1.json
+│   ├── libffi-3.3-hb1e8313_2.json
+│   ├── ncurses-6.2-h0a44026_1.json
+│   ├── openssl-1.1.1i-h9ed2024_0.json
+│   ├── pip-20.3.3-py36hecd8cb5_0.json
+│   ├── python-3.6.12-h26836e1_2.json
+│   ├── readline-8.1-h9ed2024_0.json
+│   ├── setuptools-52.0.0-py36hecd8cb5_0.json
+│   ├── sqlite-3.33.0-hffcf06c_0.json
+│   ├── tk-8.6.10-hb0a8c7a_0.json
+│   ├── wheel-0.36.2-pyhd3eb1b0_0.json
+│   ├── xz-5.2.5-h1de35cc_0.json
+│   └── zlib-1.2.11-h1de35cc_3.json
+├── include
+│   ├── X11
+│   ├── c++
+│   ├── curses.h
+│   ├── cursesapp.h
+│   ├── cursesf.h
+│   ├── cursesm.h
+│   ├── cursesp.h
+│   ├── cursesw.h
+│   ├── cursslk.h
+│   ├── default.h
+│   ├── editline
+│   ├── eti.h
+│   ├── etip.h
+│   ├── fakemysql.h
+│   ├── fakepq.h
+│   ├── fakesql.h
+│   ├── ffi.h
+│   ├── ffitarget.h
+│   ├── form.h
+│   ├── histedit.h
+│   ├── itcl.h
+│   ├── itcl2TclOO.h
+│   ├── itclDecls.h
+│   ├── itclInt.h
+│   ├── itclIntDecls.h
+│   ├── itclMigrate2TclCore.h
+│   ├── itclTclIntStubsFcn.h
+│   ├── ks_names.h
+│   ├── lzma
+│   ├── lzma.h
+│   ├── menu.h
+│   ├── mysqlStubs.h
+│   ├── nc_tparm.h
+│   ├── ncurses
+│   ├── ncurses.h -&gt; curses.h
+│   ├── ncurses_dll.h
+│   ├── ncursesw
+│   ├── odbcStubs.h
+│   ├── openssl
+│   ├── panel.h
+│   ├── pqStubs.h
+│   ├── python3.6m
+│   ├── readline
+│   ├── sqlite3.h
+│   ├── sqlite3ext.h
+│   ├── tcl.h
+│   ├── tclDecls.h
+│   ├── tclInt.h
+│   ├── tclIntDecls.h
+│   ├── tclIntPlatDecls.h
+│   ├── tclOO.h
+│   ├── tclOODecls.h
+│   ├── tclOOInt.h
+│   ├── tclOOIntDecls.h
+│   ├── tclPlatDecls.h
+│   ├── tclPort.h
+│   ├── tclThread.h
+│   ├── tclTomMath.h
+│   ├── tclTomMathDecls.h
+│   ├── tclUnixPort.h
+│   ├── tdbc.h
+│   ├── tdbcDecls.h
+│   ├── tdbcInt.h
+│   ├── term.h
+│   ├── term_entry.h
+│   ├── termcap.h
+│   ├── tic.h
+│   ├── tk.h
+│   ├── tk3d.h
+│   ├── tkArray.h
+│   ├── tkBusy.h
+│   ├── tkButton.h
+│   ├── tkCanvas.h
+│   ├── tkColor.h
+│   ├── tkDList.h
+│   ├── tkDecls.h
+│   ├── tkEntry.h
+│   ├── tkFileFilter.h
+│   ├── tkFont.h
+│   ├── tkImgPhoto.h
+│   ├── tkInt.h
+│   ├── tkIntDecls.h
+│   ├── tkIntPlatDecls.h
+│   ├── tkIntXlibDecls.h
+│   ├── tkMacOSX.h
+│   ├── tkMacOSXConstants.h
+│   ├── tkMacOSXCursors.h
+│   ├── tkMacOSXDebug.h
+│   ├── tkMacOSXDefault.h
+│   ├── tkMacOSXEvent.h
+│   ├── tkMacOSXFont.h
+│   ├── tkMacOSXInt.h
+│   ├── tkMacOSXPort.h
+│   ├── tkMacOSXPrivate.h
+│   ├── tkMacOSXWm.h
+│   ├── tkMacOSXXCursors.h
+│   ├── tkMenu.h
+│   ├── tkMenubutton.h
+│   ├── tkPlatDecls.h
+│   ├── tkPort.h
+│   ├── tkScale.h
+│   ├── tkScrollbar.h
+│   ├── tkSelect.h
+│   ├── tkText.h
+│   ├── tkUndo.h
+│   ├── tkUnixDefault.h
+│   ├── tkUnixInt.h
+│   ├── tkUnixPort.h
+│   ├── unctrl.h
+│   ├── zconf.h
+│   └── zlib.h
+├── lib
+│   ├── Tk.icns
+│   ├── Tk.tiff
+│   ├── engines-1.1
+│   ├── itcl4.2.0
+│   ├── libc++.1.0.dylib
+│   ├── libc++.1.dylib -&gt; libc++.1.0.dylib
+│   ├── libc++.a
+│   ├── libc++.dylib -&gt; libc++.1.0.dylib
+│   ├── libcrypto.1.1.dylib
+│   ├── libcrypto.a
+│   ├── libcrypto.dylib -&gt; libcrypto.1.1.dylib
+│   ├── libedit.0.dylib
+│   ├── libedit.dylib -&gt; libedit.0.dylib
+│   ├── libffi.6.dylib -&gt; libffi.7.dylib
+│   ├── libffi.7.dylib
+│   ├── libffi.a
+│   ├── libffi.dylib -&gt; libffi.7.dylib
+│   ├── libform.a -&gt; libformw.a
+│   ├── libform.dylib -&gt; libformw.6.dylib
+│   ├── libformw.6.dylib
+│   ├── libformw.a
+│   ├── libformw.dylib -&gt; libformw.6.dylib
+│   ├── libhistory.8.1.dylib
+│   ├── libhistory.8.dylib -&gt; libhistory.8.1.dylib
+│   ├── libhistory.a
+│   ├── libhistory.dylib -&gt; libhistory.8.1.dylib
+│   ├── liblzma.5.dylib
+│   ├── liblzma.a
+│   ├── liblzma.dylib -&gt; liblzma.5.dylib
+│   ├── libmenu.a -&gt; libmenuw.a
+│   ├── libmenu.dylib -&gt; libmenuw.6.dylib
+│   ├── libmenuw.6.dylib
+│   ├── libmenuw.a
+│   ├── libmenuw.dylib -&gt; libmenuw.6.dylib
+│   ├── libncurses++.a -&gt; libncurses++w.a
+│   ├── libncurses++w.a
+│   ├── libncurses.a -&gt; libncursesw.a
+│   ├── libncurses.dylib -&gt; libncursesw.6.dylib
+│   ├── libncursesw.6.dylib
+│   ├── libncursesw.a
+│   ├── libncursesw.dylib -&gt; libncursesw.6.dylib
+│   ├── libpanel.a -&gt; libpanelw.a
+│   ├── libpanel.dylib -&gt; libpanelw.6.dylib
+│   ├── libpanelw.6.dylib
+│   ├── libpanelw.a
+│   ├── libpanelw.dylib -&gt; libpanelw.6.dylib
+│   ├── libpython3.6m.a
+│   ├── libpython3.6m.dylib
+│   ├── libreadline.8.1.dylib
+│   ├── libreadline.8.dylib -&gt; libreadline.8.1.dylib
+│   ├── libreadline.a
+│   ├── libreadline.dylib -&gt; libreadline.8.1.dylib
+│   ├── libsqlite3.0.dylib
+│   ├── libsqlite3.a
+│   ├── libsqlite3.dylib -&gt; libsqlite3.0.dylib
+│   ├── libssl.1.1.dylib
+│   ├── libssl.a
+│   ├── libssl.dylib -&gt; libssl.1.1.dylib
+│   ├── libtcl8.6.dylib
+│   ├── libtclstub8.6.a
+│   ├── libtinfo.a -&gt; libtinfow.a
+│   ├── libtinfo.dylib -&gt; libtinfow.6.dylib
+│   ├── libtinfow.6.dylib
+│   ├── libtinfow.a
+│   ├── libtinfow.dylib -&gt; libtinfow.6.dylib
+│   ├── libtk8.6.dylib
+│   ├── libtkstub8.6.a
+│   ├── libz.1.2.11.dylib
+│   ├── libz.1.dylib -&gt; libz.1.2.11.dylib
+│   ├── libz.a
+│   ├── libz.dylib -&gt; libz.1.2.11.dylib
+│   ├── pkgconfig
+│   ├── python3.6
+│   ├── sqlite3.30.1.2
+│   ├── tcl8
+│   ├── tcl8.6
+│   ├── tclConfig.sh
+│   ├── tclooConfig.sh
+│   ├── tdbc1.1.1
+│   ├── tdbcmysql1.1.1
+│   ├── tdbcodbc1.1.1
+│   ├── tdbcpostgres1.1.1
+│   ├── terminfo -&gt; ../share/terminfo
+│   ├── thread2.8.5
+│   ├── tk8.6
+│   └── tkConfig.sh
+├── share
+│   ├── doc
+│   ├── info
+│   ├── man
+│   ├── readline
+│   ├── tabset
+│   └── terminfo
+└── ssl
+    ├── cacert.pem
+    ├── cert.pem -&gt; cacert.pem
+    ├── ct_log_list.cnf
+    ├── ct_log_list.cnf.dist
+    ├── misc
+    ├── openssl.cnf
+    └── openssl.cnf.dist
+36 directories, 259 files
+</code></pre></div></div>
+
+<p>虚拟环境下执行<code class="language-plaintext highlighter-rouge">pip</code> 或者<code class="language-plaintext highlighter-rouge">pip3</code>, 安装包的存放路径如下</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Library/anaconda3/envs/env-name/lib/python3.6/site-packages
+</code></pre></div></div>
+
+<p>(因为我是指定python=3.6创建虚拟环境，所以pip和pip3对我来说)</p>
+
+<h3 id="2-冗余文件清理">2. 冗余文件清理</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 删除掉从不使用的packages</span>
+<span class="c"># Remove unused packages from writable package caches.</span>
+conda clean <span class="nt">-p</span>
+<span class="c"># 删除掉tar包</span>
+conda clean <span class="nt">-t</span>
+<span class="c"># Remove index cache, lock files, unused cache packages,and tarballs.</span>
+conda clean <span class="nt">-a</span>
+</code></pre></div></div>
+:ET

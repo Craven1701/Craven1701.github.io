@@ -1,0 +1,113 @@
+I"�"<p>搞这个事情的初衷是因为尝到了git甜头想要搞点事情而已。</p>
+
+<p>因为.doc是个二进制文件，git只能显示纯文本文档的修改变化，所以带上<code class="language-plaintext highlighter-rouge">pandoc</code>作一下格式转换。</p>
+
+<p><strong>参考资料：</strong>
+<a href="https://blog.csdn.net/GAI159/article/details/105025312/">https://blog.csdn.net/GAI159/article/details/105025312/</a>
+<a href="https://www.cnblogs.com/yezuhui/p/6853271.html">https://www.cnblogs.com/yezuhui/p/6853271.html</a>
+<a href="https://github.com/vigente/gerardus/wiki/Integrate-git-diffs-with-word-docx-files">https://github.com/vigente/gerardus/wiki/Integrate-git-diffs-with-word-docx-files</a>
+<a href="https://www.jianshu.com/p/6ba04f669d0b">Pandoc的安装与使用</a></p>
+
+<h2 id="pandoc简介">Pandoc简介</h2>
+<p>本部分内容参考
+ <a href="https://www.jianshu.com/p/6ba04f669d0b">Pandoc的安装与使用</a>
+作者：grug350   			来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处</p>
+
+<p>官网：<a href="https://www.pandoc.org/">Pandoc</a></p>
+
+<p>Pandoc是个好用的文本格式转化器。它可以将文档在 Markdown、LaTeX、reStructuredText、HTML、Word docx 等多种标记格式之间相互转换，并支持输出 PDF、EPUB、HTML 幻灯片等多种格式。该程序被称为格式转换界的 “瑞士军刀”。这里用来把word转成markdown，好让我们能在git的管理下看见详细的版本控制信息。</p>
+
+<p>###1. 安装
+安装参考官网就好，支持Windows,macOS,Linux。Linux蛮多发行版自带这个，比如Ubuntu，或则说如果安装过Anacoda,那么pandoc也会同时装入电脑中。</p>
+
+<p>我的电脑里装了Anacoda,所以直接拿来用就好了。</p>
+
+<p>###2.pandoc基本使用</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pandoc <span class="o">[</span>OPTIONS] <span class="o">[</span>FILES]
+
+<span class="c">#基本参数说明</span>
+其中 &lt;files&gt; 为输入的内容，其输入即可以来自文件，也可以来自标准输入甚至网页链接。而 &lt;options&gt; 为参数选项。主要的参数选项有：
+
+<span class="nt">-f</span> &lt;format&gt;、-r &lt;format&gt; <span class="c"># 指定输入文件格式，默认为 Markdown；</span>
+<span class="nt">-t</span> &lt;format&gt;、-w &lt;format&gt; <span class="c"># 指定输出文件格式，默认为 HTML；</span>
+注意：上述两项pandoc可以根据文件拓展名自己识别，不输入也行
+<span class="nt">-o</span> &lt;file&gt; <span class="c"># 指定输出文件，该项缺省时，将输出到标准输出；</span>
+<span class="nt">--highlight-style</span> &lt;style&gt; <span class="c"># 设置代码高亮主题，默认为 pygments；</span>
+<span class="nt">-s</span> <span class="c"># 生成有头尾的独立文件（HTML，LaTeX，TEI 或 RTF）；</span>
+<span class="nt">-S</span> <span class="c"># 聪明模式，根据文件判断其格式；</span>
+<span class="nt">--self-contained</span> <span class="c"># 生成自包含的文件，仅在输出 HTML 文档时有效；</span>
+<span class="nt">--verbose</span> <span class="c"># 开启 Verbose 模式，用于 Debug；</span>
+<span class="nt">--list-input-formats</span> <span class="c"># 列出支持的输入格式；</span>
+ <span class="c"># 列出支持的输出格式；</span>
+<span class="nt">--list-extensions</span> <span class="c"># 列出支持的 Markdown 扩展方案；</span>
+<span class="nt">--list-highlight-languages</span> <span class="c"># 列出支持代码高亮的编程语言；</span>
+<span class="nt">--list-highlight-styles</span> <span class="c"># 列出支持的代码高亮主题；</span>
+<span class="nt">-v</span>、--version <span class="c"># 显示程序的版本号；</span>
+<span class="nt">-h</span>、--help <span class="c"># 显示程序的帮助信息。</span>
+
+<span class="c">#使用示范</span>
+pandoc input.docx <span class="nt">-o</span> output.md <span class="c">#把我的word转成markdown</span>
+pandoc input.md <span class="nt">-o</span> output.docx
+</code></pre></div></div>
+
+<p>##实现对word文档的版本控制
+参考教程地址：<a href="https://github.com/vigente/gerardus/wiki/Integrate-git-diffs-with-word-docx-files">https://github.com/vigente/gerardus/wiki/Integrate-git-diffs-with-word-docx-files</a></p>
+
+<p>This section was inspired by Martin Fenner’s “Using Microsoft Word with git”.</p>
+
+<p>To configure git diff:</p>
+
+<p>Install pandoc.</p>
+
+<p>Tell git how to handle diffs of .docx files.</p>
+
+<p>Create or edit file ~/.gitconfig (linux, Mac) or “c:\Documents and Settings\user.gitconfig” (Windows) to add</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">[</span>diff <span class="s2">"pandoc"</span><span class="o">]</span>
+   <span class="nv">textconv</span><span class="o">=</span>pandoc <span class="nt">--to</span><span class="o">=</span>markdown
+   prompt <span class="o">=</span> <span class="nb">false</span>
+ <span class="o">[</span><span class="nb">alias</span><span class="o">]</span>
+   wdiff <span class="o">=</span> diff <span class="nt">--word-diff</span><span class="o">=</span>color <span class="nt">--unified</span><span class="o">=</span>1
+</code></pre></div></div>
+<p>In your paper directory, create or edit file<code class="language-plaintext highlighter-rouge"> .gitattributes</code> (linux, Windows and Mac) to add</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">*</span>.docx <span class="nv">diff</span><span class="o">=</span>pandoc
+</code></pre></div></div>
+<p>You can commit .gitattributes so that it stays with your paper for use in other computers, but you’ll need to edit<code class="language-plaintext highlighter-rouge"> ~/.gitconfig</code> in every new computer you want to use.</p>
+
+<p>========================================================================================================================================</p>
+
+<h3 id="gitattributes">【<strong>.gitattributes</strong>】</h3>
+
+<p>稍微说明一下<code class="language-plaintext highlighter-rouge">.gitatrributes</code>这个文件。官网链接：<a href="https://git-scm.com/docs/gitattributes">gitattributes documents</a> 
+这个文件是一个简单的文本文件，作用是为<code class="language-plaintext highlighter-rouge">attributes</code>提供一个路径名</p>
+
+<p>文件的基本格式</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pattern attr1 attr2 ...
+</code></pre></div></div>
+<p>是一个pattern跟随一串的attrs, 这个pattern我理解的是某种匹配模式，然后会找到符合这种匹配模式的文件，用后面的attrs对这个文件的操作进行规范。
+上文中的 <code class="language-plaintext highlighter-rouge">*.docx diff=pandoc</code> 表示对于所有.docx的文件，在使用diff时，默认是使用[diff “pandoc”] 这个subsection里面的配置。</p>
+
+<p>========================================================================================================================================</p>
+
+<p>Now you can see a pretty coloured diff with the changes you have made to your .docx file since the last commit
+<code class="language-plaintext highlighter-rouge">git wdiff file.docx</code></p>
+
+<p>To see all changes over time
+<code class="language-plaintext highlighter-rouge">git log -p --word-diff=color file.docx</code></p>
+
+<p>Track changes in Word (.docx) documents getting a diff with the commit.
+Automatically when running git commit.
+This is only going to work from linux/Mac or Windows running git from a bash shell.</p>
+
+<p>Install pandoc. Pandoc is a program to convert between different file formats. It’s going to allow us to convert Word files (.docx) to Markdown (.md).</p>
+
+<p>Set up git hooks to enable automatic generation and tracking of Markdown copies of .docx files.</p>
+
+<p>Copy these hook files to your git project’s .git/hooks directory and rename them, or soft-link to them with ln -s, and make them executable<code class="language-plaintext highlighter-rouge"> (chmod u+x *.sh)</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pre-commit-git-diff-docx.sh -&gt; .git/hooks/pre-commit
+post-commit-git-diff-docx.sh -&gt; .git/hooks/post-commit
+</code></pre></div></div>
+<p>Now every time you run git commit, the pre-commit hook will automatically run before you see the window to enter the log message. The hook is a script that makes a copy in Markdown format (.md) of every .docx file you are committing. The post-commit hook then amends the commit adding the .md files.</p>
+
+:ET

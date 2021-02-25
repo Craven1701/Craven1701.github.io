@@ -1,0 +1,49 @@
+I"�<h2 id="linux工作调度的种类-at-cron">Linux工作调度的种类 at cron</h2>
+<h3 id="at">at</h3>
+<p><code class="language-plaintext highlighter-rouge">at</code> 处理仅仅执行一次就结束调度的命令，需要<code class="language-plaintext highlighter-rouge">atd</code>模块的支持
+这个ubuntu上没有自带，macOS是自带的</p>
+<h3 id="crontab">crontab</h3>
+<p><code class="language-plaintext highlighter-rouge">crontab</code> 按照一定的周期 循环的执行命令，<code class="language-plaintext highlighter-rouge">cron</code>服务是<code class="language-plaintext highlighter-rouge">crontab</code>生效的前提条件</p>
+
+<h2 id="at的使用">at的使用</h2>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>at <span class="o">[</span><span class="nt">-q</span> queue][-f file][-mldbv] <span class="nb">time
+</span>at <span class="nt">-c</span> job[job ...]
+参数说明
+<span class="nt">-m</span> <span class="c"># 当at完成工作后，即使没有</span>
+<span class="nt">-l</span> <span class="c"># at -l 相当于atq 列出目前系统上所有该用户的at调度</span>
+<span class="nt">-d</span> <span class="c"># at -d 相当于atrm, 可以取消一个在at调度中的工作</span>
+<span class="nt">-v</span> <span class="c"># 可以使用比较明显的格式列出at调度中的任务列表</span>
+<span class="nt">-c</span> <span class="c"># 可以列出后面接的该项工作的实际命令内容</span>
+
+时间格式
+HH:MM		04:00
+HH:MM YYYY-MM-DD		04:00 2009-03-17
+HH:MM[am|pm] <span class="o">[</span>Month] <span class="o">[</span>Date]		04pm March 17
+HH:MM[am|pm] + number <span class="o">[</span>minutes|hours|days|weeks]		now + 3 days
+<span class="c">#单位记得要加上s哦</span>
+</code></pre></div></div>
+<p>使用at命令时，系统会产生一个新的at shell来执行新的命令，所以最好在要执行的命令里使用绝对路径。</p>
+
+<p>at命令所产生的所有标准输出都会给执行者的mailbox，如果想在屏幕上显示，请使用<code class="language-plaintext highlighter-rouge">&gt;/dev/tty1</code>对输出进行重定向。（请使用自己的tty编号，使用<code class="language-plaintext highlighter-rouge">tty</code>命令可以查看当前终端的tty编号。）</p>
+
+<p>【<strong>注意！！！</strong>】</p>
+
+<p>有关 <code class="language-plaintext highlighter-rouge">at</code>  的启动问题。这个功能有时候不是自己就能启动的。用不了我们得先打开有关服务才行</p>
+
+<p>Linux系统下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/init.d/atd restart
+chkconfig atd on <span class="c"># 设置开启自动启动</span>
+</code></pre></div></div>
+
+<p>MacOS系统下</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>launchctl load <span class="nt">-w</span> /System/Library/LaunchDaemons/com.apple.atrun.plist
+</code></pre></div></div>
+
+<p>上述命令的出处来自 <code class="language-plaintext highlighter-rouge">man atrun</code> , 两个系统上执行这个命令的命令提示符也很不一样。Linux使用<code class="language-plaintext highlighter-rouge">Enter</code>换行后，会出现<code class="language-plaintext highlighter-rouge">at&gt;</code>的提示符，MacOS就什么都与没有，换行之后直接光标闪烁。(讲实话我能骂一句mac这搞得很难用吗。好吧是我菜。而且我换了zsh的shell之后更加不习惯了。啊。还要花时间重新学zsh吗)</p>
+
+<h2 id="crontab的使用">crontab的使用</h2>
+<h2 id="anacron-唤醒停机期间的工作任务">anacron 唤醒停机期间的工作任务</h2>
+
+:ET

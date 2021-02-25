@@ -1,0 +1,405 @@
+I"-U<p>【声明】本系列教程主要参考《Python3网络爬虫开发实战·崔庆才》</p>
+
+<p>出于想迅速收集同人文的目的开始学爬虫.</p>
+
+<p>出于大家都说好的原因开始用VScode.</p>
+
+<p>顺便复习一下之前虽然会用但是完全不知道每个包被装在哪的Anaconda.</p>
+
+<p>顺便复习一下Anaconda的虚拟环境到底里面有些啥.</p>
+
+<p>那么开始吧。</p>
+
+<h3 id="1-anaconda虚拟环境创建">1. Anaconda虚拟环境创建</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 新建一个叫crawler的虚拟环境</span>
+conda create <span class="nt">--name</span> crawler <span class="nv">python</span><span class="o">=</span>3.6
+</code></pre></div></div>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-02-14 at 22.58.08.png" alt="" /></p>
+
+<p>根据上图信息，可以了解到，新的环境安装在<code class="language-plaintext highlighter-rouge">/Library/anaconda3/envs/crawler</code>这个目录下。</p>
+
+<p>Anaconda的虚拟环境目录结构如下</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> /Library/anaconda3/envs/crawler
+tree <span class="nt">-L</span> 1
+<span class="nb">.</span>
+├── bin <span class="c">#存放当前环境支持的二进制命令 启动环境后，python与pip都使用这个目录下的</span>
+├── conda-meta
+├── include
+├── lib <span class="c"># /lib/python3.6/site-packages 存放pip安装的包</span>
+├── share
+└── ssl
+</code></pre></div></div>
+
+<h3 id="2vscode的环境配置">2.VScode的环境配置</h3>
+
+<ol>
+  <li>先下载vscode的python插件</li>
+  <li>打开工程目录下的任意一个.py文件都能自动启动该插件</li>
+  <li>点击下方提示栏左端的<code class="language-plaintext highlighter-rouge">python 3.6</code>字样，可以选择自己的python解释器，在这里就选择之前新建的conda 虚拟环境。</li>
+</ol>
+
+<p>###3.爬虫相关包的配置
+主要使用pip安装了<code class="language-plaintext highlighter-rouge">request</code> <code class="language-plaintext highlighter-rouge">selenium</code>,<code class="language-plaintext highlighter-rouge">aiohttp</code>几个包等等,全部是<code class="language-plaintext highlighter-rouge">pip install</code>的安装方式</p>
+
+<p><code class="language-plaintext highlighter-rouge">request</code> 用来向浏览器发出请求，阻塞式。只有服务器响应了才会进行下一步处理</p>
+
+<p><code class="language-plaintext highlighter-rouge">aiohttp</code>是个异步Web服务库，和<code class="language-plaintext highlighter-rouge">request</code>相比不同的地方在于这个可以在等待的过程中做别的事。</p>
+
+<p><code class="language-plaintext highlighter-rouge">selenium</code>是一个自动化测试工具，我们用这个实现通过代码实现特定的浏览器动作，如点击，下拉等等。</p>
+
+<p><code class="language-plaintext highlighter-rouge">ctrl+shift+反点号</code>可以呼出VScode自带的Terminal，自动启动conda虚拟环境并切换到当前打开文件的目录下。在这使用<code class="language-plaintext highlighter-rouge">pip</code>就可以实现包安装了</p>
+
+<p>###4.下载ChromeDrive工具</p>
+
+<p>说实话我还没没搞清楚为啥要下载个浏览器驱动。总之先下载。</p>
+
+<p><a href="https://chromedriver.chromium.org/">ChromeDrive官网</a></p>
+
+<p>官网提供给mac的安装包有两种，<code class="language-plaintext highlighter-rouge">chromedriver_mac64_m1.zip</code> 和 <code class="language-plaintext highlighter-rouge">chromedriver_mac64.zip</code>,我下载带有m1的执行报错了<code class="language-plaintext highlighter-rouge">Bad CPU type in executable</code>,不带有m1的那个可以正常用。</p>
+
+<p>解压之后直接是可执行文件，将可执行文件移入文件夹<code class="language-plaintext highlighter-rouge">/Library/anaconda3/envs/crawler/bin</code> ， 在启动虚拟环境的状况下，这个路径是$PATH的第一路径。因为这个chromedrive估计我也只有用爬虫的时候才会用到，放到<code class="language-plaintext highlighter-rouge">crawler</code>这个环境下一起比较好管理吧。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#查看当前的环境变量$PATH</span>
+<span class="nb">echo</span> <span class="nv">$PATH</span> | <span class="nb">sed</span> <span class="nt">-n</span> <span class="s1">'s/:/\n/go'</span>
+/Library/anaconda3/envs/crawler/bin <span class="c">#如果虚拟环境已经启动，这个路径会在首位</span>
+/Library/anaconda3/condabin
+/usr/local/bin
+/usr/bin
+/bin
+/usr/sbin
+/sbin
+
+<span class="nb">mv</span> /Downloads/chromedriver /Library/anaconda3/envs/crawler/bin
+
+<span class="c">#如果mv命令执行成功，那么使用type可以找到chromedrive的执行路径已经进入了/crawler/bin</span>
+<span class="nb">type </span>chromedriver
+chromedriver is /Library/anaconda3/envs/crawler/bin/chromedriver
+</code></pre></div></div>
+
+<p>跑一下这个测试一下，如果能弹出空白的网页，那就配置OK，可以准备去网上爬东西啦~</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="p">.</span><span class="n">Chrome</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>（<strong>PS</strong>: 火狐的浏览器驱动是叫做<strong>geckodriver</strong>。我懒得下了）</p>
+
+<h3 id="5phantomjs的安装">5.PhantomJS的安装</h3>
+
+<p>“PhantomJS是一个无界面的、可脚本编程的WebKit浏览器引擎,它原生支持多种Web标准:DOM操作、css选择器、JSON、Canvas以及SVG。Selenium支持PhantomJS,这样在运行的时候就不会再弹出一个浏览器了。”</p>
+
+<p>嗯，所以再装一次PhantomJS,同样把解压出来的可执行文件放到/crawler/bin目录下面</p>
+
+<p><strong>【相关链接】</strong>
+官方网站:http://phantomjs.org
+官方文梢:http://phantomjs.org/quick-start.html
+下载地址:http://phantomjs.org/download.html
+API接门说明:http://phantomjs.org/api/command-line.html</p>
+
+<h1 id="汇总安装的工具">汇总安装的工具</h1>
+
+<h2 id="网站的请求与解析">网站的请求与解析</h2>
+
+<p>看到后面发现真的安装了一堆东西，干脆写一起好了</p>
+
+<p>（相关依赖pip自己管理着，不列出来了）</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>请求库(pip3管理)</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>requests-2.25.1</td>
+      <td>向服务器发起请求</td>
+    </tr>
+    <tr>
+      <td>selenium-3.141.0</td>
+      <td>自动规划测试工具</td>
+    </tr>
+    <tr>
+      <td>aiohttp -3.7.3</td>
+      <td>异步请求</td>
+    </tr>
+    <tr>
+      <td>aiodns-2.0.0</td>
+      <td>加速DNS解析</td>
+    </tr>
+    <tr>
+      <td>cchardet- 2.1.7</td>
+      <td>字符编码检测库</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>解析库(pip3管理)</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>lxml-4.6.2</td>
+      <td>Python的一个解析库,支持HTML和XML的解析,支持XPath解析方式,</td>
+    </tr>
+    <tr>
+      <td>beautifulsoup4-4.9.3</td>
+      <td>BeautifulSoup是Python的一个HTML或XML的解析库,我们可以用它来方便地从网页中提取数据。</td>
+    </tr>
+    <tr>
+      <td>pyquery-1.4.3</td>
+      <td>pyquery同样是一个强大的网页解析工具,它提供了和jQuery类似的语法来解析HTML文梢,支持css选择器,</td>
+    </tr>
+    <tr>
+      <td>tesserocr-2.5.1</td>
+      <td>文字识别呗</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>官网安装</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ChromeDriver</td>
+      <td>Chrome的浏览器驱动 我还不知道有啥用</td>
+    </tr>
+    <tr>
+      <td>PhantomJS</td>
+      <td>PhantomJS是一个无界面的、可脚本编程的WebKit浏览器引擎</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>我的Homebrew默认包管理路径在<code class="language-plaintext highlighter-rouge">/usr/local/Cellar</code>,里面的二进制文件会自动复制一份到<code class="language-plaintext highlighter-rouge">/usr/local/bin/</code> ，保证Terminal能在<code class="language-plaintext highlighter-rouge">$PATH</code>下找到命令 
+| Homebrew管理 | 功能                                                         |
+| ———— | ———————————————————— |
+| imagemagick  |                                                              |
+| tesseract    | OCR，是tesserocr的核心，tesserocr只是这玩意做了python API封装 (这玩意要扩增语言包的，我还没装，不过先这样) |</p>
+
+<h2 id="数据库与存储库">数据库与存储库</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>数据库名称</th>
+      <th>安装以及服务启动</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MySQL</td>
+      <td><code class="language-plaintext highlighter-rouge">/usr/local/mysql-5.7.27-macos10.14-x86_64</code> 数据目录</td>
+    </tr>
+    <tr>
+      <td>MongoDB v4.0.3 (可视化工具 Robo 3T)</td>
+      <td><code class="language-plaintext highlighter-rouge">brew services start mongodb</code><br /><code class="language-plaintext highlighter-rouge">/usr/local/var/log/mongodb</code> 日志文件<br /><code class="language-plaintext highlighter-rouge">/usr/local/Cellar/mongodb/4.0.3_1/.bottle/etc/mongod.conf</code>  配置文件<br /> <code class="language-plaintext highlighter-rouge">mongod --config /usr/local/Cellar/mongodb/4.0.3_1/.bottle/etc/mongod.conf</code>启动服务</td>
+    </tr>
+    <tr>
+      <td>Redis(brew install )</td>
+      <td><code class="language-plaintext highlighter-rouge">/usr/local/etc/redis.conf</code> 配置文件地址 <br /><code class="language-plaintext highlighter-rouge">brew services start/stop/restart redis</code> 服务启动/停止/重启</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>| 数据库的存储库(pip3管理)    | 功能                                                         |
+| ————————— | ———————————————————— |
+| pymysql-1.0.2               | 在python中提供MySQL数据库的交互接口                          |
+| pymongo-3.11.3 （这个好大） | 在python中提供MongoDB数据库的交互接口                        |
+| redis-3.5.3                 | 在python中提供Redis数据库的交互接口                          |
+| RedisDump（gem install）    | R e d i s D u m p 是一个用于R e d i s 数据导人/ 导出的工具,是基于R u b y 实现的,所以要安装R e d i s D u m p,需要先安装R u b y(我电脑上已经有Ruby了) |
+因为gem是第一次用 记一下bash的输出</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>gem <span class="nb">install </span>redis-dump <span class="c">#因为要写/Library/Ruby/Gems/2.6.0 目录，所以要添加sudo权限</span>
+Fetching redis-dump-0.4.0.gem
+Fetching drydock-0.6.9.gem
+Fetching redis-4.2.5.gem
+Fetching uri-redis-0.4.2.gem
+Fetching yajl-ruby-1.4.1.gem
+Successfully installed drydock-0.6.9
+Successfully installed uri-redis-0.4.2
+Successfully installed redis-4.2.5
+Building native extensions. This could take a <span class="k">while</span>...
+Successfully installed yajl-ruby-1.4.1
+Successfully installed redis-dump-0.4.0
+Parsing documentation <span class="k">for </span>drydock-0.6.9
+Installing ri documentation <span class="k">for </span>drydock-0.6.9
+Parsing documentation <span class="k">for </span>uri-redis-0.4.2
+Installing ri documentation <span class="k">for </span>uri-redis-0.4.2
+Parsing documentation <span class="k">for </span>redis-4.2.5
+Installing ri documentation <span class="k">for </span>redis-4.2.5
+Parsing documentation <span class="k">for </span>yajl-ruby-1.4.1
+Installing ri documentation <span class="k">for </span>yajl-ruby-1.4.1
+Parsing documentation <span class="k">for </span>redis-dump-0.4.0
+Installing ri documentation <span class="k">for </span>redis-dump-0.4.0
+Done installing documentation <span class="k">for </span>drydock, uri-redis, redis, yajl-ruby, redis-dump after 1 seconds
+5 gems installed
+</code></pre></div></div>
+<p>…..我咋没看出来往哪个目录装了。</p>
+
+<h2 id="web库与app爬取库的安装">Web库与APP爬取库的安装</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Web服务程序库(框架?)(pip3管理)</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>flask-1.1.2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>tornado-6.1</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>看来我以前用的django也是web服务框架之一。这东西运行起来就是在本地端口开一个web服务。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>App爬取库(pip3)管理</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>暂未安装</strong></td>
+      <td>Charles是一个网络抓包工具,相比Fiddler,其功能更为强大,而且跨平台支持得更好,所以这里选用它来作为主要的移动端抓包工具。</td>
+    </tr>
+    <tr>
+      <td>mitmproxy         5.3.0(这个玩意真的好大啊。艹 超级大。一堆依赖安装好久)</td>
+      <td>mitmproxy是一个支持HTTP和HTTPS的抓包程序,类似Fiddler、Charles的功能,只不过它通过控制台的形式操作。此外,mitmproxy还有两个关联组件,一个是mitmdump,它是mitmproxy的命令行接口,利用它可以对接Python脚本,实现监听后的处理;另一个是mitmweb,它是一个Web程序,通过它以沾楚地观察到mitmproxy捕获的请求。</td>
+    </tr>
+    <tr>
+      <td><strong>暂未安装</strong></td>
+      <td>Appium是移动端的自动化测试工具,类似于前面所说的Selenium,利用它可以驱动Android、iOS等设备完成向动化测试,比如模拟点击、滑动、输入等操作,其官方网站为:http://appium.io/。本节我们就来了解一下Appium的安装方式。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="爬虫框架的安装">爬虫框架的安装</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>爬虫框架管理(pip3)</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>pyspider0.3.10</td>
+      <td>pyspider是国人binux编写的强大的网络爬虫框架,它带有强大的WebUI、脚本编辑器、任务监控器、项目管理器以及结果处理器,同时支持多种数据库后端、多种消息队列,另外还支持JavaScript渲染页面的爬取,使用起来非常方便</td>
+    </tr>
+    <tr>
+      <td>Scrapy2.4.1</td>
+      <td>Scrapy是一个十分强大的爬虫框架,依赖的库比较多,至少需要依赖的库有Twisted14.0、lxml3.4和pyOpenSSL0.14。</td>
+    </tr>
+    <tr>
+      <td>scrapy-splash-0.7.2</td>
+      <td>Scrapy-Splash是一个Scrapy中支持JavaScript渲染的工具,Scrapy-Splash的安装分为两部分。一个是Splash服务的安装,具体是通过Docker,安装之后,会启动一个Splash服务,我们可以通过它的接口来实现JavaScript页面的加载。另外一个是Scrapy-Splash的Python库的安装,安装之后即可在Scrapy中使用Splash服务</td>
+    </tr>
+    <tr>
+      <td>scrapy-redis-0.6.8</td>
+      <td>Scrapy-Redis是Scrapy的分布式扩展模块,有了它,我们就可以方便地实现Scrapy分布式爬虫的搭建。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>###【有关Docker的说明与安装】</p>
+
+<p><strong>PS</strong> : Splash服务的安装所需要的<a href="https://www.docker.com/resources/what-container">Docker</a>是一个软件容器引擎。引用官网的说明如下：</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
+
+Container images become containers at runtime and in the case of Docker containers - images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. 
+
+Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging
+</code></pre></div></div>
+
+<p>而教材上的说明是中文看的更通俗易懂一点</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Docker是一种容器技术,可以将应用和环境等进行打包,形成一个独立的、类似于iOS的App形式的“应用”。这个应用可以直接被分发到任意一个支持Docker的环境中,通过简单的命令即可启动运行。Docker是一种最流行的容器化实现方案,和虚拟化技术类似,它极大地方便了应用服务的部署;又与虚拟化技术不同,它以一种更轻量的方式实现了应用服务的打包。使用Docker,可以让每个应用彼此相互隔离,在同一台机器上同时运行多个应用,不过它们彼此之间共享同一个操作系统。Docker的优势在于,它可以在更细的粒度上进行资源管理,也比虚拟化技术更加节约资源。
+</code></pre></div></div>
+
+<p>粗略的看了一下是个可以让你免去环境配置，下载即用的方便东西？我没用过这个，所以要先安装<code class="language-plaintext highlighter-rouge">docker</code> ，查了一下可以使用homebrew来安装，但是与普通的<code class="language-plaintext highlighter-rouge">brew install</code>有点差异,要使用<code class="language-plaintext highlighter-rouge">homebrew cask</code>。</p>
+
+<p>二者的区别在与前者只能装命令行工具，后者能装图形化工具</p>
+
+<p>详细的区别请查看: <a href="https://www.cprime.com/resources/blog/docker-on-mac-with-homebrew-a-step-by-step-tutorial/">Docker on Mac with Homebrew: A Step-by-Step Tutorial</a></p>
+
+<p>具体命令如下:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew cask <span class="nb">install </span>docker
+</code></pre></div></div>
+
+<p>因为第一次用这个，所以输出也记录一下好了。</p>
+
+<h2 id="部署相关库的安装">部署相关库的安装</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>部署相关库</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Docker(由homebrewcask安装)</td>
+      <td>Docker是一种容器技术,可以将应用和环境等进行打包,形成一个独立的、类似于iOS的App形式的“应用”。这个应用可以直接被分发到任意一个支持Docker的环境中,通过简单的命令即可启动运行。</td>
+    </tr>
+    <tr>
+      <td>scrapyd-1.2.1(pip3install)</td>
+      <td>Scrapyd是一个用于部署和l运行Scrapy项目的工具,有了它,你可以将写好的Scrapy项目上传到云主机并通过API来控制它的运行。</td>
+    </tr>
+    <tr>
+      <td>scrapyd-client-1.1.0(pip3install)</td>
+      <td>在将S c r a p y 代码部署到远程S c r a p y d的时候,第一步就是要将代码打包为E GG文件,其次需要将E G G文件上传到远程主机。这个过程如果用程序来实现,也是完全可以的,但是我们并不需要做这些t作,因为S c r a p y d - C l i e n t 已经为我们实现了这些功能。</td>
+    </tr>
+    <tr>
+      <td>python-scrapyd-api-2.1.2(pip3install)</td>
+      <td>是scrapyd对python的接口，之后可以通过python来获取主机状态。</td>
+    </tr>
+    <tr>
+      <td>scrapyrt-0.11.0</td>
+      <td>S c r a p y r t 为S c r a p y 提供了一个调度的H T T P接口,有了它,我们就不需要再执行S c r a p y 命令而是通过请求一个H T T P接口来调度S c r a p y 任务了。S c r a p y r t 比S c r a p y d 更轻量,如果不需要分布式多任务的话,可以简单使用S c r a p y r t 实现远程S c r a p y 任务的调度。</td>
+    </tr>
+    <tr>
+      <td>gerapy-0.9.6</td>
+      <td>G e r a p y 是一个S c r a p y 分布式管理模块,</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>【有关scrapyd】</strong>安装完毕之后,需要新建一个配置文件/etc/scrapyd/scrapyd.conf,Scrapyd在运行的时候会读取此配置文件。内容我都是抄书。具体配置了啥再说吧。</p>
+
+<p><strong>【有关scrapyrt的报错】</strong>安装完之后运行报错了，因为我没Scrapy项目中运行的原因，具体参考<a href="https://blog.csdn.net/zimojiang/article/details/103882571">这里</a></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>RuntimeError: Cannot find scrapy.cfg file
+</code></pre></div></div>
+
+<h4 id="吐槽一下"><strong>吐槽一下</strong>：</h4>
+
+<p>我这一下午，代码一个字没写上，装各种不知道啥用的包装了这么多。说实话有点劝退啊。好累。Docker还没装(网不好)，数据库也还没配置好，但是差不多该装的都装完了。边做边写博客做笔记有点慢，但是感觉清晰挺多，继续吧。</p>
+
+<p>啥时候才能实现爬取同人文的伟大事业哟。</p>
+:ET

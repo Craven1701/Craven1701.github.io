@@ -1,0 +1,302 @@
+I"�W<h1 id="a文件与目录管理">A.文件与目录管理</h1>
+<h3 id="1-ls-查看文件与目录">1. <code class="language-plaintext highlighter-rouge">ls</code> 查看文件与目录</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="o">[</span>OPTIONS]... <span class="o">[</span>FILE]...
+<span class="c"># 常用命令</span>
+<span class="nb">ls</span> <span class="nt">-al</span> <span class="c"># a 列出全部文件 l 列出长数据串</span>
+<span class="nb">ls</span> <span class="nt">-l</span> <span class="o">(=</span>ll<span class="o">)</span> <span class="c">#一个缩写</span>
+<span class="nb">ls</span> <span class="nt">-alF</span> <span class="nt">--color</span><span class="o">=</span>never <span class="c"># 不显示颜色 但是显示type</span>
+<span class="nb">ls</span> <span class="nt">-al</span> <span class="nt">--full-time</span> <span class="c"># 完整呈现文件的修改时间</span>
+<span class="nb">ls</span> <span class="nt">-d</span> <span class="c">#仅仅列出目录本身 而不是列出目录内的文件数据</span>
+<span class="nb">ls</span> <span class="nt">-i</span> <span class="c"># 列出inode号码</span>
+<span class="nb">ls</span> <span class="nt">-h</span> <span class="c">#human reading 的形式显示文件大小</span>
+</code></pre></div></div>
+
+<h3 id="2cp--copy复制">2.<code class="language-plaintext highlighter-rouge">cp</code>  copy复制</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> <span class="o">[</span>OPTIONS]... SOURCE... DIRECTORY <span class="c">#DIRECTORY如果不是目录而是文件则会进行复制+重命名</span>
+<span class="c"># 常用命令选项</span>
+<span class="nb">cp</span> <span class="nt">-a</span> <span class="nb">source </span>directory <span class="c">#全属性复制 保证用户权限 创建日期与source完全一致</span>
+<span class="nb">cp</span> <span class="nt">-i</span> <span class="nb">source </span>directory <span class="c">#存在同名文件时询问是否覆盖</span>
+<span class="nb">cp</span> <span class="nt">-r</span> <span class="nb">source </span>directory <span class="c">#递归 一般是source是文件夹时 可以递归复制文件夹下所有文件</span>
+<span class="nb">cp</span> <span class="nt">-f</span> <span class="nb">source </span>directory <span class="c">#强制复制</span>
+<span class="c"># 生成连接文件 link file（这两个参数macOS下不可用）</span>
+<span class="nb">cp</span> <span class="nt">-l</span> <span class="nb">source </span>directory <span class="c">#硬链接 hard link </span>
+<span class="nb">cp</span> <span class="nt">-s</span> <span class="nb">source </span>directory <span class="c">#软连接 soft link 相当于一个快捷方式</span>
+</code></pre></div></div>
+<p>软连接与硬链接实例</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-01-29 at 21.05.22.png" alt="" /></p>
+
+<p>软连接会有<code class="language-plaintext highlighter-rouge">-&gt;</code>符号指向原文件 本身的文件只是个快捷方式而已</p>
+
+<p><strong>Tips1</strong> 当时source本身是linkfile时，cp命令会复制实际的源文件而不是linkfile，如果需要复制linkfile  请使用参数<code class="language-plaintext highlighter-rouge">-d</code></p>
+
+<p><strong>Tips2</strong> ：默认条件下 cp的源文件与目的文件会有不同的权限，所有者也会变为命令操作者本身。当想要保证文件的权限不发生变化的情况下，-a参数就很重要了。当然，如果操作者本身不能修改文件的权限，使用了-a也不能保证完全复制。</p>
+
+<h3 id="3rm--remove移除">3.<code class="language-plaintext highlighter-rouge">rm</code>  remove移除</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#使用一定要谨慎！</span>
+<span class="nb">rm</span> <span class="o">[</span>OPTIONS]...[FILE]...
+<span class="nb">rm</span> <span class="nt">-f</span>
+<span class="nb">rm</span> <span class="nt">-i</span> <span class="c"># 删除前询问</span>
+<span class="nb">rm</span> <span class="nt">-r</span> <span class="c"># 递归删除！慎用</span>
+</code></pre></div></div>
+
+<h3 id="4mv--move移动文件目录or重命名">4.<code class="language-plaintext highlighter-rouge">mv</code>  move移动文件、目录or重命名</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mv</span> <span class="o">[</span>OPTIONS]... SOURCE... DIRECTORY
+<span class="c">#重命名相关其他</span>
+rename <span class="o">[</span>OPTIONS] expression replacement file...#大量修改文件名
+</code></pre></div></div>
+<h3 id="5basename--dirname-取得路径的文件名与目录名称">5.<code class="language-plaintext highlighter-rouge">basename</code> &amp; <code class="language-plaintext highlighter-rouge">dirname</code> 取得路径的文件名与目录名称</h3>
+<p><img src="/Users/ncc-1701-enterprise/Library/Application Support/typora-user-images/Screen Shot 2021-01-29 at 21.47.51.png" alt="Screen Shot 2021-01-29 at 21.47.51" /></p>
+
+<p>大概是写shell脚本时会用到的命令吧 获取变量值之类的</p>
+
+<p>#B.文件内容查阅</p>
+<h3 id="6-cat-由第一行开始显示文件的内容">6. <code class="language-plaintext highlighter-rouge">cat</code> 由第一行开始显示文件的内容</h3>
+<h3 id="7tac-从最后一行开始显示">7.<code class="language-plaintext highlighter-rouge">tac</code> 从最后一行开始显示</h3>
+<h3 id="8nl-显示行号">8.<code class="language-plaintext highlighter-rouge">nl</code> 显示行号</h3>
+<h3 id="9more-一页一页的显示">9.<code class="language-plaintext highlighter-rouge">more</code> 一页一页的显示</h3>
+<h3 id="10less-可以向前翻页">10.<code class="language-plaintext highlighter-rouge">less</code> 可以向前翻页</h3>
+<h3 id="11head-只看头部">11.<code class="language-plaintext highlighter-rouge">head</code> 只看头部</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">head</span> <span class="o">[</span><span class="nt">-n</span> number] file
+</code></pre></div></div>
+<h3 id="12tail-只看尾部">12.<code class="language-plaintext highlighter-rouge">tail</code> 只看尾部</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">tail</span> <span class="o">[</span><span class="nt">-n</span> number] file
+<span class="nb">tail</span> <span class="nt">-f</span> file <span class="c"># -f参数会实时监控file文件的跟新 好geek的一个参数呀</span>
+
+<span class="c">#联合使用</span>
+<span class="nb">head</span> <span class="nt">-n</span> 20 file | <span class="nb">tail</span> <span class="nt">-n</span> 10 <span class="c">#利用管道获取11~20行之间的内容</span>
+</code></pre></div></div>
+
+<h3 id="13od-以二进制的方式读取文件内容">13.<code class="language-plaintext highlighter-rouge">od</code> 以二进制的方式读取文件内容</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">od</span> <span class="o">[</span>OPTIONS]...[FILE]...
+<span class="nt">-t</span> <span class="c">#选择文件类型</span>
+<span class="nb">od</span> <span class="nt">-t</span> oCc /etc/issue <span class="c">#字符对应到ASCII的对照表</span>
+</code></pre></div></div>
+
+<h3 id="14touch-修改文件时间或创建新文件">14.<code class="language-plaintext highlighter-rouge">touch</code> 修改文件时间或创建新文件</h3>
+
+<p>linux下的三个主要时间参数</p>
+
+<p>modification time(mtime) “内容数据”被改变时，更新这个时间;</p>
+
+<p>status time(ctime) “状态”  如权限和属性改变时，更新这个时间;</p>
+
+<p>access time(atime) “内容被取用时”更新，如使用<code class="language-plaintext highlighter-rouge">cat</code>命令会导致该项跟新。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch </span>file 
+<span class="c">#file存在，则mtime,ctime,atime都更新为现在</span>
+<span class="c">#file不存在 则创建这一文件并跟新三个时间</span>
+<span class="nb">touch</span> <span class="nt">-a</span> <span class="c"># 仅仅修改访问的时间</span>
+<span class="nb">touch</span> <span class="nt">-c</span> <span class="c"># 仅仅修改文件的时间 若该文件不存在则创建新文件</span>
+<span class="nb">touch</span> <span class="nt">-d</span> <span class="c">#</span>
+<span class="nb">touch</span> <span class="nt">-m</span> <span class="c">#仅修改mtime</span>
+<span class="nb">touch</span> <span class="nt">-t</span>
+</code></pre></div></div>
+
+<h1 id="c文件与目录的默认权限与隐藏权限">C.文件与目录的默认权限与隐藏权限</h1>
+<h3 id="15chgrp-改变文件所属用户组">15.<code class="language-plaintext highlighter-rouge">chgrp</code> 改变文件所属用户组</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chgrp</span> <span class="o">[</span>OPTION]... GROUP FILE...
+<span class="nb">chgrp</span> <span class="o">[</span>OPTION]... <span class="nt">--reference</span><span class="o">=</span>RFILE FILE...
+<span class="nb">chgrp users </span>file
+<span class="nt">-R</span> <span class="c">#递归更改 连同子目录下的所有文件 目录</span>
+</code></pre></div></div>
+
+<h3 id="16chown改变文件所属用户">16.<code class="language-plaintext highlighter-rouge">chown</code>改变文件所属用户</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chown</span> <span class="o">[</span><span class="nt">-R</span><span class="o">]</span> 账号名称 文件或目录
+<span class="nb">chown </span>bin install.log
+<span class="nb">chown</span> <span class="o">[</span><span class="nt">-R</span><span class="o">]</span> 账号名称:组名 文件或目录
+<span class="nb">chown </span>root:root install.log
+</code></pre></div></div>
+
+<p><strong>Tips</strong> 以上功能常用于将自己的文件复制给他人时。</p>
+
+<h3 id="17chmod">17.<code class="language-plaintext highlighter-rouge">chmod</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> <span class="o">[</span><span class="nt">-R</span><span class="o">]</span> xyz 文件或目录
+<span class="c"># 分数表示  r:4 w:2 x:1</span>
+<span class="nb">chmod </span>777 file 
+<span class="c"># 符号表示  u,g,o | +,-,= | r,w,x</span>
+<span class="nb">chmod </span><span class="nv">u</span><span class="o">=</span>rwx,go<span class="o">=</span>rw file
+<span class="nb">chmod </span>a+w .bashrc
+</code></pre></div></div>
+
+<h3 id="18umask">18.<code class="language-plaintext highlighter-rouge">umask</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">umask</span> <span class="c">#数字形式输出</span>
+<span class="nb">umask</span> <span class="nt">-S</span> <span class="c">#符号形式输出</span>
+</code></pre></div></div>
+
+<p><strong>Tips</strong> 数字形式下的输出，是“需要减去的分值”；说白了，umask是掩码。</p>
+
+<p>文件类型的默认权限 666 -rw-rw-rw-</p>
+
+<p>目录类型的默认权限777 drwxrwxrwx</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Library/Application Support/typora-user-images/Screen Shot 2021-01-30 at 10.41.13.png" alt="Screen Shot 2021-01-30 at 10.41.13" /></p>
+
+<p>如上图所示<code class="language-plaintext highlighter-rouge">umask</code>的默认值为022，表示user获取全部权限，group与others减去w权限，以符号的形式输出如下图：</p>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-01-30 at 10.48.08.png" alt="" /></p>
+
+<h3 id="ext2ext3文件系统下的隐藏属性"><strong>【Ext2/Ext3文件系统下的隐藏属性】</strong></h3>
+
+<p>除了基本的r,w,x权限之外，在Linux的Ext2/Ext3文件系统下，我们还可以设置其他的系统隐藏属性，这部分设置可以使用chattr来设置，而以lsattr来查看，最重要的属性就是<code class="language-plaintext highlighter-rouge">可以设置</code>但是<code class="language-plaintext highlighter-rouge">不可以修改</code>,这一点在安全机制方面是非常重要的。</p>
+
+<p><strong>Tips</strong>    <strong><code class="language-plaintext highlighter-rouge">chattr</code></strong> 和<strong><code class="language-plaintext highlighter-rouge">lsattr</code></strong>只在Ext2/Ext3文件系统下才有效。</p>
+
+<h3 id="19chattr-lschattr--changelist-file-attributes-on-linux-file-system">19.<code class="language-plaintext highlighter-rouge">chattr</code> &amp;<code class="language-plaintext highlighter-rouge">lschattr</code>  change/list file attributes on Linux file system</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chattr <span class="o">[</span>+<span class="o">=</span>-] <span class="o">[</span>OPTIONS] files ...
+<span class="c"># +=-参数说明</span>
++ <span class="c"># 增加某一个特殊参数 其他原本存在的参数不动</span>
+- <span class="c"># 删除某一个特殊参数 其他原本存在的参数不动</span>
+<span class="o">=</span> <span class="c"># 仅有后面接的参数</span>
+
+<span class="c">#OPTIONS说明</span>
+A <span class="c"># 拥有A属性的文件被访问是atime不发生变化</span>
+S <span class="c"># 文件修改时同步写入磁盘</span>
+a <span class="c"># 文件的数据只能增加，不能删除也不能修改数据 root才能设置</span>
+c <span class="c"># 自动压缩</span>
+d <span class="c"># dump被执行时。该文件不被dump备份</span>
+i <span class="c"># 文件不能被删除 改名 设置连接也不能写入数据 root才能设置</span>
+s <span class="c"># 文件被删除时完全从硬盘空间中删除</span>
+u <span class="c"># 与s相反，文件被删除后，数据实际还在磁盘中 用于文件与数据恢复</span>
+</code></pre></div></div>
+
+<p>其中<code class="language-plaintext highlighter-rouge">a</code>与<code class="language-plaintext highlighter-rouge">i</code>是最常用的安全设置man</p>
+
+<h3 id="文件的特殊权限-suid-sgid-sbit"><strong>文件的特殊权限 SUID SGID SBIT</strong></h3>
+
+<p><img src="/Users/ncc-1701-enterprise/Desktop/Screen Shot 2021-01-30 at 11.41.55.png" alt="" /></p>
+
+<p>上图中可以看出，others对于/tmp具有一个<code class="language-plaintext highlighter-rouge">t</code>权限；而owner对于/usr/bin/passwd具有一个<code class="language-plaintext highlighter-rouge">s</code>权限</p>
+
+<h4 id="1-set-uid-s-suid-4">(1) Set UID (s SUID) =4</h4>
+
+<p>a. 仅仅对<strong><code class="language-plaintext highlighter-rouge">binary propram</code></strong>有效果 (不可以用于shell脚本文件)</p>
+
+<p>b.执行者对于该程序要有可执行权限<code class="language-plaintext highlighter-rouge">x</code></p>
+
+<p>c.该权限只在程序的runtime中发挥作用</p>
+
+<p>d.执行者将具有该程序的owner权限</p>
+
+<p>上述的  <code class="language-plaintext highlighter-rouge">passwd</code> 命令在执行过程中，会对/etc/shadow文件进行w操作，但是w的操作权限是root的，普通用户不能对该文件进行w。但是由于<code class="language-plaintext highlighter-rouge">s</code>权限的存在，而普通用户对 <code class="language-plaintext highlighter-rouge">passwd</code> 又具有<code class="language-plaintext highlighter-rouge">x</code>权限，因此在运行该命令的过程中，普通用户临时获取到root的权限，可以对/etc/shadow进行w操作了。</p>
+
+<h4 id="2-set-gid2">(2) Set GID=2</h4>
+
+<p>a.仅对binary program有效果</p>
+
+<p>b. 执行者需要<code class="language-plaintext highlighter-rouge">x</code>权限</p>
+
+<p>c. 执行者在执行过程中获得用户组的支持</p>
+
+<p>d.和Set UID相比 GID可以直接针对文件夹来设置，主要是给用户临时修改某个目录的权限</p>
+
+<h4 id="3-sticky-bit-sbit1">(3) Sticky Bit (SBIT)=1</h4>
+
+<p>a.仅仅针对目录，对文件无效</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod </span>4755 filename <span class="c">#第四个数值设置特殊权限</span>
+</code></pre></div></div>
+
+<h3 id="20file-查看文件类型">20.<code class="language-plaintext highlighter-rouge">file</code> 查看文件类型</h3>
+
+<h1 id="d命令与文件的查询">D.命令与文件的查询</h1>
+<h3 id="21which-type寻找执行文件">21.<code class="language-plaintext highlighter-rouge">which</code> &amp;<code class="language-plaintext highlighter-rouge">type</code>寻找执行文件</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>which <span class="nt">-a</span> <span class="nb">command</span> <span class="c">#列出PATH目录中可以找到的所有文件 而不只是第一个</span>
+</code></pre></div></div>
+
+<p>a.which找的是PATH路径里的command</p>
+
+<p>b.which找不到shell的内置命令 比如cd 但是type可以看出这个是builtin</p>
+
+<h3 id="22whereis-寻找特定文件">22.<code class="language-plaintext highlighter-rouge">whereis</code> 寻找特定文件</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whereis <span class="nt">-b</span> <span class="c">#只找二进制格式</span>
+whereis <span class="nt">-m</span> <span class="c">#只找在说明文件manual路径下的文件</span>
+whereis <span class="nt">-s</span> <span class="c">#只找源文件</span>
+whereis <span class="nt">-u</span> <span class="c">#查找非上述三者的特殊文件</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">whereis</code>可以找<code class="language-plaintext highlighter-rouge">which</code>找不到的命令，因为不限于PATH</p>
+
+<h3 id="23locate">23.<code class="language-plaintext highlighter-rouge">locate</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>locate <span class="o">[</span><span class="nt">-ir</span><span class="o">]</span> keyword <span class="c">#可以使用部分文件名检索</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">locate</code>寻找的数据来自于数据库<code class="language-plaintext highlighter-rouge">var/lib/mlocate</code> 这玩意不是实时更新的 有时候会找不到。可以用<code class="language-plaintext highlighter-rouge">updatedb</code>手动更新</p>
+
+<p>MacOS系统的数据库更新请执行</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo</span> /usr/libexec/locate.updatedb
+<span class="c">#其实写个alais也挺好的 MacOS还是得好好调教呀</span>
+<span class="nb">alias </span><span class="nv">updatedb</span><span class="o">=</span><span class="s1">'sudo /usr/libexec/locate.updatedb'</span>
+</code></pre></div></div>
+
+<h3 id="24find">24.<code class="language-plaintext highlighter-rouge">find</code></h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>find <span class="o">[</span>PATH] <span class="o">[</span>OPTION] <span class="o">[</span>ACTION]
+</code></pre></div></div>
+
+<h4 id="补充有关whereis-locate-与-find">[补充]有关whereis locate 与 find</h4>
+
+<p>a. whereis 和 locate是用的数据库查找 速度更快 并不会实际访问硬盘</p>
+
+<p>b. find通常在上述二者找不到的时候被启用 因为会直接访问硬盘 所以比较慢</p>
+
+<h1 id="权限与命令间的关系">【权限与命令间的关系】</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>可使用的命令</th>
+      <th>用户对目录最低权限</th>
+      <th>用户文件最低权限</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>让用户进入某目录成为“可工作目录”</td>
+      <td>cd</td>
+      <td><code class="language-plaintext highlighter-rouge">x</code>（如果需要利用<code class="language-plaintext highlighter-rouge">ls</code>查阅文件名，则需要额外的 <code class="language-plaintext highlighter-rouge">r</code>）</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>用户在某个目录内读取文件的基本权限</td>
+      <td>cat more less</td>
+      <td><code class="language-plaintext highlighter-rouge">x</code>  （用户并不需要获取完整的文件列表 所以不一定要<code class="language-plaintext highlighter-rouge">r</code>）</td>
+      <td><code class="language-plaintext highlighter-rouge">r</code></td>
+    </tr>
+    <tr>
+      <td>用户可以修改一个文件的基本权限</td>
+      <td>nano vi vim</td>
+      <td><code class="language-plaintext highlighter-rouge">x</code></td>
+      <td><code class="language-plaintext highlighter-rouge">r</code> &amp;<code class="language-plaintext highlighter-rouge">w</code></td>
+    </tr>
+    <tr>
+      <td>让用户可以创建一个文件的基本权限</td>
+      <td>touch cp mv mkdir</td>
+      <td><code class="language-plaintext highlighter-rouge">w</code> &amp; <code class="language-plaintext highlighter-rouge">x</code>(注意<code class="language-plaintext highlighter-rouge">x</code>权限也是不能丢的哦)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>让用户进入某个目录并执行目录下某个命令的基本权限</td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x</code></td>
+      <td><code class="language-plaintext highlighter-rouge">x</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Tips</strong> 在对于目录没有<code class="language-plaintext highlighter-rouge">r</code>权限的时候，用<code class="language-plaintext highlighter-rouge">Tab</code>不会自动补全文件名的。</p>
+:ET

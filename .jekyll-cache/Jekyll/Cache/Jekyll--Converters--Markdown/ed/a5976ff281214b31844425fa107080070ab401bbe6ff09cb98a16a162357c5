@@ -1,2 +1,0 @@
-I"�<p>昨天开始我用 <code class="language-plaintext highlighter-rouge">echo $PATH | sed -m 's/:/\n/gp'</code> 对$PATH的输出进行断行处理就一直有问题。本来应该每一个路径分行显示的。但是结果却是这样的。</p>
-:ET

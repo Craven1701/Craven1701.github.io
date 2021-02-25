@@ -1,0 +1,36 @@
+I"	<p>参考资料:<a href="https://www.cnblogs.com/fireporsche/p/9359130.html">博客园 fireporsche git config配置</a></p>
+
+<p>在git中，我们使用git config 命令用来配置git的配置文件，git配置级别主要有以下3类：</p>
+
+<p>1、仓库级别 local 【优先级最高】 位置是当前目录下的 <code class="language-plaintext highlighter-rouge">.git/config</code></p>
+
+<p>2、用户级别 global【优先级次之】位置是主目录下的 <code class="language-plaintext highlighter-rouge">~/.gitconfig</code> (这个文件里存放有和push pull操作相关的路径)</p>
+
+<p>3、系统级别 system【优先级最低】位置是根目录下的<code class="language-plaintext highlighter-rouge">/etc/gitconfig</code> （这个文件我Ubuntu和MacOS上默认都是不存在的，官网给的路径是<code class="language-plaintext highlighter-rouge">$(prefix)/etc/gitconfig</code>,我默认没有<code class="language-plaintext highlighter-rouge">$prefix</code>这个变量，所以system层级的配置文件估计是要自己想用时再写。）</p>
+
+<h3 id="gitconfig文件的语法标志">gitconfig文件的语法标志</h3>
+<p>参考官网: <a href="https://git-scm.com/docs/git-config">https://git-scm.com/docs/git-config</a></p>
+<ul>
+  <li>注释标识符
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">;</span> bababaab
+<span class="c"># babababa</span>
+</code></pre></div>    </div>
+  </li>
+  <li>section   subsection 与 变量（variable）
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>section <span class="s2">"subsection"</span><span class="o">]</span>
+  var1 <span class="o">=</span> value1
+  var2 <span class="o">=</span> value2
+  var3 <span class="c"># var3的写法默认相当于 var3=true</span>
+</code></pre></div>    </div>
+    <p>变量属于其直接跟随的section或者subsection
+section与subsection大小写敏感
+variable大小写不敏感
+注意官网给的示例中，<code class="language-plaintext highlighter-rouge">=</code>左右都有空格</p>
+  </li>
+</ul>
+
+<h3 id="gitconfig中常用的配置项">gitconfig中常用的配置项</h3>
+
+<p>[alias] 为git命令配置别名
+[color] 设置git输出着色</p>
+:ET
